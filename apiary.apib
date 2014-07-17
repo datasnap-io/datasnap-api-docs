@@ -44,6 +44,20 @@ The following encoding should be used when sending json information into the dat
 'URL Safe' base64 encoding, or "RFC4648 base64url (Base
 64 Encoding with URL and Filename Safe Alphabet)
 
+There are ready libraries that do this in Ruby, PHP, and Javascript.
+
+
+Java Example:
+
+java.util.Base64.getUrlEncoder().encodeToString("my fancyurl".getBytes());
+
+
+Java w/ Apache Commons:
+
+org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getBytes())
+
+
+
 **Special internal Datasnap fields:**
 
 We denote these under the "datasnap" property in the root json payload. These will be automatically set for you
