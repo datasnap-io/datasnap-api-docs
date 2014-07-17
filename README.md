@@ -6,4 +6,4 @@ This Analytics API is the set of REST web services to send data to Datasnap for 
 The API Markdown is located here:
 
 
-[a relative link](./apiary.apib)
+[API Doc](./apiary.apib)
