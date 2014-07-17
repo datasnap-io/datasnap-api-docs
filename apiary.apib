@@ -18,8 +18,8 @@ Possible events that you can send your own:
 - user_opt_in_location
 - user_opt_in_push_notifications
 - user_opt_in_vendor
-- beacon_arrive:
-- beacon_sigting
+- beacon_arrived
+- beacon_sighting
 - beacon_departed
 - interaction_tap
 - interaction_view
@@ -28,19 +28,19 @@ Possible events that you can send your own:
 
 You CAN also append any other json properties as you want at any level that you would like.
 
-The ones outlined below are provided and will be treated specially by Datasnap and can be automatically applied mapped to your Reports Dimensions and Metrics. Otherwise we will need to work together to setup and map your custom fields to these fields.
+The ones outlined below are provided and will be treated specially by Datasnap and can be automatically applied to your Reports Dimensions and Metrics. Otherwise we will need to work together to setup and map your custom fields to these fields.
 
 Timestamp Data Types
 
 Two time-related properties are included in your event automatically.
-The properties “datasnap.timestamp” and “datasnap.created_at” are set at the time your event is recorded. You have the ability to overwrite the keen.timestamp property. This could be useful, for example, if you are backfilling historical data.
+The properties “datasnap.timestamp” and “datasnap.created_at” are set at the time your event is recorded. You have the ability to overwrite the datasnap.timestamp property. This could be useful, for example, if you are backfilling historical data.
 Be sure to use ISO-8601 Format. http://en.wikipedia.org/wiki/ISO_8601
 
 Special internal Datasnap fields:
 
 We denote these under the "datasnap" property in the root json payload. These will be automatically set for you
 via one of our SDKs or via our backend server such as _timestamp_.
-You can of course override these at any time but please be careful in doing so
+You can of course override these at any time but please be careful in doing so.
 
 
 + Parameters
@@ -48,9 +48,9 @@ You can of course override these at any time but please be careful in doing so
     + organization (required, number, ) ... Number `organization`
     + app_name (required, number, ) ... Number `app_name`
     + data (optional,number, `%20WERF%20` ) ... String `data`   ... Base64 Encoded Data
-    + redirect (optional,number, `http://www.apple.com` ) ... String `redirect` ... URL that the user will be sent to when using the GET Tracking method.
+    + redirect (optional, string, `http://www.apple.com` ) ... String `redirect` ... URL that the user will be sent to when using the GET Tracking method.
 
-### Create a Event [POST]
+### Create an Event [POST]
 
 
 + Request (application/json)
@@ -220,7 +220,7 @@ You can of course override these at any time but please be careful in doing so
 ### Create a Event via Image Pixel [GET]
 
 This is used to perform pixel based tracking where its easier to embed into email and html <img /> tags and
-harder to perform a mopre programmatic POST request.
+harder to perform a more programmatic POST request.
 
 
 + Request (application/json)
