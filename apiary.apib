@@ -83,7 +83,7 @@ You can of course override these at any time but please be careful in doing so.
 
     + Body
 
-                {
+            {
                 "event_type": "beacon_sighting",
                 "place": {
                     "id": "placeid",
@@ -140,7 +140,7 @@ You can of course override these at any time but please be careful in doing so.
                             ]
                         }
                     ]
-                    },
+                },
                 "beacon": {
                     "id": "22222-eevs",
                     "ble_uuid": "ble_uuid",
@@ -159,7 +159,7 @@ You can of course override these at any time but please be careful in doing so.
                     "categories": [
                         {
                             "Sports": {
-                                
+            
                             }
                         },
                         {
@@ -172,7 +172,7 @@ You can of course override these at any time but please be careful in doing so.
                         },
                         {
                             "Mens": {
-                                
+            
                             }
                         }
                     ],
@@ -241,155 +241,156 @@ You can of course override these at any time but please be careful in doing so.
                         "user_type": "VIP",
                         "user_spend": "high",
                         "engagement_time": "Greaterthan30minutes"
-                    },
-                    "campaign": {
-                        "id": "campaignid",
-                        "name": "camapign10%offshoes",
-                        "subcampaigns": [
+                    }
+                },
+                "campaign": {
+                    "id": "campaignid",
+                    "name": "camapign10%offshoes",
+                    "subcampaigns": [
+                        {
+                            "id": "campaignid",
+                            "name": "camapign11%offshoesmles"
+                        }
+                    ],
+                    "targeting_rules": {
+                        "id": "targetingid",
+                        "rules": [
                             {
-                                "id": "campaignid",
-                                "name": "camapign11%offshoesmles"
-                            }
-                        ],
-                        "targeting_rules": {
-                            "id": "targetingid",
-                            "rules": [
-                                {
-                                    "id": "ruleid1",
-                                    "name": "retailandclothingruleforbackofstore",
-                                    "place_ids": [
-                                        "placeid1"
+                                "id": "ruleid1",
+                                "name": "retailandclothingruleforbackofstore",
+                                "place_ids": [
+                                    "placeid1"
+                                ],
+                                "audience": {
+                                    "Education": [
+                                        "NoCollege",
+                                        "College",
+                                        "GradSchool"
                                     ],
-                                    "audience": {
-                                        "Education": [
-                                            "NoCollege",
-                                            "College",
-                                            "GradSchool"
-                                        ],
-                                        "Age": [
-                                            "18-24",
-                                            "25-34",
-                                            "35-44",
-                                            "45-55",
-                                            "55+"
-                                        ],
-                                        "Ethnicity": [
-                                            "Caucasian",
-                                            "AfricanAmerican",
-                                            "Asian",
-                                            "Hispanic",
-                                            "Other"
-                                        ],
-                                        "Kids": [
-                                            "NoKids",
-                                            "HasKids"
-                                        ],
-                                        "Gender": [
-                                            "Male",
-                                            "Female"
-                                        ],
-                                        "Interests": [
-                                            "Gettingfromheretothere",
-                                            "Biking",
-                                            "Automotive",
-                                            "Automotive.Cars"
-                                        ],
-                                        "Income": [
-                                            "$0-30k",
-                                            "$30-60k",
-                                            "$60-100k",
-                                            "100k+"
-                                        ]
-                                    },
-                                    "targeting_attributes": {
-                                        "store_type": "retail",
-                                        "product_type": "clothing"
-                                    }
+                                    "Age": [
+                                        "18-24",
+                                        "25-34",
+                                        "35-44",
+                                        "45-55",
+                                        "55+"
+                                    ],
+                                    "Ethnicity": [
+                                        "Caucasian",
+                                        "AfricanAmerican",
+                                        "Asian",
+                                        "Hispanic",
+                                        "Other"
+                                    ],
+                                    "Kids": [
+                                        "NoKids",
+                                        "HasKids"
+                                    ],
+                                    "Gender": [
+                                        "Male",
+                                        "Female"
+                                    ],
+                                    "Interests": [
+                                        "Gettingfromheretothere",
+                                        "Biking",
+                                        "Automotive",
+                                        "Automotive.Cars"
+                                    ],
+                                    "Income": [
+                                        "$0-30k",
+                                        "$30-60k",
+                                        "$60-100k",
+                                        "100k+"
+                                    ]
                                 },
-                                {
-                                    "id": "ruleid2",
-                                    "name": "mycoolrule2",
-                                    "audience": {
-                                        "Education": [
-                                            "NoCollege",
-                                            "College",
-                                            "GradSchool"
-                                        ],
-                                        "Age": [
-                                            "18-24",
-                                            "25-34",
-                                            "35-44",
-                                            "45-55",
-                                            "55+"
-                                        ],
-                                        "Ethnicity": [
-                                            "Caucasian",
-                                            "AfricanAmerican",
-                                            "Asian",
-                                            "Hispanic",
-                                            "Other"
-                                        ],
-                                        "Kids": [
-                                            "NoKids",
-                                            "HasKids"
-                                        ],
-                                        "Gender": [
-                                            "Male",
-                                            "Female"
-                                        ],
-                                        "Interests": [
-                                            "Gettingfromheretothere",
-                                            "Biking",
-                                            "Automotive",
-                                            "Automotive.Cars"
-                                        ],
-                                        "Income": [
-                                            "$0-30k",
-                                            "$30-60k",
-                                            "$60-100k",
-                                            "100k+"
-                                        ]
-                                    }
-                                }
-                            ],
-                            "time_filter": {
-                                "monday": {
-                                    "start": "08: 00",
-                                    "end": "13: 00"
-                                },
-                                "tuesday": {
-                                    "start": "08: 00",
-                                    "end": "22: 00"
+                                "targeting_attributes": {
+                                    "store_type": "retail",
+                                    "product_type": "clothing"
                                 }
                             },
-                            "time_trigger": {
-                                "monday": "08: 00",
-                                "tuesday": "13: 00"
-                            },
-                            "communication": {
-                                "id": "commid",
-                                "communication_vendor_id": "airpush",
-                                "name": "10% offPushnotification",
-                                "type": "Push",
-                                "content": {
-                                    "text": "get10%off!",
-                                    "description": "get10%offifyougotothe",
-                                    "image": "http: //appl.com/image.gif",
-                                    "html": "<p>Hithere!!get10%offnow!!</p>",
-                                    "url": "http: //www.apple.com"
+                            {
+                                "id": "ruleid2",
+                                "name": "mycoolrule2",
+                                "audience": {
+                                    "Education": [
+                                        "NoCollege",
+                                        "College",
+                                        "GradSchool"
+                                    ],
+                                    "Age": [
+                                        "18-24",
+                                        "25-34",
+                                        "35-44",
+                                        "45-55",
+                                        "55+"
+                                    ],
+                                    "Ethnicity": [
+                                        "Caucasian",
+                                        "AfricanAmerican",
+                                        "Asian",
+                                        "Hispanic",
+                                        "Other"
+                                    ],
+                                    "Kids": [
+                                        "NoKids",
+                                        "HasKids"
+                                    ],
+                                    "Gender": [
+                                        "Male",
+                                        "Female"
+                                    ],
+                                    "Interests": [
+                                        "Gettingfromheretothere",
+                                        "Biking",
+                                        "Automotive",
+                                        "Automotive.Cars"
+                                    ],
+                                    "Income": [
+                                        "$0-30k",
+                                        "$30-60k",
+                                        "$60-100k",
+                                        "100k+"
+                                    ]
                                 }
                             }
+                        ]
+                    },
+                    "time_filter": {
+                        "monday": {
+                            "start": "08: 00",
+                            "end": "13: 00"
+                        },
+                        "tuesday": {
+                            "start": "08: 00",
+                            "end": "22: 00"
                         }
                     },
-                    "datasnap": {
-                        "timestamp": "2012-12-14T20: 24: 01.123000+00: 00",
-                        "location": {
-                            "coordinates": [
-                                -88.21337,
-                                40.11041
-                            ]
+                    "time_trigger": {
+                        "monday": "08: 00",
+                        "tuesday": "13: 00"
+                    },
+                    "communication": {
+                        "id": "commid",
+                        "communication_vendor_id": "airpush",
+                        "name": "10% offPushnotification",
+                        "type": "Push",
+                        "content": {
+                            "text": "get10%off!",
+                            "description": "get10%offifyougotothe",
+                            "image": "http: //appl.com/image.gif",
+                            "html": "<p>Hithere!!get10%offnow!!</p>",
+                            "url": "http: //www.apple.com"
                         }
                     }
+                },
+                "datasnap": {
+                    "timestamp": "2012-12-14T20: 24: 01.123000+00: 00",
+                    "location": {
+                        "coordinates": [
+                            -88.21337,
+                            40.11041
+                        ]
+                    }
+                }
             }
 
 
