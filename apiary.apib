@@ -1,0 +1,240 @@
+FORMAT: 1A
+HOST: http://api.datasnap.io/v1.0
+
+# Datasnap.io
+Analytics API is the set of REST web services to send data to Datasnap for analysis.
+
+Please @see http://help.datasnap.com/analytics_api.html for detailed use cases and design guide for the 
+best way to send us data.
+
+# Events (AKA Indegestor)
+Events related resources of the **Events API**
+
+## Events Collection [/organization/${organization}/${app_name}/events/?api_key=${api_key}&data=${data}&redirect=${redirect}]
+
+
+Possible events that you can send your own:
+
+- user_opt_in_location
+- user_opt_in_push_notifications
+- user_opt_in_vendor
+- beacon_arrive:
+- beacon_sigting
+- beacon_departed
+- interaction_tap
+- interaction_view
+- interaction_swipe
+- interaction_shake
+
+You CAN also append any other json properties as you want at any level that you would like.
+
+The ones outlined below are provided and will be treated specially by Datasnap and can be automatically applied mapped to your Reports Dimensions and Metrics. Otherwise we will need to work together to setup and map your custom fields to these fields.
+
+Timestamp Data Types
+
+Two time-related properties are included in your event automatically. 
+The properties “datasnap.timestamp” and “datasnap.created_at” are set at the time your event is recorded. You have the ability to overwrite the keen.timestamp property. This could be useful, for example, if you are backfilling historical data. 
+Be sure to use ISO-8601 Format. http://en.wikipedia.org/wiki/ISO_8601
+
+Special internal Datasnap fields:
+
+We denote these under the "datasnap" property in the root json payload. These will be automatically set for you
+via one of our SDKs or via our backend server such as _timestamp_. 
+You can of course ovverride these at any time but please be careful in doing so
+
+
++ Parameters
+    + api_key (required, string, `E9NZuB6A91e2J03PKA2g7wx0629czel8`) ... String `api-key` for the Datasnap account/organization (optional if you use Authorization header)
+    + organization (required, number, ) ... Number `organization`
+    + app_name (required, number, ) ... Number `app_name` 
+    + data (optional,number, `%20WERF%20` ) ... String `data`   ... Base64 Encoded Data 
+    + redirect (optional,number, `http://www.apple.com` ) ... String `redirect` ... URL that the user will be sent to when using the GET Tracking method.
+     
+### Create a Event [POST]
+
+
++ Request (application/json)
+    
+    + Headers
+
+            Authorization: E9NZuB6A91e2J03PKA2g7wx0629czel8
+      
+    + Body
+    
+            {
+                "event_type": "beacon_sighting",
+                "place":
+                    {   
+                        "id": "placeid"
+                        "address": "1805 san bernadino ave, SF, CA"
+                        "geoFenceCircle": [{
+                            "radius": 100,
+                            "visibility": "ORGANIZATION",
+                            "location": {
+                                "latitude": 32.89494374592149,
+                                "longitude": -117.19603832579497
+                            }],
+                        "geofenceBeacon": [{
+                            "beacons": ["beaconid1"],
+                            "beacon_tags": ["beacontag1", "beacontag2"]
+                            }],
+                       "geoFencePolygon": [{
+                            "visibility": "ORGANIZATION",
+                            "locations": [
+                                {
+                                    "latitude": 32.8953153522896,
+                                    "longitude": -117.19559844351653
+                                },
+                                {
+                                    "latitude": 32.8954009341414,
+                                    "longitude": -117.19516929007415
+                                },
+                                {
+                                    "latitude": 32.89564867061472,
+                                    "longitude": -117.1949815354431
+                                },
+                                {
+                                    "latitude": 32.89545949009762,
+                                    "longitude": -117.19463284827117
+                                },
+                                {
+                                    "latitude": 32.894986537037255,
+                                    "longitude": -117.19496544218902
+                                },
+                                {
+                                    "latitude": 32.894864920127866,
+                                    "longitude": -117.19554479933623
+                                }
+                            ]
+                        }],
+                    },
+                "beacon": {
+                    "id": "22222-eevs",
+                    "name": "Front Entrance",
+                    "latitude": XX.XXXXXX,
+                    "organization_ids": ["orgid1", "orgid2"],
+                    "longitude": YY.YYYYYY,
+                    "visibility": "Private",
+                    "battery_level": "Battery Level of the Beacon",
+                    "hardware": "Hardware type of the Beacon",
+                    "categories": ["Sports":{}
+                                    ,"Womens":{"subcategories" ["golf shirts", "dresses"]}
+                                    ,"Mens": {}]
+                    "tags": ["womens, "golf", "shoes"]
+                },
+                "communication": {
+                    "description": "my description",
+                    "id": "commid",
+                    "type": {
+                        "id": "typeid",
+                        "name": "Push Notificaion"
+                        
+                    }
+                },
+                "user": {
+                    "distinct_id": "userid1234",
+                    "audience": {
+                                "Education": ["College"],
+                                "Age": ["18 - 24"],
+                                "Ethnicity": ["Caucasian"],
+                                "Kids": ["No Kids"],
+                                "Gender": ["Male"],
+                                "Interests": ["Getting from here to there", "Biking", "Automotive", "Automotive.Cars"],
+                                "Income": ["$30 - 60k"]
+                    }
+                    "user_properties": {
+                        "user_type": "VIP",
+                        "user_spend": "high",
+                        "engagement_time": "Greater than 30 minutes"
+                        },
+                "campaign:"{
+                    "id": "campaignid",
+                    "name": "camapign 10% off shoes",
+                    "targeting_rules": {
+                        "id": "targetingid",
+                        "rules": [{
+                        "id": "ruleid1",
+                        "name": "retail and clothing rule for back of store",
+                        "place_ids": ["placeid1"],
+                         "audience": {
+                            "Education": ["No College", "College", "Grad School"],
+                            "Age": ["18 - 24", "25 - 34", "35 - 44", "45 - 55", "55+"],
+                            "Ethnicity": ["Caucasian", "African American", "Asian", "Hispanic", "Other"],
+                            "Kids": ["No Kids","Has Kids"],
+                            "Gender": ["Male", "Female"],
+                            "Interests": ["Getting from here to there", "Biking", "Automotive", "Automotive.Cars"],
+                            "Income": ["$0 - 30k", "$30 - 60k", "$60 - 100k", "100k+"]
+                        }
+                        "targeting_attributes": {
+                            "store_type" : "retail",
+                            "product_type" : "clothing"
+                        }
+                        },{
+                        "id": "ruleid2",
+                        "name": "my cool rule2",
+                        "audience": {
+                            "Education": ["No College", "College", "Grad School"],
+                            "Age": ["18 - 24", "25 - 34", "35 - 44", "45 - 55", "55+"],
+                            "Ethnicity": ["Caucasian", "African American", "Asian", "Hispanic", "Other"],
+                            "Kids": ["No Kids","Has Kids"],
+                            "Gender": ["Male", "Female"],
+                            "Interests": ["Getting from here to there", "Biking", "Automotive", "Automotive.Cars"],
+                            "Income": ["$0 - 30k", "$30 - 60k", "$60 - 100k", "100k+"]
+                        }]
+                    }
+                }
+                "datasnap":{
+                    "timestamp": "2012-12-14T20:24:01.123000+00:00",
+                    "location": {
+                        "coordinates": [-88.21337, 40.11041]
+                    }
+                    "":
+                }
+            }
+        
+    + Schema
+    
+            {
+                "type": "object",
+                "required": false,
+                "properties": {
+                    "event_type": {
+                        "type": ["string", "null"],
+                        "required": true
+                    },
+                    "id": {
+                        "type": "number",
+                        "required": false
+                    }
+                }
+            }
+    
+
+    
++ Response 200 (application/json)
+
+        { "created": true}
+        
+        
+        
+### Create a Event via Image Pixel [GET]
+
+This is used to perform pixel based tracking where its easier to embed into email and html <img /> tags and
+harder to perform a mopre programmatic POST request. 
+
+
++ Request (application/json)
+    
+    + Headers
+
+            Authorization: E9NZuB6A91e2J03PKA2g7wx0629czel8
+
++ Response 200 (image/gif)
+        
+    + Headers 
+    
+            Content-length:0
+            Date:Tue, 15 Jul 2014 06:41:10 GMT
+
+        
+
