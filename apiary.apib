@@ -150,6 +150,10 @@ You can of course override these at any time but please be careful in doing so.
                 "campaign:"{
                     "id": "campaignid",
                     "name": "camapign 10% off shoes",
+                    "subcampaigns" :[{
+                         "id": "campaignid",
+                         "name": "camapign 11% off shoes mles"
+                    }]
                     "targeting_rules": {
                         "id": "targetingid",
                         "rules": [{
@@ -181,6 +185,27 @@ You can of course override these at any time but please be careful in doing so.
                             "Interests": ["Getting from here to there", "Biking", "Automotive", "Automotive.Cars"],
                             "Income": ["$0 - 30k", "$30 - 60k", "$60 - 100k", "100k+"]
                         }]
+                        "time_filter":{
+                                "monday": {
+                                    "start": "08:00",
+                                    "end": "13:00"
+                                },
+                                "tuesday": {
+                                    "start": "08:00",
+                                    "end": "22:00"
+                                }
+                        },
+                        "time_trigger": {
+                            "monday": "08:00",
+                            "tuesday": "13:00"
+                        },
+                        "communication":{
+                            "id": "commid",
+                            "name" "10% off Push notification",
+                            "type": "Push",
+                            "Content": 
+                            
+                        }
                     }
                 }
                 "datasnap":{
