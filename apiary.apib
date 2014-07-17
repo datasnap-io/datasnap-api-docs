@@ -4,7 +4,7 @@ HOST: http://api.datasnap.io/v1.0
 # Datasnap.io
 Analytics API is the set of REST web services to send data to Datasnap for analysis.
 
-Please @see http://help.datasnap.com/analytics_api.html for detailed use cases and design guide for the 
+Please @see http://help.datasnap.com/analytics_api.html for detailed use cases and design guide for the
 best way to send us data.
 
 # Events (AKA Indegestor)
@@ -32,39 +32,39 @@ The ones outlined below are provided and will be treated specially by Datasnap a
 
 Timestamp Data Types
 
-Two time-related properties are included in your event automatically. 
-The properties “datasnap.timestamp” and “datasnap.created_at” are set at the time your event is recorded. You have the ability to overwrite the keen.timestamp property. This could be useful, for example, if you are backfilling historical data. 
+Two time-related properties are included in your event automatically.
+The properties “datasnap.timestamp” and “datasnap.created_at” are set at the time your event is recorded. You have the ability to overwrite the keen.timestamp property. This could be useful, for example, if you are backfilling historical data.
 Be sure to use ISO-8601 Format. http://en.wikipedia.org/wiki/ISO_8601
 
 Special internal Datasnap fields:
 
 We denote these under the "datasnap" property in the root json payload. These will be automatically set for you
-via one of our SDKs or via our backend server such as _timestamp_. 
+via one of our SDKs or via our backend server such as _timestamp_.
 You can of course ovverride these at any time but please be careful in doing so
 
 
 + Parameters
     + api_key (required, string, `E9NZuB6A91e2J03PKA2g7wx0629czel8`) ... String `api-key` for the Datasnap account/organization (optional if you use Authorization header)
     + organization (required, number, ) ... Number `organization`
-    + app_name (required, number, ) ... Number `app_name` 
-    + data (optional,number, `%20WERF%20` ) ... String `data`   ... Base64 Encoded Data 
+    + app_name (required, number, ) ... Number `app_name`
+    + data (optional,number, `%20WERF%20` ) ... String `data`   ... Base64 Encoded Data
     + redirect (optional,number, `http://www.apple.com` ) ... String `redirect` ... URL that the user will be sent to when using the GET Tracking method.
-     
+
 ### Create a Event [POST]
 
 
 + Request (application/json)
-    
+
     + Headers
 
             Authorization: E9NZuB6A91e2J03PKA2g7wx0629czel8
-      
+
     + Body
-    
+
             {
                 "event_type": "beacon_sighting",
                 "place":
-                    {   
+                    {
                         "id": "placeid"
                         "address": "1805 san bernadino ave, SF, CA"
                         "geoFenceCircle": [{
@@ -128,7 +128,7 @@ You can of course ovverride these at any time but please be careful in doing so
                     "type": {
                         "id": "typeid",
                         "name": "Push Notificaion"
-                        
+
                     }
                 },
                 "user": {
@@ -191,9 +191,9 @@ You can of course ovverride these at any time but please be careful in doing so
                     "":
                 }
             }
-        
+
     + Schema
-    
+
             {
                 "type": "object",
                 "required": false,
@@ -208,33 +208,30 @@ You can of course ovverride these at any time but please be careful in doing so
                     }
                 }
             }
-    
 
-    
+
+
 + Response 200 (application/json)
 
         { "created": true}
-        
-        
-        
+
+
+
 ### Create a Event via Image Pixel [GET]
 
 This is used to perform pixel based tracking where its easier to embed into email and html <img /> tags and
-harder to perform a mopre programmatic POST request. 
+harder to perform a mopre programmatic POST request.
 
 
 + Request (application/json)
-    
+
     + Headers
 
             Authorization: E9NZuB6A91e2J03PKA2g7wx0629czel8
 
 + Response 200 (image/gif)
-        
-    + Headers 
-    
+
+    + Headers
+
             Content-length:0
             Date:Tue, 15 Jul 2014 06:41:10 GMT
-
-        
-
