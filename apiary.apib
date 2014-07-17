@@ -36,6 +36,14 @@ Two time-related properties are included in your event automatically.
 The properties “datasnap.timestamp” and “datasnap.created_at” are set at the time your event is recorded. You have the ability to overwrite the datasnap.timestamp property. This could be useful, for example, if you are backfilling historical data.
 Be sure to use ISO-8601 Format. http://en.wikipedia.org/wiki/ISO_8601
 
+
+Url Paremeter "data" encoding:
+
+The following encoding should be used when sending json information into the data URL Parameter
+
+'URL Safe' base64 encoding, or "RFC4648 base64url (Base
+64 Encoding with URL and Filename Safe Alphabet)
+
 Special internal Datasnap fields:
 
 We denote these under the "datasnap" property in the root json payload. These will be automatically set for you
@@ -47,7 +55,7 @@ You can of course override these at any time but please be careful in doing so.
     + api_key (required, string, `E9NZuB6A91e2J03PKA2g7wx0629czel8`) ... String `api-key` for the Datasnap account/organization (optional if you use Authorization header)
     + organization (required, number, ) ... Number `organization`
     + app_name (required, number, ) ... Number `app_name`
-    + data (optional,number, `%20WERF%20` ) ... String `data`   ... Base64 Encoded Data
+    + data (optional,number, `%20WERF%20` ) ... String `data`   ... RFC4648 base64url (Base64 Encoding with URL and Filename Safe Alphabet)
     + redirect (optional, string, `http://www.apple.com` ) ... String `redirect` ... URL that the user will be sent to when using the GET Tracking method.
 
 ### Create an Event [POST]
