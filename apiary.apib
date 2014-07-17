@@ -110,6 +110,9 @@ You can of course override these at any time but please be careful in doing so.
                     },
                 "beacon": {
                     "id": "22222-eevs",
+                    "ble_uuid": "ble_uuid",
+                    "ble_vendor_uuid": "ble_vendor_uuid",
+                    "ble_vendor_id": "ble_vendor_id",
                     "name": "Front Entrance",
                     "latitude": XX.XXXXXX,
                     "organization_ids": ["orgid1", "orgid2"],
@@ -132,7 +135,26 @@ You can of course override these at any time but please be careful in doing so.
                     }
                 },
                 "user": {
-                    "distinct_id": "userid1234",
+                    id: {
+                      "mobile_device_ios_idfa": "092384",
+                      "mobile_device_ios_openidfa": "09238dd4",
+                      "mobile_device_ios_idfv": "092344",
+                      "mobile_device_ios_udid": "123",
+                      "datasnap_uuid":"datasnap_uuid"
+                      "wed_domain_userid": "",
+                      "web_cookie": "foo",
+                      "web_"network_userid": "billybob",
+                      "web_user_fingerprint":"web_user_fingerprint",
+                      "web_analytics_company_z_cookie": "",
+                      "global_distinct_id": "userid1234",
+                      "global_user_ipaddress":"user_ipaddress",
+                      "mobile_device_fingerprint":"2da076c7ad28740c0b2a9b7fa6077c4f",
+                      "facebook_uid":"2234433",
+                      "mobile_device_google_advertising_id":"googid",
+                      "mobile_device_google_google_advertising_id_opt_in":"true",
+                      "unknown":"unknownid",
+                      "":""
+                    },
                     "audience": {
                                 "Education": ["College"],
                                 "Age": ["18 - 24"],
@@ -203,7 +225,10 @@ You can of course override these at any time but please be careful in doing so.
                             "id": "commid",
                             "name" "10% off Push notification",
                             "type": "Push",
-                            "Content": 
+                            "content": {
+                                "text": "get 10% off!"
+                                "description": "get 10% off if you go to the 
+                            }
                             
                         }
                     }
