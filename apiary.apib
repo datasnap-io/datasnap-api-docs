@@ -83,24 +83,34 @@ You can of course override these at any time but please be careful in doing so.
 
     + Body
 
-            {
+                {
                 "event_type": "beacon_sighting",
-                "place":
-                    {
-                        "id": "placeid"
-                        "address": "1805 san bernadino ave, SF, CA"
-                        "geoFenceCircle": [{
+                "place": {
+                    "id": "placeid",
+                    "address": "1805 san bernadino ave, SF, CA",
+                    "geoFenceCircle": [
+                        {
                             "radius": 100,
                             "visibility": "ORGANIZATION",
                             "location": {
                                 "latitude": 32.89494374592149,
                                 "longitude": -117.19603832579497
-                            }],
-                        "geofenceBeacon": [{
-                            "beacons": ["beaconid1"],
-                            "beacon_tags": ["beacontag1", "beacontag2"]
-                            }],
-                       "geoFencePolygon": [{
+                            }
+                        }
+                    ],
+                    "geofenceBeacon": [
+                        {
+                            "beacons": [
+                                "beaconid1"
+                            ],
+                            "beacon_tags": [
+                                "beacontag1",
+                                "beacontag2"
+                            ]
+                        }
+                    ],
+                    "geoFencePolygon": [
+                        {
                             "visibility": "ORGANIZATION",
                             "locations": [
                                 {
@@ -128,7 +138,8 @@ You can of course override these at any time but please be careful in doing so.
                                     "longitude": -117.19554479933623
                                 }
                             ]
-                        }],
+                        }
+                    ]
                     },
                 "beacon": {
                     "id": "22222-eevs",
@@ -136,137 +147,251 @@ You can of course override these at any time but please be careful in doing so.
                     "ble_vendor_uuid": "ble_vendor_uuid",
                     "ble_vendor_id": "ble_vendor_id",
                     "name": "Front Entrance",
-                    "latitude": XX.XXXXXX,
-                    "organization_ids": ["orgid1", "orgid2"],
-                    "longitude": YY.YYYYYY,
+                    "latitude": 11.22222,
+                    "organization_ids": [
+                        "orgid1",
+                        "orgid2"
+                    ],
+                    "longitude": 123.444,
                     "visibility": "Private",
-                    "battery_level": "Battery Level of the Beacon",
-                    "hardware": "Hardware type of the Beacon",
-                    "categories": ["Sports":{}
-                                    ,"Womens":{"subcategories" ["golf shirts", "dresses"]}
-                                    ,"Mens": {}]
-                    "tags": ["womens, "golf", "shoes"]
+                    "battery_level": "BatteryLeveloftheBeacon",
+                    "hardware": "HardwaretypeoftheBeacon",
+                    "categories": [
+                        {
+                            "Sports": {
+                                
+                            }
+                        },
+                        {
+                            "Womens": {
+                                "subcategories": [
+                                    "golfshirts",
+                                    "dresses"
+                                ]
+                            }
+                        },
+                        {
+                            "Mens": {
+                                
+                            }
+                        }
+                    ],
+                    "tags": [
+                        "womens",
+                        "golf",
+                        "shoes"
+                    ]
                 },
                 "communication": {
-                    "description": "my description",
+                    "description": "mydescription",
                     "id": "commid",
                     "type": {
                         "id": "typeid",
-                        "name": "Push Notificaion"
-
+                        "name": "PushNotificaion"
                     }
                 },
                 "user": {
-                    id: {
-                      "mobile_device_ios_idfa": "092384",
-                      "mobile_device_ios_openidfa": "09238dd4",
-                      "mobile_device_ios_idfv": "092344",
-                      "mobile_device_ios_udid": "123",
-                      "datasnap_uuid":"datasnap_uuid"
-                      "wed_domain_userid": "",
-                      "web_cookie": "foo",
-                      "web_"network_userid": "billybob",
-                      "web_user_fingerprint":"web_user_fingerprint",
-                      "web_analytics_company_z_cookie": "",
-                      "global_distinct_id": "userid1234",
-                      "global_user_ipaddress":"user_ipaddress",
-                      "mobile_device_fingerprint":"2da076c7ad28740c0b2a9b7fa6077c4f",
-                      "facebook_uid":"2234433",
-                      "mobile_device_google_advertising_id":"googid",
-                      "mobile_device_google_google_advertising_id_opt_in":"true",
-                      "unknown":"unknownid",
-                      "":""
+                    "id": {
+                        "mobile_device_ios_idfa": "092384",
+                        "mobile_device_ios_openidfa": "09238dd4",
+                        "mobile_device_ios_idfv": "092344",
+                        "mobile_device_ios_udid": "123",
+                        "datasnap_uuid": "datasnap_uuid",
+                        "web_domain_userid": "",
+                        "web_cookie": "foo",
+                        "web_network_userid": "billybob",
+                        "web_user_fingerprint": "web_user_fingerprint",
+                        "web_analytics_company_z_cookie": "",
+                        "global_distinct_id": "userid1234",
+                        "global_user_ipaddress": "user_ipaddress",
+                        "mobile_device_fingerprint": "2da076c7ad28740c0b2a9b7fa6077c4f",
+                        "facebook_uid": "2234433",
+                        "mobile_device_google_advertising_id": "googid",
+                        "mobile_device_google_google_advertising_id_opt_in": "true",
+                        "unknown": "unknownid",
+                        "": ""
                     },
                     "audience": {
-                                "Education": ["College"],
-                                "Age": ["18 - 24"],
-                                "Ethnicity": ["Caucasian"],
-                                "Kids": ["No Kids"],
-                                "Gender": ["Male"],
-                                "Interests": ["Getting from here to there", "Biking", "Automotive", "Automotive.Cars"],
-                                "Income": ["$30 - 60k"]
-                    }
+                        "Education": [
+                            "College"
+                        ],
+                        "Age": [
+                            "18-24"
+                        ],
+                        "Ethnicity": [
+                            "Caucasian"
+                        ],
+                        "Kids": [
+                            "NoKids"
+                        ],
+                        "Gender": [
+                            "Male"
+                        ],
+                        "Interests": [
+                            "Gettingfromheretothere",
+                            "Biking",
+                            "Automotive",
+                            "Automotive.Cars"
+                        ],
+                        "Income": [
+                            "$30-60k"
+                        ]
+                    },
                     "user_properties": {
                         "user_type": "VIP",
                         "user_spend": "high",
-                        "engagement_time": "Greater than 30 minutes"
-                        },
-                "campaign:"{
-                    "id": "campaignid",
-                    "name": "camapign 10% off shoes",
-                    "subcampaigns" :[{
-                         "id": "campaignid",
-                         "name": "camapign 11% off shoes mles"
-                    }]
-                    "targeting_rules": {
-                        "id": "targetingid",
-                        "rules": [{
-                        "id": "ruleid1",
-                        "name": "retail and clothing rule for back of store",
-                        "place_ids": ["placeid1"],
-                         "audience": {
-                            "Education": ["No College", "College", "Grad School"],
-                            "Age": ["18 - 24", "25 - 34", "35 - 44", "45 - 55", "55+"],
-                            "Ethnicity": ["Caucasian", "African American", "Asian", "Hispanic", "Other"],
-                            "Kids": ["No Kids","Has Kids"],
-                            "Gender": ["Male", "Female"],
-                            "Interests": ["Getting from here to there", "Biking", "Automotive", "Automotive.Cars"],
-                            "Income": ["$0 - 30k", "$30 - 60k", "$60 - 100k", "100k+"]
-                        }
-                        "targeting_attributes": {
-                            "store_type" : "retail",
-                            "product_type" : "clothing"
-                        }
-                        },{
-                        "id": "ruleid2",
-                        "name": "my cool rule2",
-                        "audience": {
-                            "Education": ["No College", "College", "Grad School"],
-                            "Age": ["18 - 24", "25 - 34", "35 - 44", "45 - 55", "55+"],
-                            "Ethnicity": ["Caucasian", "African American", "Asian", "Hispanic", "Other"],
-                            "Kids": ["No Kids","Has Kids"],
-                            "Gender": ["Male", "Female"],
-                            "Interests": ["Getting from here to there", "Biking", "Automotive", "Automotive.Cars"],
-                            "Income": ["$0 - 30k", "$30 - 60k", "$60 - 100k", "100k+"]
-                        }]
-                        "time_filter":{
+                        "engagement_time": "Greaterthan30minutes"
+                    },
+                    "campaign": {
+                        "id": "campaignid",
+                        "name": "camapign10%offshoes",
+                        "subcampaigns": [
+                            {
+                                "id": "campaignid",
+                                "name": "camapign11%offshoesmles"
+                            }
+                        ],
+                        "targeting_rules": {
+                            "id": "targetingid",
+                            "rules": [
+                                {
+                                    "id": "ruleid1",
+                                    "name": "retailandclothingruleforbackofstore",
+                                    "place_ids": [
+                                        "placeid1"
+                                    ],
+                                    "audience": {
+                                        "Education": [
+                                            "NoCollege",
+                                            "College",
+                                            "GradSchool"
+                                        ],
+                                        "Age": [
+                                            "18-24",
+                                            "25-34",
+                                            "35-44",
+                                            "45-55",
+                                            "55+"
+                                        ],
+                                        "Ethnicity": [
+                                            "Caucasian",
+                                            "AfricanAmerican",
+                                            "Asian",
+                                            "Hispanic",
+                                            "Other"
+                                        ],
+                                        "Kids": [
+                                            "NoKids",
+                                            "HasKids"
+                                        ],
+                                        "Gender": [
+                                            "Male",
+                                            "Female"
+                                        ],
+                                        "Interests": [
+                                            "Gettingfromheretothere",
+                                            "Biking",
+                                            "Automotive",
+                                            "Automotive.Cars"
+                                        ],
+                                        "Income": [
+                                            "$0-30k",
+                                            "$30-60k",
+                                            "$60-100k",
+                                            "100k+"
+                                        ]
+                                    },
+                                    "targeting_attributes": {
+                                        "store_type": "retail",
+                                        "product_type": "clothing"
+                                    }
+                                },
+                                {
+                                    "id": "ruleid2",
+                                    "name": "mycoolrule2",
+                                    "audience": {
+                                        "Education": [
+                                            "NoCollege",
+                                            "College",
+                                            "GradSchool"
+                                        ],
+                                        "Age": [
+                                            "18-24",
+                                            "25-34",
+                                            "35-44",
+                                            "45-55",
+                                            "55+"
+                                        ],
+                                        "Ethnicity": [
+                                            "Caucasian",
+                                            "AfricanAmerican",
+                                            "Asian",
+                                            "Hispanic",
+                                            "Other"
+                                        ],
+                                        "Kids": [
+                                            "NoKids",
+                                            "HasKids"
+                                        ],
+                                        "Gender": [
+                                            "Male",
+                                            "Female"
+                                        ],
+                                        "Interests": [
+                                            "Gettingfromheretothere",
+                                            "Biking",
+                                            "Automotive",
+                                            "Automotive.Cars"
+                                        ],
+                                        "Income": [
+                                            "$0-30k",
+                                            "$30-60k",
+                                            "$60-100k",
+                                            "100k+"
+                                        ]
+                                    }
+                                }
+                            ],
+                            "time_filter": {
                                 "monday": {
-                                    "start": "08:00",
-                                    "end": "13:00"
+                                    "start": "08: 00",
+                                    "end": "13: 00"
                                 },
                                 "tuesday": {
-                                    "start": "08:00",
-                                    "end": "22:00"
+                                    "start": "08: 00",
+                                    "end": "22: 00"
                                 }
-                        },
-                        "time_trigger": {
-                            "monday": "08:00",
-                            "tuesday": "13:00"
-                        },
-                        "communication":{
-                            "id": "commid",
-                            "communication_vendor_id": "airpush",
-                            "name" "10% off Push notification",
-                            "type": "Push",
-                            "content": {
-                                "text": "get 10% off!"
-                                "description": "get 10% off if you go to the "
-                                "image": "http://appl.com/image.gif",
-                                "html": "<p>Hi there!! get 10% off now!!</p>",
-                                "url": "http://www.apple.com"
+                            },
+                            "time_trigger": {
+                                "monday": "08: 00",
+                                "tuesday": "13: 00"
+                            },
+                            "communication": {
+                                "id": "commid",
+                                "communication_vendor_id": "airpush",
+                                "name": "10% offPushnotification",
+                                "type": "Push",
+                                "content": {
+                                    "text": "get10%off!",
+                                    "description": "get10%offifyougotothe",
+                                    "image": "http: //appl.com/image.gif",
+                                    "html": "<p>Hithere!!get10%offnow!!</p>",
+                                    "url": "http: //www.apple.com"
+                                }
                             }
-                            
+                        }
+                    },
+                    "datasnap": {
+                        "timestamp": "2012-12-14T20: 24: 01.123000+00: 00",
+                        "location": {
+                            "coordinates": [
+                                -88.21337,
+                                40.11041
+                            ]
                         }
                     }
-                }
-                "datasnap":{
-                    "timestamp": "2012-12-14T20:24:01.123000+00:00",
-                    "location": {
-                        "coordinates": [-88.21337, 40.11041]
-                    }
-                    "":
-                }
             }
+
 
     + Schema
 
