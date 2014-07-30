@@ -92,11 +92,7 @@ You can of course override these at any time but please be careful in doing so.
             {
             "event_type": "beacon_sighting",
             "place": {
-                "id": "placeid",
-                "tags": [
-                            "beacontag1",
-                            "beacontag2"
-                        ],
+                "id": "placeid"
                 "address": {
                     "address1": "103 west street",
                     "address2":  "",
@@ -112,9 +108,11 @@ You can of course override these at any time but please be careful in doing so.
                     "orgid1",
                     "orgid2"
                 ],
+
                 "geoFenceCircle": [
                     {
                         "id": "geofence1",
+                        "name": "SF Mission",
                         "radius": 100,
                         "visibility": "ORGANIZATION",
                         "location": {
@@ -126,6 +124,7 @@ You can of course override these at any time but please be careful in doing so.
                 "geofenceBeacon": [
                     {
                         "id": "geofence3",
+                        "name": "SF Mission 24th BART entrance",
                         "beacons": [
                             "beaconid1"
                         ],
@@ -138,6 +137,7 @@ You can of course override these at any time but please be careful in doing so.
                 "geoFencePolygon": [
                     {
                         "id": "geofence2",
+                        "name": "SF Gelen Park",
                         "visibility": "ORGANIZATION",
                         "locations": [
                             {
