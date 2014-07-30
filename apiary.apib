@@ -93,7 +93,15 @@ You can of course override these at any time but please be careful in doing so.
             "event_type": "beacon_sighting",
             "place": {
                 "id": "placeid",
-                "address": "1805 san bernadino ave, SF, CA",
+                "address": {
+                    "address1": "103 west street",
+                    "address2":  "",
+                    "city": "San Francisco",
+                    "state": "CA",
+                    "zip": 94107,
+                    "zip4": 3422
+                    }
+                ,
                 "dwell_time": 600000,
                 "last_place": "placeid-3",
                 "organization_ids": [
@@ -154,7 +162,7 @@ You can of course override these at any time but please be careful in doing so.
                 ]
             },
             "beacon": {
-                "id": "22222-eevs",
+                "id": "beaconid1",
                 "ble_uuid": "ble_uuid",
                 "ble_vendor_uuid": "ble_vendor_uuid",
                 "ble_vendor_id": "ble_vendor_id",
