@@ -1,0 +1,131 @@
+{
+            "event_type": "beacon_sighting",
+            "place": {
+                "id": "placeid-1",
+                "address": "1805 san bernadino ave, SF, CA",
+                
+                "geofenceBeacon": [
+                    {
+                        "beacons": [
+                            "beaconid-1"
+                        ],
+                        "beacon_tags": [
+                            "beacontag1"
+                        ]
+                    }
+                ]
+            },
+            "beacon": {
+                "id": "beaconid-1",
+                "ble_uuid": "ble_uuid-1",
+                "ble_vendor_uuid": "ble_vendor_uuid-1",
+                "ble_vendor_id": "ble_vendor_id-1",
+                "name": "Front Entrance",
+                "latitude": 11.22222,
+                "organization_ids": [
+                    "orgid1"
+                ],
+                "longitude": 123.444,
+                "visibility": "Private",
+                "battery_level": "BatteryLeveloftheBeacon",
+                "hardware": "HardwaretypeoftheBeacon",
+                "categories": [
+                    {
+                        "Sports": {}
+                    },
+                    {
+                        "Womens": {
+                            "subcategories": [
+                                "golfshirts",
+                                "dresses"
+                            ]
+                        }
+                    },
+                    {
+                        "Mens": {}
+                    }
+                ],
+                "tags": [
+                    "womens",
+                    "golf",
+                    "shoes"
+                ]
+            },
+            "communication": {
+                "description": "mydescription",
+                "id": "commid",
+                "type": {
+                    "id": "typeid",
+                    "name": "PushNotificaion"
+                }
+            },
+            "user": {
+                "id": {
+                    "mobile_device_ios_idfa": "idfa-1",
+                    "mobile_device_ios_openidfa": "openidfa-1",
+                    "mobile_device_ios_idfv": "idfv-1",
+                    "datasnap_uuid": "datasnap_uuid-1",
+                    "global_distinct_id": "userid-1",
+                    "global_user_ipaddress": "user_ipaddress"
+                },
+            "campaign": {
+                "id": "campaignid-1",
+                "name": "camapign10%offshoes"
+                },
+                "targeting_rules": {
+                    "id": "targetingid",
+                    "rules": [
+                        {
+                            "id": "ruleid1",
+                            "name": "retailandclothingruleforbackofstore",
+                            "place_ids": [
+                                "placeid1"
+                            ],
+                            
+                            "targeting_attributes": {
+                                "store_type": "retail",
+                                "product_type": "clothing"
+                            }
+                        }
+                    ]
+                },
+                "time_filter": {
+                    "monday": {
+                        "start": "08: 00",
+                        "end": "13: 00"
+                    },
+                    "tuesday": {
+                        "start": "08: 00",
+                        "end": "22: 00"
+                    }
+                },
+                "communication": {
+                    "id": "commid",
+                    "communication_vendor_id": "airpush",
+                    "name": "10% offPushnotification",
+                    "type": "Push",
+                    "content": {
+                        "text": "get10%off!",
+                        "description": "get10%offifyougotothe",
+                        "image": "http: //appl.com/image.gif",
+                        "html": "<p>Hithere!!get10%offnow!!</p>",
+                        "url": "http: //www.apple.com"
+                    }
+                }
+            },
+            "datasnap": {
+                "timestamp": "2013-12-14T20: 24: 01.123000+00: 00",
+                "location": {
+                    "coordinates": [
+                        -88.21337,
+                        40.11041
+                    ]
+                },
+                "txn_id": "fgfgbr rwvb",
+                "device": {
+                    "timstamp": "2013-12-14T20: 24: 01.123000+00: 00",
+                    "user_agent": "Mozilla/5.0 (Linux; U; Android 4.0.3; ko-kr; LG-L160L Build/IML74K) AppleWebkit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+                    "ip_address": "127.1.1.1"
+                }
+            }
+            }
