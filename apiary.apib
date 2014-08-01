@@ -25,6 +25,7 @@ Events related resources of the **Events API**
 - beacon_sighting: A user is within a beacons range and has received a broadcast fomr the beacon.
 - beacon_departed_vendor: This event can be thrown when a vendors'sSDK detect an event. For some vendors this setting can be erroneous so its recommended ot track sperately for audit reporting. 
 - beacon_departed: A true departed event meaning the user has departed and we feel confident that this event is correct. Some folks use their own calulation to throw this event.
+- beacon_visit: A true user visit into a proximity or geotrigger.  This is many times calulated by looking at sighting data or inferred through the use of the departed event.
 - interaction_tap:  Some tap has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself. A tap is also the equivalent of a click of a campaign is assotiated with one.
 - interaction_view: Some view has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself.
 - interaction_swipe: Some swipe has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself.
