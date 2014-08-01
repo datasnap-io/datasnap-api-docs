@@ -17,25 +17,25 @@ Events related resources of the **Events API**
 
 **Possible events that you can send your own:**
 
-- opt_in_location
-- opt_in_push_notifications
-- opt_in_vendor
-- app_installed
-- beacon_arrived
-- beacon_sighting
-- beacon_departed
-- beacon_visit
-- interaction_tap
-- interaction_view
-- interaction_swipe
-- interaction_shake
-- interaction_tilt
-- geofence_arrived
-- geofence_sighting
-- geofence_departed
-- communication_delivered
-- campaign_request
-- campaign_redemption
+- opt_in_location:  The user has opted in to track their location and accepted all appropriate terms of use.
+- opt_in_push_notifications: The user has opted in to receieve push notifications.
+- opt_in_vendor: A user has opted in to the vendors specific terms.
+- app_installed: The user installed the app. Most mobile analytics platforms record this already but it is a useful enough event to provide it here.
+- beacon_arrived: A users first time receiving a broadcast from a beacon.
+- beacon_sighting: A user is within a beacons range and has received a broadcast fomr the beacon.
+- beacon_departed_vendor: This event can be thrown when a vendors'sSDK detect an event. For some vendors this setting can be erroneous so its recommended ot track sperately for audit reporting. 
+- beacon_departed: A true departed event meaning the user has departed and we feel confident that this event is correct. Some folks use their own calulation to throw this event.
+- interaction_tap:  Some tap has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself. A tap is also the equivalent of a click of a campaign is assotiated with one.
+- interaction_view: Some view has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself.
+- interaction_swipe: Some swipe has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself.
+- interaction_shake: Some shake has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself.
+- interaction_tilt: Some tilt has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself.
+- geofence_arrived: A user has entered a Geofence.
+- geofence_sighting: A user is still in the Geofence after a interval based check of their location.
+- geofence_departed:  A user has left the Geofence. 
+- communication_delivered: A communication has been delivered ot the user. It can be assotiated wiht a campaign or not.  For mobile these are typically Push notifications or in App Modals.
+- campaign_request: The app has requested a campaign to be show to the user.
+- campaign_redemption: The User has redeemed something as part of the campaign.
 
 
 
