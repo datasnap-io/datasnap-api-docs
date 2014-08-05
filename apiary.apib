@@ -17,16 +17,30 @@ Events related resources of the **Events API**
 
 **Possible events that you can send your own:**
 
-- user_opt_in_location
-- user_opt_in_push_notifications
-- user_opt_in_vendor
-- beacon_arrived
-- beacon_sighting
-- beacon_departed
-- interaction_tap
-- interaction_view
-- interaction_swipe
-- interaction_shake
+- opt_in_location:  The user has opted in to track their location and accepted all appropriate terms of use.
+- opt_in_push_notifications: The user has opted in to receieve push notifications.
+- opt_in_vendor: A user has opted in to the vendors specific terms.
+- app_installed: The user installed the app. Most mobile analytics platforms record this already but it is a useful enough event to provide it here.
+- beacon_arrived: A users first time receiving a broadcast from a beacon.
+- beacon_sighting: A user is within a beacons range and has received a broadcast fomr the beacon.
+- beacon_departed_vendor: This event can be thrown when a vendors'sSDK detect an event. For some vendors this setting can be erroneous so its recommended ot track sperately for audit reporting. 
+- beacon_departed: A true departed event meaning the user has departed and we feel confident that this event is correct. Some folks use their own calulation to throw this event.
+- beacon_visit: A true user visit into a proximity or geotrigger.  This is many times calulated by looking at sighting data or inferred through the use of the departed event.
+- interaction_tap:  Some tap has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself. A tap is also the equivalent of a click of a campaign is assotiated with one.
+- interaction_view: Some view has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself.
+- interaction_swipe: Some swipe has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself.
+- interaction_shake: Some shake has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself.
+- interaction_tilt: Some tilt has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself.
+- geofence_arrived: A user has entered a Geofence.
+- geofence_sighting: A user is still in the Geofence after a interval based check of their location.
+- geofence_departed:  A user has left the Geofence. 
+- communication_delivered: A communication has been delivered ot the user. It can be assotiated wiht a campaign or not.  For mobile these are typically Push notifications or in App Modals.
+- campaign_request: The app has requested a campaign to be show to the user.
+- campaign_redemption: The User has redeemed something as part of the campaign.
+
+
+
+
 
 You CAN also append any other json properties as you want at any level that you would like.
 
@@ -72,7 +86,7 @@ You can of course override these at any time but please be careful in doing so.
 
 
 + Parameters
-    + api_key (required, string, `E9NZuB6A91e2J03PKA2g7wx0629czel8`) ... String `api-key` for the Datasnap account/organization (optional if you use Authorization header)
+    + api_key (optional, string, `E9NZuB6A91e2J03PKA2g7wx0629czel8`) ... String `api-key` for the Datasnap account/organization (optional if you use Authorization header)
     + organization (required, number, ) ... Number `organization`
     + app_name (required, number, ) ... Number `app_name`
     + data (optional,string, `%20WERF%20` ) ... String `data`   ... RFC4648 base64url (Base64 Encoding with URL and Filename Safe Alphabet)
@@ -89,13 +103,30 @@ You can of course override these at any time but please be careful in doing so.
 
     + Body
 
-            {
+            [{
             "event_type": "beacon_sighting",
             "place": {
                 "id": "placeid",
-                "address": "1805 san bernadino ave, SF, CA",
+                "address": {
+                    "address1": "103 west street",
+                    "address2":  "",
+                    "city": "San Francisco",
+                    "region": "CA",
+                    "zip": 94107,
+                    "zip4": 3422
+                    }
+                ,
+                "dwell_time": 600000,
+                "last_place": "placeid-3",
+                "organization_ids": [
+                    "orgid1",
+                    "orgid2"
+                ],
+
                 "geoFenceCircle": [
                     {
+                        "id": "geofence1",
+                        "name": "SF Mission",
                         "radius": 100,
                         "visibility": "ORGANIZATION",
                         "location": {
@@ -106,6 +137,8 @@ You can of course override these at any time but please be careful in doing so.
                 ],
                 "geofenceBeacon": [
                     {
+                        "id": "geofence3",
+                        "name": "SF Mission 24th BART entrance",
                         "beacons": [
                             "beaconid1"
                         ],
@@ -117,6 +150,8 @@ You can of course override these at any time but please be careful in doing so.
                 ],
                 "geoFencePolygon": [
                     {
+                        "id": "geofence2",
+                        "name": "SF Gelen Park",
                         "visibility": "ORGANIZATION",
                         "locations": [
                             {
@@ -148,10 +183,12 @@ You can of course override these at any time but please be careful in doing so.
                 ]
             },
             "beacon": {
-                "id": "22222-eevs",
+                "id": "beaconid1",
                 "ble_uuid": "ble_uuid",
                 "ble_vendor_uuid": "ble_vendor_uuid",
                 "ble_vendor_id": "ble_vendor_id",
+                "rssi": 80,
+                "previous_rssi": 70,
                 "name": "Front Entrance",
                 "latitude": 11.22222,
                 "organization_ids": [
@@ -187,6 +224,7 @@ You can of course override these at any time but please be careful in doing so.
             "communication": {
                 "description": "mydescription",
                 "id": "commid",
+                "status": "active",
                 "type": {
                     "id": "typeid",
                     "name": "PushNotificaion"
@@ -194,6 +232,7 @@ You can of course override these at any time but please be careful in doing so.
             },
             "user": {
                 "id": {
+                    "mobile_device_bluetooth_identifier": "128 bit string",
                     "mobile_device_ios_idfa": "092384",
                     "mobile_device_ios_openidfa": "09238dd4",
                     "mobile_device_ios_idfv": "092344",
@@ -387,6 +426,7 @@ You can of course override these at any time but please be careful in doing so.
             },
             "datasnap": {
                 "timestamp": "2012-12-14T20: 24: 01.123000+00: 00",
+                "timezone": "US/Eastern",
                 "created_at": "2012-12-14T20: 24: 01.123000+00: 00",
                 "location": {
                     "coordinates": [
@@ -394,14 +434,19 @@ You can of course override these at any time but please be careful in doing so.
                         40.11041
                     ]
                 },
-                "txn_id": "fgfgbr rwvb",
+                "app_id":"appid1",
+                "txn_id": "fgfgbrrwvb",
                 "device": {
                     "timstamp": "2012-12-14T20: 24: 01.123000+00: 00",
                     "user_agent": "Mozilla/5.0 (Linux; U; Android 4.0.3; ko-kr; LG-L160L Build/IML74K) AppleWebkit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
-                    "ip_address": "127.1.1.1"
+                    "ip_address": "127.1.1.1",
+                    "platform": "ios"
                 }
             }
-            }
+            },
+            {
+                "event_type": "beacon_sighting"
+            }]
 
 
 
