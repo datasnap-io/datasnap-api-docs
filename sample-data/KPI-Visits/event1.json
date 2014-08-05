@@ -1,29 +1,47 @@
-{
-            "event_type": "beacon_sighting",
+[{
+            "event_type": "beacon_visit",
             "place": {
                 "id": "placeid-1",
-                "address": "1805 san bernadino ave, SF, CA",
-                
+                "address": {
+                    "address1": "846 Harrison Street",
+                    "address2":  "",
+                    "city": "San Francisco",
+                    "region": "CA",
+                    "zip": 94107,
+                    "zip4": 3422
+                    }
+                ,
+                "dwell_time": 600000,
+                "last_place": "placeid-3",
+                "organization_ids": [
+                    "orgid1"
+                ],
                 "geofenceBeacon": [
                     {
+                        "id": "beaconfence3",
+                        "name": "SF Mission 24th BART entrance",
                         "beacons": [
-                            "beaconid-1"
+                            "beaconid1"
                         ],
                         "beacon_tags": [
-                            "beacontag1"
+                            "beacontag1",
+                            "beacontag2"
                         ]
                     }
-                ]
+                ],
             },
             "beacon": {
-                "id": "beaconid-1",
-                "ble_uuid": "ble_uuid-1",
-                "ble_vendor_uuid": "ble_vendor_uuid-1",
-                "ble_vendor_id": "ble_vendor_id-1",
+                "id": "beaconid1",
+                "ble_uuid": "ble_uuid",
+                "ble_vendor_uuid": "ble_vendor_uuid",
+                "ble_vendor_id": "ble_vendor_id",
+                "rssi": 80,
+                "previous_rssi": 70,
                 "name": "Front Entrance",
                 "latitude": 11.22222,
                 "organization_ids": [
-                    "orgid1"
+                    "orgid1",
+                    "orgid2"
                 ],
                 "longitude": 123.444,
                 "visibility": "Private",
@@ -54,6 +72,7 @@
             "communication": {
                 "description": "mydescription",
                 "id": "commid",
+                "status": "active",
                 "type": {
                     "id": "typeid",
                     "name": "PushNotificaion"
@@ -61,17 +80,68 @@
             },
             "user": {
                 "id": {
-                    "mobile_device_ios_idfa": "idfa-1",
-                    "mobile_device_ios_openidfa": "openidfa-1",
-                    "mobile_device_ios_idfv": "idfv-1",
-                    "datasnap_uuid": "datasnap_uuid-1",
-                    "global_distinct_id": "userid-1",
-                    "global_user_ipaddress": "user_ipaddress"
+                    "mobile_device_bluetooth_identifier": "128 bit string",
+                    "mobile_device_ios_idfa": "092384",
+                    "mobile_device_ios_openidfa": "09238dd4",
+                    "mobile_device_ios_idfv": "092344",
+                    "mobile_device_ios_udid": "123",
+                    "datasnap_uuid": "userid1",
+                    "web_domain_userid": "",
+                    "web_cookie": "foo",
+                    "domain_sessionid": "fqr9fgwer8vb9",
+                    "web_network_userid": "billybob",
+                    "web_user_fingerprint": "web_user_fingerprint",
+                    "web_analytics_company_z_cookie": "",
+                    "global_distinct_id": "userid1234",
+                    "global_user_ipaddress": "user_ipaddress",
+                    "mobile_device_fingerprint": "2da076c7ad28740c0b2a9b7fa6077c4f",
+                    "facebook_uid": "2234433",
+                    "mobile_device_google_advertising_id": "googid",
+                    "mobile_device_google_google_advertising_id_opt_in": "true",
+                    "unknown": "unknownid",
+                    "": ""
                 },
+                "audience": {
+                    "Education": [
+                        "College"
+                    ],
+                    "Age": [
+                        "18-24"
+                    ],
+                    "Ethnicity": [
+                        "Caucasian"
+                    ],
+                    "Kids": [
+                        "NoKids"
+                    ],
+                    "Gender": [
+                        "Male"
+                    ],
+                    "Interests": [
+                        "Gettingfromheretothere",
+                        "Biking",
+                        "Automotive",
+                        "Automotive.Cars"
+                    ],
+                    "Income": [
+                        "$30-60k"
+                    ]
+                },
+                "user_properties": {
+                    "user_type": "VIP",
+                    "user_spend": "high",
+                    "engagement_time": "Greaterthan30minutes"
+                }
+            },
             "campaign": {
-                "id": "campaignid-1",
-                "name": "camapign10%offshoes"
-                },
+                "id": "campaignid",
+                "name": "camapign10%offshoes",
+                "subcampaigns": [
+                    {
+                        "id": "campaignid",
+                        "name": "camapign11%offshoesmles"
+                    }
+                ],
                 "targeting_rules": {
                     "id": "targetingid",
                     "rules": [
@@ -81,10 +151,95 @@
                             "place_ids": [
                                 "placeid1"
                             ],
-                            
+                            "audience": {
+                                "Education": [
+                                    "NoCollege",
+                                    "College",
+                                    "GradSchool"
+                                ],
+                                "Age": [
+                                    "18-24",
+                                    "25-34",
+                                    "35-44",
+                                    "45-55",
+                                    "55+"
+                                ],
+                                "Ethnicity": [
+                                    "Caucasian",
+                                    "AfricanAmerican",
+                                    "Asian",
+                                    "Hispanic",
+                                    "Other"
+                                ],
+                                "Kids": [
+                                    "NoKids",
+                                    "HasKids"
+                                ],
+                                "Gender": [
+                                    "Male",
+                                    "Female"
+                                ],
+                                "Interests": [
+                                    "Gettingfromheretothere",
+                                    "Biking",
+                                    "Automotive",
+                                    "Automotive.Cars"
+                                ],
+                                "Income": [
+                                    "$0-30k",
+                                    "$30-60k",
+                                    "$60-100k",
+                                    "100k+"
+                                ]
+                            },
                             "targeting_attributes": {
                                 "store_type": "retail",
                                 "product_type": "clothing"
+                            }
+                        },
+                        {
+                            "id": "ruleid2",
+                            "name": "mycoolrule2",
+                            "audience": {
+                                "Education": [
+                                    "NoCollege",
+                                    "College",
+                                    "GradSchool"
+                                ],
+                                "Age": [
+                                    "18-24",
+                                    "25-34",
+                                    "35-44",
+                                    "45-55",
+                                    "55+"
+                                ],
+                                "Ethnicity": [
+                                    "Caucasian",
+                                    "AfricanAmerican",
+                                    "Asian",
+                                    "Hispanic",
+                                    "Other"
+                                ],
+                                "Kids": [
+                                    "NoKids",
+                                    "HasKids"
+                                ],
+                                "Gender": [
+                                    "Male",
+                                    "Female"
+                                ],
+                                "Interests": [
+                                    "Gettingfromheretothere",
+                                    "Biking",
+                                    "Automotive",
+                                    "Automotive.Cars"
+                                ],
+                                "Income": [
+                                    "$0-30k",
+                                    "$30-60k",
+                                    "$60-100k",
+                                    "100k+"
+                                ]
                             }
                         }
                     ]
@@ -98,6 +253,10 @@
                         "start": "08: 00",
                         "end": "22: 00"
                     }
+                },
+                "time_trigger": {
+                    "monday": "08: 00",
+                    "tuesday": "13: 00"
                 },
                 "communication": {
                     "id": "commid",
@@ -114,18 +273,22 @@
                 }
             },
             "datasnap": {
-                "timestamp": "2013-12-14T20: 24: 01.123000+00: 00",
+                "timestamp": "2012-12-14T20: 24: 01.123000+00: 00",
+                "timezone": "US/Eastern",
+                "created_at": "2012-12-14T20: 24: 01.123000+00: 00",
                 "location": {
                     "coordinates": [
                         -88.21337,
                         40.11041
                     ]
                 },
-                "txn_id": "fgfgbr rwvb",
+                "app_id":"appid1",
+                "txn_id": "fgfgbrrwvb",
                 "device": {
-                    "timstamp": "2013-12-14T20: 24: 01.123000+00: 00",
+                    "timstamp": "2012-12-14T20: 24: 01.123000+00: 00",
                     "user_agent": "Mozilla/5.0 (Linux; U; Android 4.0.3; ko-kr; LG-L160L Build/IML74K) AppleWebkit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
-                    "ip_address": "127.1.1.1"
+                    "ip_address": "127.1.1.1",
+                    "platform": "ios"
                 }
             }
-            }
+            }]
