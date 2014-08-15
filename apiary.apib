@@ -37,12 +37,19 @@ Events related resources of the **Events API**
 - communication_delivered: A communication has been delivered ot the user. It can be assotiated wiht a campaign or not.  For mobile these are typically Push notifications or in App Modals.
 - campaign_request: The app has requested a campaign to be show to the user.
 - campaign_redemption: The User has redeemed something as part of the campaign.
+- place_update: indicated that a place update has occurred.. usually would only contain the place.
+- campaign_update: indicated that a campaign update has occurred.. usually would only contain the campaign.
+- beacon_update: indicated that a beacon update has occurred.. usually would only contain the beacon.
 
 
 
 
 
 You CAN also append any other json properties as you want at any level that you would like.
+
+Any top level properties such as place/camapign/beacon  will be updated in our system if you pass along the more static fields such as name, address.  But you woudl not need ot send this along every time once they have been sent once.
+You can also fire specific events such as place_update to clearly indicate that your updating the place/camapign/beacon data.
+
 
 The ones outlined below are provided and will be treated specially by Datasnap and can be automatically applied to your Reports Dimensions and Metrics. Otherwise we will need to work together to setup and map your custom fields to these fields.
 
