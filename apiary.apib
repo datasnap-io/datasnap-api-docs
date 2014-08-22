@@ -129,22 +129,18 @@ You can of course override these at any time but please be careful in doing so.
                     "orgid2"
                 ],
 
-                "geoFenceCircle": [
-                    {
-                        "id": "geofence1",
-                        "name": "SF Mission",
+                "geoFence":
+                    "id": "geofence2",
+                    "name": "SF Gelen Park",
+                    "visibility": "ORGANIZATION",
+                    "geoFenceCircle": {
                         "radius": 100,
-                        "visibility": "ORGANIZATION",
                         "location": {
                             "latitude": 32.89494374592149,
                             "longitude": -117.19603832579497
                         }
-                    }
-                ],
-                "geofenceBeacon": [
-                    {
-                        "id": "geofence3",
-                        "name": "SF Mission 24th BART entrance",
+                    },
+                    "geofenceBeacon": {
                         "beacons": [
                             "beaconid1"
                         ],
@@ -152,13 +148,8 @@ You can of course override these at any time but please be careful in doing so.
                             "beacontag1",
                             "beacontag2"
                         ]
-                    }
-                ],
-                "geoFencePolygon": [
-                    {
-                        "id": "geofence2",
-                        "name": "SF Gelen Park",
-                        "visibility": "ORGANIZATION",
+                    },
+                    "geoFencePolygon": {
                         "locations": [
                             {
                                 "latitude": 32.8953153522896,
@@ -185,8 +176,7 @@ You can of course override these at any time but please be careful in doing so.
                                 "longitude": -117.19554479933623
                             }
                         ]
-                    }
-                ]
+                    },
             },
             "beacon": {
                 "id": "SHDG-28AHD",
