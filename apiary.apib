@@ -15,57 +15,75 @@ Events related resources of the **Events API**
 ## Events Collection [/organization/{organization}/{app_name}/events/?api_key=${api_key}&data=${data}&redirect=${redirect}]
 
 
-**Possible events that you can send your own:**
-
-- opt_in_location:  The user has opted in to track their location and accepted all appropriate terms of use.
-- opt_in_push_notifications: The user has opted in to receieve push notifications.
-- opt_in_vendor: A user has opted in to the vendors specific terms.
-- app_installed: The user installed the app. Most mobile analytics platforms record this already but it is a useful enough event to provide it here.
-- beacon_arrived: A users first time receiving a broadcast from a beacon.
-- beacon_sighting: A user is within a beacons range and has received a broadcast fomr the beacon.
-- beacon_departed_vendor: This event can be thrown when a vendors'sSDK detect an event. For some vendors this setting can be erroneous so its recommended ot track sperately for audit reporting. 
-- beacon_departed: A true departed event meaning the user has departed and we feel confident that this event is correct. Some folks use their own calulation to throw this event.
-- beacon_visit: A true user visit into a proximity or geotrigger.  This is many times calulated by looking at sighting data or inferred through the use of the departed event.
-- interaction_tap:  Some tap has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself. A tap is also the equivalent of a click of a campaign is assotiated with one.
-- interaction_view: Some view has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself.
-- interaction_swipe: Some swipe has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself.
-- interaction_shake: Some shake has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself.
-- interaction_tilt: Some tilt has happened in the app. Can be assitiated with a camapign, communication, or just an app by itself.
-- geofence_arrived: A user has entered a Geofence.
-- geofence_sighting: A user is still in the Geofence after a interval based check of their location.
-- geofence_departed:  A user has left the Geofence. 
-- communication_delivered: A communication has been delivered ot the user. It can be assotiated wiht a campaign or not.  For mobile these are typically Push notifications or in App Modals.
-- campaign_request: The app has requested a campaign to be show to the user.
-- campaign_redemption: The User has redeemed something as part of the campaign.
-- place_update: indicated that a place update has occurred.. usually would only contain the place.
-- campaign_update: indicated that a campaign update has occurred.. usually would only contain the campaign.
-- beacon_update: indicated that a beacon update has occurred.. usually would only contain the beacon.
+#STANDARD EVENTS
+Standard events are treated specially by Datasnap and can be automatically applied to your Reports Dimensions and Metrics. You can also send non-standard events. You can work with datasnap.io to get these integrated into your reports.
 
 
+###In App Opt In Events
+- **opt_in_location**  The user has opted in to track their location and accepted all appropriate terms of use.
+- **opt_in_push_notifications** The user has opted in to receieve push notifications.
+- **opt_in_vendor** A user has opted in to the vendors specific terms.
+
+###In App Interactions
+- **app_installed** The user installed the app. Most mobile analytics platforms record this already but it is a useful enough event to provide it here.
+- **interaction_tap**  Some tap has happened in the app. Can be associated with a camapign, communication, or just an app by itself. 
+- **interaction_view** Some view has happened in the app. Can be associated with a camapign, communication, or just an app by itself.
+- **interaction_swipe** Some swipe has happened in the app. Can be associated with a camapign, communication, or just an app by itself.
+- **interaction_shake** Some shake has happened in the app. Can be associated with a camapign, communication, or just an app by itself.
+- **interaction_tilt** Some tilt has happened in the app. Can be associated with a camapign, communication, or just an app by itself.
+
+###Communication Events
+- **communication_delivered** A communication has been delivered ot the user. It can be associated wiht a campaign or not.  For mobile these are typically push notifications or in App Modals.
+- **campaign_request** The app has requested a campaign to be show to the user.
+- **campaign_redemption** The user has redeemed a coupon or similar as part of the campaign.
+
+###Beacon Events
+- **beacon_arrived** A users first time receiving a broadcast from a particular beacon.
+- **beacon_sighting** A user is within a particular beacon range and has received a broadcast from the beacon.
+- **beacon_departed_vendor** This event can be thrown when a vendors's SDK detect an event. For some vendors this setting can be erroneous so its recommended ot track sperately for audit reporting. 
+- **beacon_departed** A true departed event meaning the user has departed and we feel confident that this event is correct. Some folks use their own calulation to throw this event.
+- **beacon_visit** A true user visit into a proximity or geotrigger.  This is many times calulated by looking at sighting data or inferred through the use of the departed event.
+
+###Geofence Events
+- **geofence_arrived** A user has entered a Geofence.
+- **geofence_sighting** A user is still in the Geofence after a interval based check of their location.
+- **geofence_departed**  A user has left the Geofence. 
 
 
+###Update Events
+- Any top level properties such as place/campaign/beacon will be updated in our system if you pass along the dimension/meta fields such as beacon name. 
+- You do not need to send these fields every time you send an event.
+- You can also fire specific events such as place_update to clearly indicate that your updating the place/camapign/beacon data.
 
-You CAN also append any other json properties as you want at any level that you would like.
 
-Any top level properties such as place/camapign/beacon  will be updated in our system if you pass along the more static fields such as name, address.  But you woudl not need ot send this along every time once they have been sent once.
-You can also fire specific events such as place_update to clearly indicate that your updating the place/camapign/beacon data.
+    - **place_update** indicated that a place update has occurred.. usually would only contain the place.
+    - **campaign_update** indicated that a campaign update has occurred.. usually would only contain the campaign.
+    - **beacon_update** indicated that a beacon update has occurred.. usually would only contain the beacon.
 
 
-The ones outlined below are provided and will be treated specially by Datasnap and can be automatically applied to your Reports Dimensions and Metrics. Otherwise we will need to work together to setup and map your custom fields to these fields.
+# NON-STANDARD EVENTS
+- You CAN also append any other json properties as you want at any level that you would like.
 
-**User Identifiers**
 
-All use iudentifiers are passed along and stored as SHA1 hashed properties.
+**______________________________________________________________________________________________________**
 
-**Timestamp Data Types**
+# FORMATTING & DATATYPES
 
+###User Identifiers
+All use identifiers are passed along and stored as SHA1 hashed properties.
+
+###Timestamp Data Types
 Two time-related properties are included in your event automatically.
 The properties “datasnap.timestamp” and “datasnap.created_at” are set at the time your event is recorded. You have the ability to overwrite the datasnap.timestamp property. This could be useful, for example, if you are backfilling historical data.
 Be sure to use ISO-8601 Format. http://en.wikipedia.org/wiki/ISO_8601
 
+###Special internal Datasnap fields
 
-**Url Parameter "data" encoding:**
+We denote these under the "datasnap" property in the root json payload. These will be automatically set for you
+via one of our SDKs or via our backend server such as _timestamp_.
+You can of course override these at any time but please be careful in doing so.
 
+###Url Parameter "data" encoding
 The following encoding should be used when sending json information into the data URL Parameter
 
 'URL Safe' base64 encoding, or "RFC4648 base64url (Base
@@ -73,23 +91,17 @@ The following encoding should be used when sending json information into the dat
 
 There are ready libraries that do this in Ruby, PHP, and Javascript.
 
+##EXAMPLES
 
-Java Example:
-
+###Java Example:
 java.util.Base64.getUrlEncoder().encodeToString("my fancyurl".getBytes());
 
-
-Java w/ Apache Commons:
-
+###Java w/ Apache Commons:
 org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getBytes())
 
 
 
-**Special internal Datasnap fields:**
 
-We denote these under the "datasnap" property in the root json payload. These will be automatically set for you
-via one of our SDKs or via our backend server such as _timestamp_.
-You can of course override these at any time but please be careful in doing so.
 
 
 + Parameters
