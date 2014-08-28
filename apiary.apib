@@ -105,9 +105,7 @@ org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getB
 
 
 + Parameters
-    + api_key (optional, string, `E9NZuB6A91e2J03PKA2g7wx0629czel8`) ... String `api-key` for the Datasnap account/organization (optional if you use Authorization header)
-    + organization (required, number, `1` ) ... Number `organization`
-    + app_name (required, number, `1` ) ... Number `app_name`
+    + api_key (optional, string, `E9NZuB6A91e2J03PKA2g7wx0629czel8`) ... String `api-key` for the Datasnap account/organization which is base64 encoded api key and api secret provided that has the Events API Permission (optional if you use Authorization header which is prefferred)
     + data (optional,string, `%20WERF%20` ) ... String `data`   ... RFC4648 base64url (Base64 Encoding with URL and Filename Safe Alphabet)
     + redirect (optional, string, `http://www.apple.com` ) ... String `redirect` ... URL that the user will be sent to when using the GET Tracking method.
 
@@ -124,6 +122,14 @@ org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getB
 
             [{
             "event_type": "beacon_sighting",
+            "organization_ids": [
+                    "orgid1",
+                    "orgid2"
+            ],
+            "project_ids": [
+                    "projectid1",
+                    "projectid2"
+            ],
             "place": {
                 "id": "placeid",
                 "address": {
@@ -135,11 +141,7 @@ org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getB
                     "zip4": 3422
                     }
                 ,
-                "last_place": "placeid-3",
-                "organization_ids": [
-                    "orgid1",
-                    "orgid2"
-                ],
+                "last_place": "placeid-3"
 
                 "geoFence":
                     "id": "geofence2",
@@ -237,7 +239,7 @@ org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getB
             "communication": {
                 "description": "mydescription",
                 "id": "commid",
-                "status": "active",
+                "status": "active"
                 "type": {
                     "id": "typeid",
                     "name": "PushNotificaion"
@@ -447,7 +449,6 @@ org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getB
                         40.11041
                     ]
                 },
-                "app_id":"appid1",
                 "txn_id": "fgfgbrrwvb",
                 "device": {
                     "user_agent": "Mozilla/5.0 (Linux; U; Android 4.0.3; ko-kr; LG-L160L Build/IML74K) AppleWebkit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
