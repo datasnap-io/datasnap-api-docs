@@ -154,13 +154,15 @@ org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getB
                             "longitude": -117.19603832579497
                         }
                     },
-                    "geofenceBeacon": {
-                        "beacons": [
-                            "beaconid1"
-                        ],
-                        "beacon_tags": [
-                            "beacontag1",
-                            "beacontag2"
+                    "beacons": {
+                        [{
+                            beaconid: "beaconid1",
+                            beacontag: "beacontag1"
+                          },
+                          {
+                            beaconid: "beaconid2",
+                            beacontag: "beacontag2"
+                          }
                         ]
                     },
                     "geoFencePolygon": {
