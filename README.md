@@ -7,3 +7,8 @@ The API Markdown is located here:
 
 
 [API Doc](./apiary.apib)
+
+The official REST API documentation generated from this project is located here:
+
+
+http://docs.datasnapio.apiary.io/
