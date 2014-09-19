@@ -125,12 +125,10 @@ org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getB
             {
                 "event_type": "beacon_depart",
                 "organization_ids": [
-                    "3HRhnUtmtXnT1UHQHClAcP",
-                    "3ZRgyxvDMwKmoOZIEJtrw5"
+                    "3HRhnUtmtXnT1UHQHClAcP"
                 ],
                 "project_ids": [
-                    "projectid1",
-                    "projectid2"
+                    "3HRhnUtmtXnT1UHQHClAcP"
                 ],
                 "place": {
                     "id": "placeid",
@@ -166,7 +164,7 @@ org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getB
                         }
                     ]
                 },
-                "geoFence": {
+                "geo_fence": {
                     "id": "geofence2",
                     "name": "SF Gelen Park",
                     "visibility": "ORGANIZATION",
@@ -176,14 +174,14 @@ org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getB
                         "golf",
                         "shoes"
                     ],
-                    "geoFenceCircle": {
+                    "geofence_circle": {
                         "radius": 100,
                         "location": {
                             "latitude": 32.89494374592149,
                             "longitude": -117.19603832579497
                         }
                     },
-                    "geoFencePolygon": {
+                    "geofence_polygon": {
                         "locations": [
                             {
                                 "latitude": 32.8953153522896,
@@ -225,13 +223,9 @@ org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getB
                     "start_time": "2014-08-22 14:48:02 +0000",
                     "last_update_time": "2014-08-22 14:48:02 +0000",
                     "latitude": 11.22222,
-                    "organization_ids": [
-                        "orgid1",
-                        "orgid2"
-                    ],
                     "longitude": 123.444,
                     "visibility": "Private",
-                    "battery_level": "BatteryLeveloftheBeacon",
+                    "battery_level": "50",
                     "temperature": "68.32",
                     "hardware": "HardwaretypeoftheBeacon",
                     "categories": [
@@ -503,8 +497,7 @@ org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getB
             {
                 "event_type": "beacon_sighting"
             }
-            ]       
-
+            ]
 
 + Response 200 (application/json)
 
