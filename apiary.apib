@@ -252,9 +252,18 @@ The following encoding should be used when sending json information into the dat
                     ],
                     "id": "commid",
                     "status": "active",
+                    "communication_vendor_id": "airpush",
+                    "name": "10% offPushnotification",
                     "type": {
                         "id": "typeid",
                         "name": "PushNotificaion"
+                    },
+                    "content": {
+                        "text": "get10%off!",
+                        "description": "get10%offifyougotothe",
+                        "image": "http: //appl.com/image.gif",
+                        "html": "<p>Hithere!!get10%offnow!!</p>",
+                        "url": "http: //www.apple.com"
                     }
                 },
                 "user": {
@@ -450,19 +459,9 @@ The following encoding should be used when sending json information into the dat
                         "monday": "08: 00",
                         "tuesday": "13: 00"
                     },
-                    "communication": {
-                        "id": "commid",
-                        "communication_vendor_id": "airpush",
-                        "name": "10% offPushnotification",
-                        "type": "Push",
-                        "content": {
-                            "text": "get10%off!",
-                            "description": "get10%offifyougotothe",
-                            "image": "http: //appl.com/image.gif",
-                            "html": "<p>Hithere!!get10%offnow!!</p>",
-                            "url": "http: //www.apple.com"
-                        }
-                    }
+                    "communication_ids": [
+                        "commid1", "commid2"
+                    ]
                 },
                 "datasnap": {
                     "timestamp": "2014-08-22 14:48:02 +0000",
