@@ -68,7 +68,6 @@ Standard events are treated specially by Datasnap and can be automatically appli
 - You CAN also append any other json properties as you want at any level that you would like.
 
 
-**______________________________________________________________________________________________________**
 
 # FORMATTING & DATATYPES
 
@@ -76,35 +75,27 @@ Standard events are treated specially by Datasnap and can be automatically appli
 All use identifiers are passed along and stored as SHA1 hashed properties.
 
 ###Timestamp Data Types
-Two time-related properties are included in your event automatically.
-The properties “datasnap.timestamp” and “datasnap.created_at” are set at the time your event is recorded. You have the ability to overwrite the datasnap.timestamp property. This could be useful, for example, if you are backfilling historical data.
-Be sure to use ISO-8601 Format. http://en.wikipedia.org/wiki/ISO_8601
+- Two time-related properties are included in your event automatically.
+- The properties “datasnap.timestamp” and “datasnap.created_at” are set at the time your event is recorded. You have the ability to overwrite the datasnap.timestamp property. This could be useful, for example, if you are backfilling historical data.
+- Be sure to use ISO-8601 Format. http://en.wikipedia.org/wiki/ISO_8601
 
 ###Special internal Datasnap fields
 
-We denote these under the "datasnap" property in the root json payload. These will be automatically set for you
+- We denote these under the "datasnap" property in the root json payload. These will be automatically set for you
 via one of our SDKs or via our backend server such as _timestamp_.
 You can of course override these at any time but please be careful in doing so.
 
-###Url Parameter "data" encoding
-The following encoding should be used when sending json information into the data URL Parameter
+###URL Parameter "data" encoding
+The following encoding should be used when sending json information into the data URL Parameter (There are ready libraries that do this in Ruby, PHP, and Javascript.)
 
-'URL Safe' base64 encoding, or "RFC4648 base64url (Base
-64 Encoding with URL and Filename Safe Alphabet)
-
-There are ready libraries that do this in Ruby, PHP, and Javascript.
-
-##EXAMPLES
-
-###Java Example:
-java.util.Base64.getUrlEncoder().encodeToString("my fancyurl".getBytes());
-
-###Java w/ Apache Commons:
-org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getBytes())
+- 'URL Safe' base64 encoding, or "RFC4648 base64url (Base 64 Encoding with URL and Filename Safe Alphabet)
 
 
+###EXAMPLES
 
+**Java Example:** java.util.Base64.getUrlEncoder().encodeToString("my fancyurl".getBytes());
 
+**Java w/ Apache Commons:** org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getBytes())
 
 
 + Parameters
