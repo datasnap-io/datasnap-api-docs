@@ -90,6 +90,17 @@ The following encoding should be used when sending json information into the dat
 
 - 'URL Safe' base64 encoding, or "RFC4648 base64url (Base 64 Encoding with URL and Filename Safe Alphabet)
 
+### Authentication and API Keys
+
+You will get a API Key and API Secret for access and add it to the headers as "Authorization:  Basic <PUT Base64 String Here>"
+
+In order to authorize then base64 encode the key and secret together. For example
+you can use this Linux command to do create this base64 string:
+
+
+                echo -n "APIKey:APISecret" | openssl base64
+
+
 
 ###EXAMPLES
 
