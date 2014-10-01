@@ -41,6 +41,9 @@ Standard events are treated specially by Datasnap and can be automatically appli
 - **campaign_request** The app has requested a campaign to be show to the user.
 - **campaign_redemption** The user has redeemed a coupon or similar as part of the campaign.
 
+###Global Position events
+- **global_position_sighting** Records the Device/Users current Glbal Position
+
 ###Beacon Events
 - **beacon_arrived** A users first time receiving a broadcast from a particular beacon.
 - **beacon_sighting** A user is within a particular beacon range and has received a broadcast from the beacon.
@@ -218,7 +221,7 @@ you can use this Linux command to do create this base64 string:
                     }
         
                 },
-                "gps_position":{
+                "global_position":{
                     "location": {
                         "coordinates": [
                             -88.21337,
