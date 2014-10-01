@@ -47,10 +47,11 @@ Standard events are treated specially by Datasnap and can be automatically appli
 ###Beacon Events
 - **beacon_arrived** A users first time receiving a broadcast from a particular beacon.
 - **beacon_sighting** A user is within a particular beacon range and has received a broadcast from the beacon.
-- **beacon_depart_vendor** This event can be thrown when a vendors's SDK detect an event. For some vendors this setting can be erroneous so its recommended ot track sperately for audit reporting. 
-- **beacon_depart** A true departed event meaning the user has departed and we feel confident that this event is correct. Some folks use their own calulation to throw this event.
+- **beacon_depart_vendor** This event can be thrown when a vendors's SDK detect an event. For some vendors this setting can be erroneous so its recommended ot track separately for audit reporting.
+- **beacon_depart** A true departed event meaning the user has departed and we feel confident that this event is correct. Some folks use their own calculation to throw this event.
 - **beacon_visit** A true user visit into a proximity or geotrigger.  This is many times calulated by looking at sighting data or inferred through the use of the departed event.
-- **beacon_visit_vendor** A user visit into a proximity or geotrigger as sent by the beacon vendor.  This is used ot compare wiht the true calculation of the beacon_visit event.
+- **beacon_visit_vendor** A user visit into a proximity or geotrigger as sent by the beacon vendor.  This is used ot compare with the true calculation of the beacon_visit event.
+
 
 ###Geofence Events
 - **geofence_arrive** A user has entered a Geofence.
