@@ -45,7 +45,7 @@ Standard events are treated specially by Datasnap and can be automatically appli
 - **global_position_sighting** Records the Device/Users current Global Position
 
 ###Beacon Events
-- **beacon_arrived** A users first time receiving a broadcast from a particular beacon.
+- **beacon_arrive** A users first time receiving a broadcast from a particular beacon.
 - **beacon_sighting** A user is within a particular beacon range and has received a broadcast from the beacon.
 - **beacon_depart_vendor** This event can be thrown when a vendors's SDK detect an event. For some vendors this setting can be erroneous so its recommended ot track separately for audit reporting.
 - **beacon_depart** A true departed event meaning the user has departed and we feel confident that this event is correct. Some folks use their own calculation to throw this event.
@@ -175,7 +175,7 @@ you can use this Linux command to do create this base64 string:
                         }
                     ]
                 },
-                "geo_fence": {
+                "geofence": {
                     "identifier": "geofence2",
                     "name": "SF Gelen Park",
                     "visibility": "ORGANIZATION",
