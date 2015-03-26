@@ -14,7 +14,7 @@ Terms and Conditions: http://www.datasnap.io/terms.html#apiterms
 # Events 
 Events related resources of the **Events API**
 
-## Events Collection [/events/?api_key=${api_key}&data=${data}&redirect=${redirect}]
+## Events Collection [/events]
 
 NOTE: The maximum size of the json payload is 50 kilobytes (KB).
 
@@ -122,10 +122,6 @@ you can use this Linux command to do create this base64 string:
 **Java w/ Apache Commons:** org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getBytes())
 
 
-+ Parameters
-    + api_key (optional, string, `E9NZuB6A91e2J03PKA2g7wx0629czel8`) ... String `api-key` for the Datasnap account/organization which is base64 encoded api key and api secret provided that has the Events API Permission (optional if you use Authorization header which is prefferred)
-    + data (optional,string, `%20WERF%20` ) ... String `data`   ... RFC4648 base64url (Base64 Encoding with URL and Filename Safe Alphabet)
-    + redirect (optional, string, `http://www.apple.com` ) ... String `redirect` ... URL that the user will be sent to when using the GET Tracking method.
 
 ### Create an Event [POST]
 
@@ -151,6 +147,7 @@ you can use this Linux command to do create this base64 string:
                     "id": "placeid",
                     "name": "Mission District",
                     "dwell_time": 600000,
+                    "reporting_visibility": 1,
                     "tags": [
                         "womens",
                         "golf",
@@ -197,6 +194,7 @@ you can use this Linux command to do create this base64 string:
                     "dwell_time": 600000,
                     "start_time": "2014-12-14T20:24:01.123+00:00",
                     "last_update_time": "2014-12-14T20:24:01.123+00:00",
+                    "reporting_visibility": 1,
                     "tags": [
                         "womens",
                         "golf",
@@ -280,6 +278,7 @@ you can use this Linux command to do create this base64 string:
                         -117.19463284827117
                     ],
                     "visibility": "Private",
+                    "reporting_visibility": 1,
                     "battery_level": 50,
                     "temperature": 68.32,
                     "hardware": "HardwaretypeoftheBeacon",
@@ -306,6 +305,7 @@ you can use this Linux command to do create this base64 string:
                     ]
                 },
                 "communication": {
+                    "reporting_visibility": 1,
                     "description": "mydescription",
                     "tags": [
                         "womens",
@@ -330,6 +330,7 @@ you can use this Linux command to do create this base64 string:
                     }
                 },
                 "user": {
+                    "reporting_visibility": 1,
                     "tags": [
                         "womens",
                         "golf",
@@ -398,6 +399,7 @@ you can use this Linux command to do create this base64 string:
                     "name": "camapign10%offshoes",
                     "vendor":"urbanairship",
                     "vendor_identifier": "1234",
+                    "reporting_visibility": 1,
                     "tags": [
                         "womens",
                         "golf",
@@ -558,23 +560,3 @@ you can use this Linux command to do create this base64 string:
 
         { "created": true}
 
-
-
-### Create a Event via Image Pixel [GET]
-
-This is used to perform pixel based tracking where its easier to embed into email and html <img /> tags and
-harder to perform a more programmatic POST request.
-
-
-+ Request (application/json)
-
-    + Headers
-
-            Authorization: Basic E9NZuB6A91e2J03PKA2g7wx0629czel8
-
-+ Response 200 (image/gif)
-
-    + Headers
-
-            Content-length:0
-            Date:Tue, 15 Jul 2014 06:41:10 GMT
