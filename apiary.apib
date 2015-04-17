@@ -3,81 +3,51 @@ HOST: https://api-events.datasnap.io/v1.0/
 
 
 
-# Datasnap.io Analytics Events API
-Use our set of REST API services to send analytics data to us.
+# Datasnap.io Events API
+The datasnap.io Events API allows you to send any kind of event to the datasnap.io platform for reporting and measurement. 
+There are a set of out of the box events that will automatically show up on your dashboards. You may also send non-standard events which we can analyize separately.
 
-Please @see http://datasnap-io.github.io/index.html for detailed use cases and design guide for the
+
+Please see http://datasnap-io.github.io/index.html for detailed use cases and design guide for the
 best way to send us data.  
+
 
 Terms and Conditions: http://www.datasnap.io/terms.html#apiterms 
 
-# Events 
-Events related resources of the **Events API**
+# Authentication and API Keys
 
-## Events Collection [/events]
+You will get a API Key and API Secret for access and add it to the headers as "Authorization:  Basic <PUT Base64 String Here>"
 
-NOTE: The maximum size of the json payload is 50 kilobytes (KB).
-
-#STANDARD EVENTS
-Standard events are treated specially by Datasnap and can be automatically applied to your Reports Dimensions and Metrics. You can also send non-standard events. You can work with datasnap.io to get these integrated into your reports.
-
-###Diagnostic events
-- **status_ping** - Event used to send a test message that can be used for health monitoring and testing.  Will not be rolled up into system.
-
-###In App Opt In Events
-- **opt_in_location**  The user has opted in to track their location and accepted all appropriate terms of use.
-- **opt_in_push_notifications** The user has opted in to receieve push notifications.
-- **opt_in_vendor** A user has opted in to the vendors specific terms.
-
-###In App Interactions
-- **app_installed** The user installed the app. Most mobile analytics platforms record this already but it is a useful enough event to provide it here.
-- **interaction_tap**  Some tap has happened in the app. Can be associated with a camapign, communication, or just an app by itself. 
-- **interaction_view** Some view has happened in the app. Can be associated with a camapign, communication, or just an app by itself.
-- **interaction_swipe** Some swipe has happened in the app. Can be associated with a camapign, communication, or just an app by itself.
-- **interaction_shake** Some shake has happened in the app. Can be associated with a camapign, communication, or just an app by itself.
-- **interaction_tilt** Some tilt has happened in the app. Can be associated with a camapign, communication, or just an app by itself.
-
-###Communication Events
-- **ds_communication_sent** A communication has been delivered ot the user. It can be associated wiht a campaign or not.  For mobile these are typically push notifications or in App Modals.
-- **ds_communication_open** A communication has been delivered ot the user. It can be associated wiht a campaign or not.  For mobile these are typically push notifications or in App Modals.
-- **campaign_request** The app has requested a campaign to be show to the user.
-- **campaign_redemption** The user has redeemed a coupon or similar as part of the campaign.
-
-###Global Position events
-- **global_position_sighting** Records the Device/Users current Global Position
-
-###Beacon Events
-- **beacon_arrive** A users first time receiving a broadcast from a particular beacon.
-- **beacon_sighting** A user is within a particular beacon range and has received a broadcast from the beacon.
-- **beacon_depart_vendor** This event can be thrown when a vendors's SDK detect an event. For some vendors this setting can be erroneous so its recommended ot track separately for audit reporting.
-- **beacon_depart** A true departed event meaning the user has departed and we feel confident that this event is correct. Some folks use their own calculation to throw this event.
-- **beacon_visit** A true user visit into a proximity or geotrigger.  This is many times calulated by looking at sighting data or inferred through the use of the departed event.
-- **beacon_visit_vendor** A user visit into a proximity or geotrigger as sent by the beacon vendor.  This is used ot compare with the true calculation of the beacon_visit event.
+In order to authorize then base64 encode the key and secret together. For example
+you can use this Linux command to do create this base64 string:
 
 
-###Geofence Events
-- **geofence_arrive** A user has entered a Geofence.
-- **geofence_sighting** A user is still in the Geofence after a interval based check of their location.
-- **geofence_depart**  A user has left the Geofence. 
+                echo -n "APIKey:APISecret" | openssl base64
+
+####Examples
+
+**Java Example:** java.util.Base64.getUrlEncoder().encodeToString("my fancyurl".getBytes());
+
+**Java w/ Apache Commons:** org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getBytes())
 
 
-###Update Events
-- Any top level properties such as place/campaign/beacon will be updated in our system if you pass along the dimension/meta fields such as beacon name. 
-- You do not need to send these fields every time you send an event.
-- You can also fire specific events such as place_update to clearly indicate that your updating the place/camapign/beacon data.
+# Formatting & Datatypes
+The typical JSON datatypes are in play when sending data: http://en.wikipedia.org/wiki/JSON#Data_types.2C_syntax_and_example
 
+##Property Name Rules
 
-    - **place_update** indicated that a place update has occurred.. usually would only contain the place.
-    - **campaign_update** indicated that a campaign update has occurred.. usually would only contain the campaign.
-    - **beacon_update** indicated that a beacon update has occurred.. usually would only contain the beacon.
+- Names must be less than 256 characters long.
+- There cannot be any periods (.) in the name.
+- Names cannot be a null value.
 
+##Property Value Rules
 
-# NON-STANDARD EVENTS
-- You CAN also append any other json properties as you want at any level that you would like.
+- String values must be less than 10,000 characters long.
+- Numeric values must be between -2^63 (-9223372036854775808) and 2^63 - 1 (9223372036854775807) (inclusive).
+- Values in lists must themselves follow the above rules.
+- Values in dictionaries must themselves follow the above rules.
+- All dates should be represented as ISO 8601 formatted dates: http://en.wikipedia.org/wiki/ISO_8601
 
-
-
-# FORMATTING & DATATYPES
 
 ###Country Code
 Three digit numeric country code, represented as a string. For example, "001".
@@ -104,30 +74,263 @@ The following encoding should be used when sending json information into the dat
 
 - 'URL Safe' base64 encoding, or "RFC4648 base64url (Base 64 Encoding with URL and Filename Safe Alphabet)
 
-### Authentication and API Keys
-
-You will get a API Key and API Secret for access and add it to the headers as "Authorization:  Basic <PUT Base64 String Here>"
-
-In order to authorize then base64 encode the key and secret together. For example
-you can use this Linux command to do create this base64 string:
-
-
-                echo -n "APIKey:APISecret" | openssl base64
 
 
 
-###EXAMPLES
+# Sending Events 
 
-**Java Example:** java.util.Base64.getUrlEncoder().encodeToString("my fancyurl".getBytes());
+##Required Event Fields
 
-**Java w/ Apache Commons:** org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getBytes())
+| Name | Description |
+|---|---|
+| **organization_id** | organization id assigned to you |
+| **project_id** | Project id within that organization (typically app) |
+| **event\_type** | The type of event you are sending - beacon\_sighting, geofence_depart etc.
+| **global\_distinct\_id** | the unique user id associated with this event. It should go under user. |
 
+
+
+NOTE: The maximum size of the json payload is 50 kilobytes (KB).
+
+##Standard Events
+Standard events are treated specially by Datasnap and will be automatically applied to your Reports Dimensions and Metrics. You can also send non-standard events. You can work with datasnap.io to get these integrated into your reports.
+
+
+
+| Event                            | Description               | Event Type |
+|----------------------------------|---------------------------|---|
+| **status_ping** | Event used to send a test message that can be used for health monitoring and testing.  Will not be rolled up into system. | Diagnostic |
+| **opt_in_location** | The user has opted in to track their location and accepted all appropriate terms of use | In App Opt In |
+| **opt_in_push_notifications** | The user has opted in to receieve push notifications | In App Opt In |
+| **opt_in_vendor** | A user has opted in to the vendors specific terms | In App Opt In |
+| **app_installed** | The user installed the app. Most mobile analytics platforms record this already but it is a useful enough event to provide it here | In App Interactions |
+| **interaction_tap** | Some tap has happened in the app. Can be associated with a camapign, communication, or just an app by itself | In App Interactions |
+| **interaction_view** | Some view has happened in the app. Can be associated with a camapign, communication, or just an app by itself | In App Interactions |
+| **interaction_swipe** | Some swipe has happened in the app. Can be associated with a camapign, communication, or just an app by itself | In App Interaction |
+| **interaction_shake** | Some shake has happened in the app. Can be associated with a camapign, communication, or just an app by itself | In App Interaction |
+| **interaction_tilt** | Some tilt has happened in the app. Can be associated with a camapign, communication, or just an app by itself | In App Interaction |
+| **ds_communication_sent** | A communication has been delivered to the user. For mobile these are typically push notifications or in App Modals. | Communication Event |
+| **ds_communication_open** | A communication have been opened by the user | For mobile these are typically push notifications or in App Modals. | Communication Event
+| **campaign_request** | The app has requested a campaign to be show to the user | Communication Event |
+| **campaign_redemption** | The user has redeemed a coupon or similar as part of the campaign | Communication Event |
+| **global_position_sighting** | Records the Device/Users current global position | GPS Event |
+| **beacon_arrive** | A users first time receiving a broadcast from a particular beacon | Beacon Event |
+| **beacon_sighting** | A user is within a particular beacon range and has received a broadcast from the beacon | Beacon Event |
+| **beacon_depart_vendor** | This event can be thrown when a vendors's SDK detect an event. For some vendors this setting can be erroneous so its recommended ot track separately for audit reporting. | Beacon Event |
+| **beacon_depart** | A true departed event meaning the user has departed and we feel confident that this event is correct. Some folks use their own calculation to throw this event. | Beacon Event |
+| **beacon_visit** | A true user visit into a proximity or geotrigger.  This is many times calulated by looking at sighting data or inferred through the use of the departed event. | Beacon Event |
+| **beacon_visit_vendor** | A user visit into a proximity or geotrigger as sent by the beacon vendor.  This is used to compare with the true calculation of the beacon_visit event. | Beacon Event |
+| **geofence_arrive** | A user has entered a Geofence | Geofence Event |
+| **geofence_sighting** | A user is still in the Geofence after a interval based check of their location | Geofence Event |
+| **geofence_depart** | A user has left the Geofence | Geofence Event |
+
+## Update Events
+
+**NOTE:** If you use the Entity API metholoogy to populate entity names and properties then you should use that to update information! http://docs.datasnapioentityapi.apiary.io/#
+
+- Any top level properties such as place/campaign/beacon will be updated in our system if you pass along the dimension/meta fields such as beacon name. 
+- You do not need to send these fields every time you send an event.
+- You can also fire specific events such as place_update to clearly indicate that your updating the place/camapign/beacon data.
+
+| Event                            | Description               | 
+|----------------------------------|---------------------------|
+| place_update | indicates that a place update has occurred. Usually would only contain the place | 
+| campaign_update | indicates that a campaign update has occurred. usually would only contain the campaign. | 
+| beacon_update | indicates that a beacon update has occurred | usually would only contain the beacon |
+
+## Non-Standard Events
+- You CAN also append any other json properties as you want at any level that you would like.
+
+
+
+# Events Collection [/events]
+
+### Example Events
+
+- Example 1: Beacon Sighting 
+- Example 2: Geofence Depart 
+- Example 3: Campaign and Communication Event 
+- Example 5: User GPS Event
+- Example 6: All Possible Fields
 
 
 ### Create an Event [POST]
 
 
-+ Request (application/json)
+
+
+
++ Request Beacon Sighting (application/json)
+
+    + Headers
+
+            Authorization: Basic E9NZuB6A91e2J03PKA2g7wx0629czel8
+
+    + Body
+
+            [
+                {
+                 "event_type":"beacon_sighting",
+                 "beacon":{
+                    "identifier":"XC45-223F"
+                 },
+                 "user":{
+                    "id":{
+                       "global_distinct_id":"1234-5566-1234"
+                    }
+                 },
+                 "datasnap": {
+                      "created": "2015-03-02T09:00:00"
+                },
+                 "organization_ids":[
+                    "45877hh233415htdg55t"
+                 ],
+                 "project_ids":[
+                    "IOSApp123"
+                 ]
+                }
+            ]
+
++ Response 200 (application/json)
+
+        { "created": true}
+
+
+
++ Request Geofence Depart (application/json)
+
+    + Headers
+
+            Authorization: Basic E9NZuB6A91e2J03PKA2g7wx0629czel8
+
+    + Body
+
+            [
+                {
+                 "event_type":"geofence_depart",
+                 "geofence":{
+                    "identifier":"ABCStoreGeofence"
+                 },
+                 "user":{
+                    "id":{
+                       "global_distinct_id":"1234-5566-1234"
+                    }
+                 },
+                 "datasnap": {
+                      "created": "2015-03-02T09:00:00"
+                },
+                 "organization_ids":[
+                    "45877hh233415htdg55t"
+                 ],
+                 "project_ids":[
+                    "IOSApp123"
+                 ]
+                }
+            ]
+
++ Response 200 (application/json)
+
+        { "created": true}
+        
+
+
++ Request GPS Event (application/json)
+
+    + Headers
+
+            Authorization: Basic E9NZuB6A91e2J03PKA2g7wx0629czel8
+
+    + Body
+
+            [
+                "event_type":"global_position_sighting",
+                 "global_position": {
+                      "location": {
+                        "coordinates": [
+                          37.7833,
+                          -122.4167
+                        ]
+                      },
+                      "altitude": 13,
+                      "accuracy": 10,
+                      "course": 77.34375,
+                      "speed": 4
+                 },
+                 "user":{
+                    "id":{
+                       "global_distinct_id":"1234-5566-1234"
+                    }
+                 },
+                 "datasnap": {
+                      "created": "2015-03-02T09:00:00"
+                },
+                 "organization_ids":[
+                    "45877hh233415htdg55t"
+                 ],
+                 "project_ids":[
+                    "IOSApp123"
+                 ]
+                }
+            ]
+
++ Response 200 (application/json)
+
+        { "created": true}
+        
+
+
+
+
++ Request Campaign Communication Event (application/json)
+
+    + Headers
+
+            Authorization: Basic E9NZuB6A91e2J03PKA2g7wx0629czel8
+
+    + Body
+
+            [
+                {
+                "event_type":"ds_communication_sent",
+                 "campaign": {
+                            "identifier": "MyCoolCampaign123",
+                            "targeting_rules": {
+                                "id": "1",
+                                "communication_ids": [
+                                    "MyCoolMessage123"
+                                ]
+                            }
+                },
+                "communication": {
+                            "identifier": "MyCoolMessage123"
+                 },
+                 "user":{
+                    "id":{
+                       "global_distinct_id":"1234-5566-1234"
+                    }
+                 },
+                 "datasnap": {
+                      "created": "2015-03-02T09:00:00"
+                },
+                 "organization_ids":[
+                    "45877hh233415htdg55t"
+                 ],
+                 "project_ids":[
+                    "IOSApp123"
+                 ]
+                }
+            ]
+
++ Response 200 (application/json)
+
+        { "created": true}
+
+
+        
+
+
+
++ Request All Fields (application/json)
 
     + Headers
 
@@ -560,4 +763,11 @@ you can use this Linux command to do create this base64 string:
 + Response 200 (application/json)
 
         { "created": true}
+
+
+
+
+
+
+
 
