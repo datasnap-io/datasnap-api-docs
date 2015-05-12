@@ -79,11 +79,16 @@ The following encoding should be used when sending json information into the dat
 
 # Sending Events 
 
+##Import ant Information
+
+- You can only send one organization ID (or Customer Org ID) per API request. You cannot send mupliple organization IDs or you will get a 401 error.
+
 ##Required Event Fields
 
 | Name | Description |
 |---|---|
-| **organization_id** | organization id assigned to you |
+| **organization_id** | organization id assigned to you (optional if you send the customer_org_id property.)|
+| **customer_org_id** | Required if not sending organization ID and you have setup these IDS via the Organization API.|
 | **project_id** | Project id within that organization (typically app) |
 | **event\_type** | The type of event you are sending - beacon\_sighting, geofence_depart etc.
 | **global\_distinct\_id** | the unique user id associated with this event. It should go under user. |
@@ -194,6 +199,28 @@ Only ONE organization may be passed in currently in this event/array.
      ]
 ```
 
+<section id="customer_org_id">&nbsp;</section>
+##PROPERTY: CUSTOMER ORGANIZATION
+***
+
+
+To ease integraton with our parners, sometimes it is easier for events to be sent using their own internal client/Org ID.
+
+If this is the case we allow the setting of this ID via our Organization API
+
+Please See: http://docs.datasnapioentityapi.apiary.io/#reference/project
+
+Once these customer IDs have been set you can then pass the ID to the event service WITHOUT a organization_ids filed being present.
+
+We will lookup the proper organization ID for you and add to the event automatically.
+
+This is a top level property:
+
+```
+ "customer_org_id":"53d7ef540af5502d6f943817",
+```
+
+
 
 <section id="project">&nbsp;</section>
 ##PROPERTY: PROJECT
@@ -214,7 +241,13 @@ Only ONE project may be passed in currently in this array.
      ]
 ```
 
+Also note that we do allow the autogeneration of project name if you pass in tie project name at the root level. It will be assotiated with that projects_ids passed into the array.
 
+We are working towards cleanign up this API some in the future.
+
+```
+     "project_name":"3HRhnUtmtXnT1UHQHClAcP"
+```
 
 <section id="place">&nbsp;</section>
 
