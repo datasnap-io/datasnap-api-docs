@@ -354,7 +354,7 @@ We are working towards cleanign up this API some in the future.
 
 | Attribute  | Description           | Data Format  |
 | --- |---| ---|
-| location | Lat/long co-ordinates | Array |
+| location | Lat,long co-ordinates. **NOTE** Latitude should be first then Longitude | Array |
 | altitude | Height measured in meter units      |   String |
 | accuracy | Level of accuracy of the GPS (in meters)     |    String |
 | course | Direction of movement | String |
@@ -365,8 +365,8 @@ We are working towards cleanign up this API some in the future.
 "global_position":{
     "location": {
         "coordinates": [
-            -88.21337,
-            40.11041
+             40.11041,
+            -88.21337
         ]
     },
     "altitude": 13.00,
@@ -961,8 +961,8 @@ All events **must** contain the following information:
                  "global_position": {
                       "location": {
                         "coordinates": [
-                          37.7833,
-                          -122.4167
+                         37.7833,
+                         -122.4167
                         ]
                       },
                       "altitude": 13,
@@ -1008,12 +1008,10 @@ All events **must** contain the following information:
                 "event_type":"ds_communication_sent",
                  "campaign": {
                             "identifier": "MyCoolCampaign123",
-                            "targeting_rules": {
-                                "id": "1",
-                                "communication_ids": [
+                             "communication_ids": [
                                     "MyCoolMessage123"
                                 ]
-                            }
+                            
                 },
                 "communication": {
                             "identifier": "MyCoolMessage123"
