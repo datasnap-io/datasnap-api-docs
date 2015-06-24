@@ -62,6 +62,21 @@ All use identifiers should be passed to the API as SHA1 hashed properties. We wi
 - Two time-related properties are included in your event automatically.
 - The properties “datasnap.timestamp” and “datasnap.created_at” are set at the time your event is recorded. You have the ability to overwrite the datasnap.timestamp property. This could be useful, for example, if you are backfilling historical data.
 - Be sure to use ISO-8601 Format. http://en.wikipedia.org/wiki/ISO_8601
+- Be sure to include the timezone
+
+Examples:
+
+```
+**UTC Time**
+
+"created":"2015-06-21T18:24:18+00:00"
+"created":"2015-06-21T18:24:18Z"
+
+**PST Time**
+
+"created":"2015-06-21T18:24:18+08:00"
+
+```
 
 ###Special internal Datasnap fields
 
@@ -79,17 +94,20 @@ The following encoding should be used when sending json information into the dat
 
 # Sending Events 
 
-##Import ant Information
+##Important Information
 
 - You can only send one organization ID (or Customer Org ID) per API request. You cannot send mupliple organization IDs or you will get a 401 error.
+- Venue and organization names should **NEVER** contain underscores '_'
 
 ##Required Event Fields
 
 | Name | Description |
 |---|---|
-| **organization_id** | organization id assigned to you (optional if you send the customer_org_id property.)|
+| **organization_ids** | organization id assigned to you (optional if you send the customer_org_id property.)|
 | **customer_org_id** | Required if not sending organization ID and you have setup these IDS via the Organization API.|
-| **project_id** | Project id within that organization (typically app) |
+| **venue_org_id** | Required and represents the venue where the actual beacons are placed.|
+| **customer_venue_org_id** | Required if not sending venue_org_id ID and you have setup these IDS via the Organization API.|
+| **project_id** | Required Project id within that organization (typically app) |
 | **event\_type** | The type of event you are sending - beacon\_sighting, geofence_depart etc.
 | **global\_distinct\_id** | the unique user id associated with this event. It should go under user. |
 
@@ -187,7 +205,7 @@ http://docs.datasnapioentityapi.apiary.io
  A organization is a abstract way to group your data at a high level and focus on the organizational and data access level of your data. You can assign permissions to each org and have
  a hierarchy or organizations  based on your company structure.
 
-
+Please See: http://docs.datasnapioentityapi.apiary.io/#reference/organization
 
 Only ONE organization may be passed in currently in this event/array.
 
@@ -208,7 +226,7 @@ To ease integraton with our parners, sometimes it is easier for events to be sen
 
 If this is the case we allow the setting of this ID via our Organization API
 
-Please See: http://docs.datasnapioentityapi.apiary.io/#reference/project
+Please See: http://docs.datasnapioentityapi.apiary.io/#reference/organization
 
 Once these customer IDs have been set you can then pass the ID to the event service WITHOUT a organization_ids filed being present.
 
@@ -226,6 +244,49 @@ Example event:
 {
  "event_type":"beacon_sighting",
  "beacon":{
+    "identifier":"DatasnapTestBeacon123"
+ },
+ "user":{
+    "id":{
+       "global_distinct_id":"1"
+    }
+ },
+ "datasnap": {
+      "created": "2015-03-02T09:00:00"
+},
+    "customer_venue_org_id": "4PFtsr11HytMudhEt4m",
+    "customer_org_id": "BsgtRg56GTGggfss",
+ "project_ids":[
+    "TestDatasnapApp1"
+ ]
+}
+
+```
+
+<section id="venue_org_id">&nbsp;</section>
+##PROPERTY: VENUE ORGANIZATION
+***
+
+Some eports require a more specific mapping of where the beacons are actually located.   A venue is this concept and is technically an organization but is marked as a venue.
+
+Thsi is important for Place Pathing based reports.
+
+If this is the case we allow the setting of this ID via our Organization API. You just create a normal organization wiht the isVenue flag set to true to indicate its a venue.
+
+Please See: http://docs.datasnapioentityapi.apiary.io/#reference/organization
+
+This is a top level property:
+
+```
+ "venue_org_id":"53d7ef540af5502d6f943817",
+```
+
+Example event:
+
+```
+{
+ "event_type":"beacon_sighting",
+ "beacon":{
     "identifier":"DatasnapTestBeacon1"
  },
  "user":{
@@ -234,12 +295,69 @@ Example event:
     }
  },
  "datasnap": {
-      "created": "2015-03-02T10:00:00"
+      "created":"2015-06-23T00:40:15.415Z"
 },
  "project_ids":[
     "peoj1234"
  ],
- "customer_org_id":"clientid1",
+ "venue_org_id":"venueclientid1",
+ "organization_ids": [
+      "BsgtRg56GTGggfss"
+    ],
+ "project_name": "My cool App project"
+}
+
+```
+
+
+<section id="customer_venue_org_id">&nbsp;</section>
+##PROPERTY: CUSTOMER VENUE ORGANIZATION
+***
+
+
+To ease integraton with our parners, sometimes it is easier for events to be sent using their own internal client/Org ID.
+
+If this is the case we allow the setting of this ID via our Organization API.
+
+A Venue Org ID is an Org that has been created with isVenue = true indicating that it is a venue.
+
+This is useful for place and pathing based reports.
+
+Please See: http://docs.datasnapioentityapi.apiary.io/#reference/organization
+
+Once these customer IDs have been set you can then pass the ID to the event service WITHOUT a organization_ids filed being present.
+
+We will lookup the proper organization ID for you and add to the event automatically under then venue_org_id property.
+
+This is a top level property:
+
+```
+ "customer_venue_org_id":"53d7ef540af5502d6f943817",
+```
+
+Example event:
+
+```
+{
+ "event_type":"beacon_sighting",
+ "beacon":{
+    "identifier":"DatasnapTestBeacon1"
+ },
+ "user":{
+    "id":{
+       "global_distinct_id":"1"
+    }
+ },
+ "datasnap": {
+      "created":"2015-06-23T00:40:15.415Z"
+},
+ "project_ids":[
+    "peoj1234"
+ ],
+ "customer_venue_org_id":"clientid1",
+ "organization_ids": [
+      "BsgtRg56GTGggfss"
+    ],
  "project_name": "My cool App project"
 }
 
@@ -816,8 +934,8 @@ However you can also override the created property if you want. For example it m
 
 ```
 "datasnap": {
-        "timestamp": "2014-08-22 14:48:02 +0000",
-        "created": "2014-08-22 14:48:02 +0000",
+        "timestamp": "2015-06-23T00:40:15.415Z",
+        "created": "2015-06-23T00:40:15.415Z"
         "location": {
             "coordinates": [
                 -88.21337,
@@ -894,14 +1012,16 @@ All events **must** contain the following information:
                     }
                  },
                  "datasnap": {
-                      "created": "2015-03-02T09:00:00"
+                      "created": "2015-06-23T00:40:15.415Z"
                 },
+                "venue_org_id":"stadium1234",
                  "organization_ids":[
                     "45877hh233415htdg55t"
                  ],
                  "project_ids":[
                     "IOSApp123"
-                 ]
+                 ],
+                "venue_org_id":"venueclientid1"
                 }
             ]
 
@@ -931,14 +1051,17 @@ All events **must** contain the following information:
                     }
                  },
                  "datasnap": {
-                      "created": "2015-03-02T09:00:00"
+                      "created": "2015-06-23T00:40:15.415Z"
                 },
+                "venue_org_id":"stadium1234",
                  "organization_ids":[
                     "45877hh233415htdg55t"
                  ],
                  "project_ids":[
                     "IOSApp123"
-                 ]
+                 ],
+                "venue_org_id":"venueclientid1"
+                }
                 }
             ]
 
@@ -976,14 +1099,17 @@ All events **must** contain the following information:
                     }
                  },
                  "datasnap": {
-                      "created": "2015-03-02T09:00:00"
+                      "created": "2015-06-23T00:40:15.415Z"
                 },
+                "venue_org_id":"stadium1234",
                  "organization_ids":[
                     "45877hh233415htdg55t"
                  ],
                  "project_ids":[
                     "IOSApp123"
-                 ]
+                 ],
+                "venue_org_id":"venueclientid1"
+                }
                 }
             ]
 
@@ -1022,14 +1148,17 @@ All events **must** contain the following information:
                     }
                  },
                  "datasnap": {
-                      "created": "2015-03-02T09:00:00"
+                      "created": "2015-06-23T00:40:15.415Z"
                 },
+                "venue_org_id":"stadium1234",
                  "organization_ids":[
                     "45877hh233415htdg55t"
                  ],
                  "project_ids":[
                     "IOSApp123"
-                 ]
+                 ],
+                "venue_org_id":"venueclientid1"
+                }
                 }
             ]
 
@@ -1059,6 +1188,8 @@ All events **must** contain the following information:
                 "project_ids": [
                     "3HRhnUtmtXnT1UHQHClAcP"
                 ],
+                "venue_org_id":"venueclientid1"
+                },
                 "place": {
                     "id": "placeid",
                     "name": "Mission District",
@@ -1448,8 +1579,8 @@ All events **must** contain the following information:
                     ]
                 },
                 "datasnap": {
-                "timestamp": "2014-12-14T20:24:01.123000+00:00",
-                "created": "2014-12-12T20:24:01.123000+00:00",
+                "timestamp": "2015-06-23T00:40:15.415Z",
+                "created": "2015-06-23T00:40:15.415Z",
                 "txn_id": "fgfgbrrwvb",
                 "customer_txn_id": "fgfgbrrwvb",
                 "device": {
