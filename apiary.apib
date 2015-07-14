@@ -514,6 +514,8 @@ We are working towards cleanign up this API some in the future.
 | ble_uuid   | Bluetooth Low Energy uuid for the beacon      |   String |
 | ble_vendor_uuid | Bluetooth Low Energy Vendor uuid for the beacon      |    String |
 | ble_vendor_id | Bluetooth Low Energy Vendor id for the beacon | String |
+| protocol | Beacon protocol being advertised by the beacon. Possible Values are (ibeacon, eddystone, altbeacon, gimbal) | String |
+| protocol_frametype |Protocol framewtyp. Primarily for eddystone. If no value is supplied then the protol itself is the frame type. (Examples for eddystone are: Eddystone-UID, Eddystone-URL, Eddystone-TLM) | String |
 | uuid | iBeacon UUID | String |
 | ibeacon_major | iBeacon Major ID | String |
 | ibeacon_minor | iBeacon Minor ID | String |
@@ -545,6 +547,8 @@ We are working towards cleanign up this API some in the future.
      "uuid": "qwer1234wqer",
      "ibeacon_major": "12",
      "ibeacon_minor": "45",
+     "protocol": "ibeacon",
+     "protocol_frametype": "",
      "dwell_time": 600000,
      "start_time": "2014-08-22 14:48:02 +0000",
      "coordinates": [ 32.89545949009762,-117.19463284827117],
