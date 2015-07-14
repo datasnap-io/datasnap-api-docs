@@ -514,6 +514,9 @@ We are working towards cleanign up this API some in the future.
 | ble_uuid   | Bluetooth Low Energy uuid for the beacon      |   String |
 | ble_vendor_uuid | Bluetooth Low Energy Vendor uuid for the beacon      |    String |
 | ble_vendor_id | Bluetooth Low Energy Vendor id for the beacon | String |
+| uuid | iBeacon UUID | String |
+| ibeacon_major | iBeacon Major ID | String |
+| ibeacon_minor | iBeacon Minor ID | String |
 |rssi | Received Signal Strength Indicator for the beacon   |   String |
 | is_mobile | Denotes whether the beacon is a moving beacon or not. Should be set to True or False.    |    String |
 | previous_rssi | Prior Received Signal Strength Indicator for the beacon      |    String |
@@ -539,6 +542,9 @@ We are working towards cleanign up this API some in the future.
      "is_mobile": false,
      "previous_rssi": 70,
      "name": "Front Entrance",
+     "uuid": "qwer1234wqer",
+     "ibeacon_major": "12",
+     "ibeacon_minor": "45",
      "dwell_time": 600000,
      "start_time": "2014-08-22 14:48:02 +0000",
      "coordinates": [ 32.89545949009762,-117.19463284827117],
