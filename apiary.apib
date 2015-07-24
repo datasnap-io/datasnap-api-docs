@@ -734,7 +734,7 @@ that the content actually appeared on the users device, just that a communicatio
 | description | High-level description of the communication (see content for lower-level) | | String |
 | content |  content of the communication. This can be in plain text, formatted html, an image or a link | Get 10% off if you're wearing Giants hat! |   String |
 | communication\_vendor\_id| id of the vendor who sent the notification |  |    String |
-| status| Status of the communication  |   | String |
+| status| Whether the communication was sent while the app was running in the foreground or background. backgrouns can also mean the app was not running at all. |   | String |
 | type| Communication type (in-app or push) | in-app, push | String |
 | reporting_visibility | Whether ot Hide/Show this property in the Reporting Dashboard | | Boolean |
 
@@ -750,7 +750,7 @@ that the content actually appeared on the users device, just that a communicatio
         "shoes"
     ],
     "identifier": "commid",
-    "status": "active",
+    "status": "foreground",
     "communication_vendor_id": "airpush",
     "name": "10% offPushnotification",
     "type": {
