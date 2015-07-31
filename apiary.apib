@@ -530,6 +530,8 @@ We are working towards cleanign up this API some in the future.
 | temperature | Degrees in Fahrenheit |   String |
 | hardware   | Hardware of the beacon (Gimbal, Estimote etc)     |    String |
 | categories | Can represent any hierarchical category for the beacon | String |
+| indoor_level   | The floor level of the beacon.   |    String |
+| stability | The stability of the beacon. Values can be: stable,portable,mobile,roving,stability_unspecified | String |
 | reporting_visibility | Whether ot Hide/Show this property in the Reporting Dashboard | | Boolean |
 <br>
 
@@ -555,6 +557,8 @@ We are working towards cleanign up this API some in the future.
      "visibility": "Private",
      "battery_level": "50",
      "temperature": "68.32",
+     "indoor_level": "1",
+     "stability": "stable",
      "hardware": "HardwaretypeoftheBeacon",
      "categories": [
          {
