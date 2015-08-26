@@ -530,8 +530,6 @@ We are working towards cleanign up this API some in the future.
 | temperature | Degrees in Fahrenheit |   String |
 | hardware   | Hardware of the beacon (Gimbal, Estimote etc)     |    String |
 | categories | Can represent any hierarchical category for the beacon | String |
-| indoor_level   | The floor level of the beacon.   |    String |
-| stability | The stability of the beacon. Values can be: stable,portable,mobile,roving,stability_unspecified | String |
 | reporting_visibility | Whether ot Hide/Show this property in the Reporting Dashboard | | Boolean |
 <br>
 
@@ -557,8 +555,6 @@ We are working towards cleanign up this API some in the future.
      "visibility": "Private",
      "battery_level": "50",
      "temperature": "68.32",
-     "indoor_level": "1",
-     "stability": "stable",
      "hardware": "HardwaretypeoftheBeacon",
      "categories": [
          {
@@ -644,29 +640,183 @@ We are working towards cleanign up this API some in the future.
 
 ##PROPERTY: USER
 ***
-This is where the magic truly happens in our platform. The more User data you send to us the more insight you can get
+This is where the magic truly happens in our platform. The more user data you send to us the more insight you can get
 and the more we can begin to tie sessions together to build out insight into user behavior extending out to the marketing cloud.
 
 As you can see we accept a very large set of potential user identifiers that could be in play in the digital ecosystem.
 These identifiers could come from any number of sources so we kept the properties as descriptive as possible.
-You will note that while we don't specifically call our properties segments you can think of these properties being used to describe segments.
+
+The platform accepts a number of default properties or segments along with a user. By sending in these properties
+you can see the data sliced and diced by segment. Just send in the user information with any event.
+
+
+
 
 | Attribute        | Description           | Data Format  |
 | --- |---| ---|
 | tags     | Descriptive tags for the user | Array |
 | id   | Unique user id      |   String |
-| audience   | Audience characteristics of the user |    Array |
-| user_properties| Extra Properties for the user | Array |
-| reporting_visibility | Whether ot Hide/Show this property in the Reporting Dashboard | | Boolean |
-<br>
+| segments   | Audience characteristics of the user |    Array |
+| age_range| Age range of the user | String |
+| dob| Date of Birth of the user | String |
+| ethnicity| Ethnicity of the user | String |
+| childern_in_household| Number of children in the household of the user | String |
+| gender| Gender of the user | String |
+| income| Income range of the user | String |
+| education| Education of the user | String |
+| ISO3| Country code of the user | String |
+| ISO2| Country code of the user | String |
+| postcode| Postal codeof the user | String |
+| occupational_status| Occupational status of the user | String |
+| home_owner| Is the user a home owner | String |
+| latino_hispanic| Is the user of hispanic heritage | String |
+| student_status| Is the user a student | String |
+| region| Region of the user | String |
+| reporting_visibility | Whether to Hide/Show this property in the Reporting Dashboard | | Boolean |
+
+
+###age_range
+
+| Name | Description
+| --- | ---
+| 13-17| 
+| 18-24 | 
+| 25-34 | 
+| 35-44 | 
+| 45-54 | 
+| 55-64 | 
+| 65+ | 
+| unknown | 
+| decline | user declined to answer
+
+
+###gender
+| Name | Description
+| --- | ---
+| male |
+| female |
+| other |
+| unknown | 
+| decline | user declined to answer
+
+
+###children_in_household
+| Name | Description
+| --- | ---
+| y | Has Kids
+| n | No Kids
+| unknown | 
+| decline | user declined to answer
+
+
+###occupational_status
+| Name | Description
+| --- | ---
+| employed | Employed
+| unemployed | Unemployed
+| part time | Employed Part Time
+| unknown | 
+| decline | user declined to answer
+
+
+###student_status
+| Name | Description
+| --- | ---
+| Full Time Student | In education full time
+| Part Time Student | In education part time
+| Not a Student | Not in education
+| unknown | 
+| decline | user declined to answer
+ 
+
+
+###education
+
+| Name | Description
+| --- | ---
+| less than high school | Less than high school
+| high school completion | High school completion
+| associate degree | Associate’s degree
+| bachelor degree | Bachelor’s degree
+| master degree | Master’s degree
+| professional degree | Professional degree
+| doctorate degree | Doctorate degree
+| unknown | 
+| decline | user declined to answer
+ 
+
+
+
+###ethnicity
+
+| Name | Values
+| --- | ---
+|latino_hispanic | Y or N
+
+
+| Name | Description
+| --- | ---
+|Black | Black or African American
+|Caucasian | Caucasian or White
+|Native American | American Indian and Alaska Native
+|Asian | Asian
+|Pacific Islander | Native Hawaiian and Other Pacific Islander
+| unknown | 
+| decline | user declined to answer
+
+
+
+###hhi - Household Income
+
+| Name | Description
+| --- | ---
+| -25k | 
+| 25-49k | 
+| 50k-74k | 
+| 75k-99k | 
+| 100k-149k | 
+| 150k + | 
+| unknown | 
+| decline | user declined to answer
+
+
+###home_owner
+
+| Name | Values
+| --- | ---
+| home_owner | Y or N
+
+
+###marital_status
+| Name | Description
+| --- | ---
+| married |
+| single | 
+| divorced | 
+| widowed | 
+| never married |
+| unknown | 
+| decline | user declined to answer
+
+
+###region - U.S.
+
+| Name | Description
+| --- | ---
+| west| 
+| south |
+| midwest |
+| northeast |
+| unknown | 
+| decline | user declined to answer
+ 
+
+
+
+Example:
 
 ```
 "user": {
-    "tags": [
-        "womens",
-        "golf",
-        "shoes"
-    ],
     "id": {
         "mobile_device_bluetooth_identifier": "128 bit string",
         "mobile_device_ios_idfa": "092384",
@@ -689,37 +839,42 @@ You will note that while we don't specifically call our properties segments you 
         "unknown": "unknownid",
         "": ""
     },
-    "audience": {
-        "Education": [
-            "College"
-        ],
-        "Age": [
-            "18-24"
-        ],
-        "Ethnicity": [
-            "Caucasian"
-        ],
-        "Kids": [
-            "NoKids"
-        ],
-        "Gender": [
-            "Male"
-        ],
-        "Interests": [
-            "Gettingfromheretothere",
-            "Biking",
-            "Automotive",
-            "Automotive.Cars"
-        ],
-        "Income": [
-            "$30-60k"
-        ]
+    "age_range": "18-24",
+    "dob": "1980-06-23 00:00:00",
+    "ethnicity: "caucasian",
+    "childern_in_household": "y",
+    "gender": "male",
+    "income": "15k-24k",
+    "education": "No College",
+    "ISO3": GBR",
+    "ISO2": GB",
+    "postcode": "94123",
+    "occupational_status" : "employed",
+    "home_owner": "y",
+    "latino_hispanic: "y",
+    "student_status" : "full time student",
+    "region": "midwest",
+    "abc_custom_user_type" : "vip"
     },
-    "user_properties": {
-        "user_type": "VIP",
-        "user_spend": "high",
-        "engagement_time": "Greaterthan30minutes"
-    }
+    "tags": [
+        "womens",
+        "golf",
+        "shoes"
+    ],
+    "segments": [ 
+        {
+        "id": "1",
+        "name": "donut eaters",
+        "description": "donut eaters 18-24 male",
+        "ext": ""
+        },
+        {
+        "id": "2",
+        "name": "donut eaters 2",
+        "description": "donut eaters 18-24 female",
+        "ext": ""
+        }
+    ]
 }
 ```
 
