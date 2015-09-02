@@ -14,7 +14,7 @@ best way to send us data.
 
 Terms and Conditions: http://www.datasnap.io/terms.html#apiterms 
 
-# Authentication and API Keys
+## Authentication and API Keys
 
 You will get a API Key and API Secret for access and add it to the headers as "Authorization:  Basic <PUT Base64 String Here>"
 
@@ -31,16 +31,16 @@ you can use this Linux command to do create this base64 string:
 **Java w/ Apache Commons:** org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getBytes())
 
 
-# Formatting & Datatypes
+## Formatting and Datatypes
 The typical JSON datatypes are in play when sending data: http://en.wikipedia.org/wiki/JSON#Data_types.2C_syntax_and_example
 
-##Property Name Rules
+### Property Name Rules
 
 - Names must be less than 256 characters long.
 - There cannot be any periods (.) in the name.
 - Names cannot be a null value.
 
-##Property Value Rules
+### Property Value Rules
 
 - String values must be less than 10,000 characters long.
 - Numeric values must be between -2^63 (-9223372036854775808) and 2^63 - 1 (9223372036854775807) (inclusive).
@@ -49,16 +49,16 @@ The typical JSON datatypes are in play when sending data: http://en.wikipedia.or
 - All dates should be represented as ISO 8601 formatted dates: http://en.wikipedia.org/wiki/ISO_8601
 
 
-###Country Code
+#### Country Code
 Three digit numeric country code, represented as a string. For example, "001".
 
-###Network Code
+#### Network Code
 Three digit numeric code, represented as a string. For example, "345".
 
-###User Identifiers
+### User Identifiers
 All use identifiers should be passed to the API as SHA1 hashed properties. We will be monitoring this and will let you know if you are nto doing this.
 
-###Timestamp Data Types
+### Timestamp Data Types
 - Two time-related properties are included in your event automatically.
 - The properties “datasnap.timestamp” and “datasnap.created_at” are set at the time your event is recorded. You have the ability to overwrite the datasnap.timestamp property. This could be useful, for example, if you are backfilling historical data.
 - Be sure to use ISO-8601 Format. http://en.wikipedia.org/wiki/ISO_8601
@@ -78,13 +78,13 @@ Examples:
 
 ```
 
-###Special internal Datasnap fields
+### Special internal Datasnap fields
 
 - We denote these under the "datasnap" property in the root json payload. These will be automatically set for you
 via one of our SDKs or via our backend server such as _timestamp_.
 You can of course override these at any time but please be careful in doing so.
 
-###URL Parameter "data" encoding
+### URL Parameter "data" encoding
 The following encoding should be used when sending json information into the data URL Parameter (There are ready libraries that do this in Ruby, PHP, and Javascript.)
 
 - 'URL Safe' base64 encoding, or "RFC4648 base64url (Base 64 Encoding with URL and Filename Safe Alphabet)
@@ -92,14 +92,14 @@ The following encoding should be used when sending json information into the dat
 
 
 
-# Sending Events 
+## Sending Events 
 
-##Important Information
+### Important Information
 
 - You can only send one organization ID (or Customer Org ID) per API request. You cannot send mupliple organization IDs or you will get a 401 error.
 - Venue and organization names should **NEVER** contain underscores '_'
 
-##Required Event Fields
+### Required Event Fields
 
 | Name | Description |
 |---|---|
@@ -115,7 +115,7 @@ The following encoding should be used when sending json information into the dat
 
 NOTE: The maximum size of the json payload is 50 kilobytes (KB).
 
-##Standard Events
+### Standard Events
 Standard events are treated specially by Datasnap and will be automatically applied to your Reports Dimensions and Metrics. You can also send non-standard events. You can work with datasnap.io to get these integrated into your reports.
 
 
@@ -147,7 +147,7 @@ Standard events are treated specially by Datasnap and will be automatically appl
 | **geofence_sighting** | A user is still in the Geofence after a interval based check of their location | Geofence Event |
 | **geofence_depart** | A user has left the Geofence | Geofence Event |
 
-## Update Events
+### Update Events
 
 **NOTE:** If you use the Entity API metholoogy to populate entity names and properties then you should use that to update information! http://docs.datasnapioentityapi.apiary.io/#
 
@@ -161,10 +161,10 @@ Standard events are treated specially by Datasnap and will be automatically appl
 | campaign_update | indicates that a campaign update has occurred. usually would only contain the campaign. | 
 | beacon_update | indicates that a beacon update has occurred | usually would only contain the beacon |
 
-## Non-Standard Events
+### Non-Standard Events
 - You CAN also append any other json properties as you want at any level that you would like.
 
-# Event Properties
+## Event Properties
 
 
 We have the following top level properties that represent the current domain when dealing with proximity data and events.
@@ -179,7 +179,7 @@ http://docs.datasnapioentityapi.apiary.io
  Where did we come up with these names? Well we have a lot of experience modeling data, researched all of the leading Beacon providers, and
  of course spoke ot a lot of customers and looked at actual data that they have acquired and wanted insight for.
 <section id="tags">&nbsp;</section>
-##PROPERTY: TAGS
+### PROPERTY: TAGS
 ***
 
  All top level entities allow you to tag them. This will allow for an unlimited amount of ways in which to group and report on these entities and the events they are attached to.
@@ -199,7 +199,7 @@ http://docs.datasnapioentityapi.apiary.io
 
 
 <section id="organization">&nbsp;</section>
-##PROPERTY: ORGANIZATION
+### PROPERTY: ORGANIZATION
 ***
 
  A organization is a abstract way to group your data at a high level and focus on the organizational and data access level of your data. You can assign permissions to each org and have
@@ -218,7 +218,7 @@ Only ONE organization may be passed in currently in this event/array.
 ```
 
 <section id="customer_org_id">&nbsp;</section>
-##PROPERTY: CUSTOMER ORGANIZATION
+### PROPERTY: CUSTOMER ORGANIZATION
 ***
 
 
@@ -264,7 +264,7 @@ Example event:
 ```
 
 <section id="venue_org_id">&nbsp;</section>
-##PROPERTY: VENUE ORGANIZATION
+### PROPERTY: VENUE ORGANIZATION
 ***
 
 Some eports require a more specific mapping of where the beacons are actually located.   A venue is this concept and is technically an organization but is marked as a venue.
@@ -311,7 +311,7 @@ Example event:
 
 
 <section id="customer_venue_org_id">&nbsp;</section>
-##PROPERTY: CUSTOMER VENUE ORGANIZATION
+### PROPERTY: CUSTOMER VENUE ORGANIZATION
 ***
 
 
@@ -365,7 +365,7 @@ Example event:
 
 
 <section id="project">&nbsp;</section>
-##PROPERTY: PROJECT
+### PROPERTY: PROJECT
 ***
 
  A project is a abstract way to group your data at a high level. Examples of project coudl include a mobile App, a Special event, or some other type of cpecial project where
@@ -394,7 +394,7 @@ We are working towards cleanign up this API some in the future.
 <section id="place">&nbsp;</section>
 
 
-##PROPERTY: PLACE
+### PROPERTY: PLACE
 ***
 
  A place is a geographic way to group sets of location properties. You can nest as many locations within a place as you want. A place is meant to represent a contiguous location.  A place contains metadata about a location and is comprised of one or more geofences, beacons or addresses. Datasnap.io uses places to determine pathing and traffic patterns.
@@ -462,7 +462,7 @@ We are working towards cleanign up this API some in the future.
 ```
 
 <section id="gps_position">&nbsp;</section>
-##PROPERTY: GLOBAL POSITION
+### PROPERTY: GLOBAL POSITION
 ***
 
  A Global Position contains all of the data coming out of the Location sensors on the device. Note that some devices can use Wifi
@@ -495,7 +495,7 @@ We are working towards cleanign up this API some in the future.
 ```
 
 <section id="beacon">&nbsp;</section>
-##PROPERTY: BEACON
+### PROPERTY: BEACON
 ***
 
  A beacon represents the actual beacon metadata and/or specific sighting data involve in the event.
@@ -581,7 +581,7 @@ We are working towards cleanign up this API some in the future.
 ```
 
 <section id="geofence">&nbsp;</section>
-##PROPERTY: GEOFENCE
+### PROPERTY: GEOFENCE
 ***
 | Attribute        | Description           | Data Format  |
 | --- |---| ---|
@@ -638,7 +638,7 @@ We are working towards cleanign up this API some in the future.
 ```
 <section id="user">&nbsp;</section>
 
-##PROPERTY: USER
+### PROPERTY: USER
 ***
 This is where the magic truly happens in our platform. The more user data you send to us the more insight you can get
 and the more we can begin to tie sessions together to build out insight into user behavior extending out to the marketing cloud.
@@ -675,7 +675,7 @@ you can see the data sliced and diced by segment. Just send in the user informat
 | reporting_visibility | Whether to Hide/Show this property in the Reporting Dashboard | | Boolean |
 
 
-###age_range
+#### age_range
 
 | Name | Description
 | --- | ---
@@ -690,7 +690,7 @@ you can see the data sliced and diced by segment. Just send in the user informat
 | decline | user declined to answer
 
 
-###gender
+#### gender
 | Name | Description
 | --- | ---
 | male |
@@ -700,7 +700,7 @@ you can see the data sliced and diced by segment. Just send in the user informat
 | decline | user declined to answer
 
 
-###children_in_household
+#### children_in_household
 | Name | Description
 | --- | ---
 | y | Has Kids
@@ -709,7 +709,7 @@ you can see the data sliced and diced by segment. Just send in the user informat
 | decline | user declined to answer
 
 
-###occupational_status
+#### occupational_status
 | Name | Description
 | --- | ---
 | employed | Employed
@@ -719,7 +719,7 @@ you can see the data sliced and diced by segment. Just send in the user informat
 | decline | user declined to answer
 
 
-###student_status
+#### student_status
 | Name | Description
 | --- | ---
 | Full Time Student | In education full time
@@ -730,7 +730,7 @@ you can see the data sliced and diced by segment. Just send in the user informat
  
 
 
-###education
+#### education
 
 | Name | Description
 | --- | ---
@@ -747,7 +747,7 @@ you can see the data sliced and diced by segment. Just send in the user informat
 
 
 
-###ethnicity
+#### ethnicity
 
 | Name | Values
 | --- | ---
@@ -766,7 +766,7 @@ you can see the data sliced and diced by segment. Just send in the user informat
 
 
 
-###hhi - Household Income
+#### hhi - Household Income
 
 | Name | Description
 | --- | ---
@@ -780,14 +780,14 @@ you can see the data sliced and diced by segment. Just send in the user informat
 | decline | user declined to answer
 
 
-###home_owner
+#### home_owner
 
 | Name | Values
 | --- | ---
 | home_owner | Y or N
 
 
-###marital_status
+#### marital_status
 | Name | Description
 | --- | ---
 | married |
@@ -799,7 +799,7 @@ you can see the data sliced and diced by segment. Just send in the user informat
 | decline | user declined to answer
 
 
-###region - U.S.
+#### region - U.S.
 
 | Name | Description
 | --- | ---
@@ -879,7 +879,7 @@ Example:
 ```
 
 <section id="communication">&nbsp;</section>
-##PROPERTY: COMMUNICATION
+### PROPERTY: COMMUNICATION
 ***
 
 You can send any type of communication to us (in-app or push notification). Communication doesn't always need to indicate
@@ -926,7 +926,7 @@ that the content actually appeared on the users device, just that a communicatio
 }
 ```
 <section id="campaign">&nbsp;</section>
-##PROPERTY: CAMPAIGN
+### PROPERTY: CAMPAIGN
 ***
 
 A campaign represents all of the properties needed to deliver some form of messaging to the user and can include settings,
@@ -1082,7 +1082,7 @@ targeting criteria, communication id's amongst other things.
  }
 ```
 <section id="datasnap">&nbsp;</section>
-##PROPERTY: DATASNAP
+### PROPERTY: DATASNAP
 ***
 The datasnap.io property includes time related properties, location properties, device properties and a transaction id. Two time-related properties are included in your event automatically and are set at the time your event is recorded;
 However you can also override the created property if you want. For example it my be useful to override created property if you are back-filling historical data.
@@ -1129,7 +1129,7 @@ However you can also override the created property if you want. For example it m
     }
 ```
 <section id="standardEvents">&nbsp;</section>
-#Standard Events
+## Standard Events
 ***
 All events **must** contain the following information:
 
@@ -1144,7 +1144,7 @@ All events **must** contain the following information:
 "id" and "name" in the place property
 
 
-# Events Collection [/events]
+## Events Collection [/events]
 
 ### Example Events
 
