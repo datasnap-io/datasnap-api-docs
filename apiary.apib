@@ -1138,10 +1138,13 @@ All events **must** contain the following information:
 | event_type     |unique descriptor for event | String |
 | organization_ids   | ids assigned to the organization      |   String |
 | project_ids   |ids assigned to the project      |    String |
+| venue_org_id   |ids assigned to the project      |    String |
 
 <p></p>
 **NOTE:** for properties included in events, **id's and names** must be included. e.g. "identifier" and "name" in the beacon property and
 "id" and "name" in the place property
+
+Also you can use the customer_ equivalent instead of the above properties if using that integration type where you have your own internal IDs andare using the entity API.
 
 
 ## Events Collection [/events]
@@ -1300,35 +1303,32 @@ All events **must** contain the following information:
 
             [
                 {
-                "event_type":"ds_communication_sent",
-                 "campaign": {
-                            "identifier": "MyCoolCampaign123",
-                             "communication_ids": [
-                                    "MyCoolMessage123"
-                                ]
-                            
-                },
-                "communication": {
-                            "identifier": "MyCoolMessage123"
-                 },
-                 "user":{
-                    "id":{
-                       "global_distinct_id":"1234-5566-1234"
-                    }
-                 },
-                 "datasnap": {
-                      "created": "2015-06-23T00:40:15.415Z"
-                },
-                "venue_org_id":"stadium1234",
-                 "organization_ids":[
-                    "45877hh233415htdg55t"
-                 ],
+                    "event_type":"ds_communication_sent",
+                    "campaign": {
+                        "identifier": "Campaign3",
+                        "name": "Campaign 3 Name"
+                    },
+                    "communication": {
+                         "identifier": "Campaign3-Message1",
+                         "name": "Campaign3-Message1 Name"
+                     },
+                     "user":{
+                        "id":{
+                           "global_distinct_id":"2"
+                        }
+                     },
+                    "datasnap": {
+                      "created": "2015-01-02T09:00:00"
+                    },
+                    "venue_org_id": "MegaStadium01",
+                    "organization_ids": [
+                      "123GFTsggTVF9899H"
+                    ],
                  "project_ids":[
-                    "IOSApp123"
-                 ],
-                "venue_org_id":"venueclientid1"
-                }
-                }
+                    "AppID1"
+                 ]
+            }
+
             ]
 
 + Response 200 (application/json)
