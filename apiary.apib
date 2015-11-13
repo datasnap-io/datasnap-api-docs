@@ -649,7 +649,7 @@ These identifiers could come from any number of sources so we kept the propertie
 The platform accepts a number of default properties or segments along with a user. By sending in these properties
 you can see the data sliced and diced by segment. Just send in the user information with any event.
 
-
+**NOTE:** we do not accept PII of any kind.
 
 
 | Attribute        | Description           | Data Format  |
@@ -658,7 +658,7 @@ you can see the data sliced and diced by segment. Just send in the user informat
 | id   | Unique user id      |   String |
 | segments   | Audience characteristics of the user |    Array |
 | age_range| Age range of the user | String |
-| dob| Date of Birth of the user | String |
+| dob (Sha1 only) | Date of Birth of the user | String |
 | ethnicity| Ethnicity of the user | String |
 | childern_in_household| Number of children in the household of the user | String |
 | gender| Gender of the user | String |
@@ -666,7 +666,7 @@ you can see the data sliced and diced by segment. Just send in the user informat
 | education| Education of the user | String |
 | ISO3| Country code of the user | String |
 | ISO2| Country code of the user | String |
-| postcode| Postal codeof the user | String |
+| postcode (Sha1 only)| Postal codeof the user | String |
 | occupational_status| Occupational status of the user | String |
 | home_owner| Is the user a home owner | String |
 | latino_hispanic| Is the user of hispanic heritage | String |
