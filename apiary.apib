@@ -31,6 +31,7 @@ you can use this Linux command to do create this base64 string:
 **Java w/ Apache Commons:** org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getBytes())
 
 
+
 ## Formatting and Datatypes
 The typical JSON datatypes are in play when sending data: http://en.wikipedia.org/wiki/JSON#Data_types.2C_syntax_and_example
 
@@ -98,6 +99,9 @@ The following encoding should be used when sending json information into the dat
 
 - You can only send one organization ID (or Customer Org ID) per API request. You cannot send mupliple organization IDs or you will get a 401 error.
 - Venue and organization names should **NEVER** contain underscores '_'
+- When sending a **campaign event** you must send the advertiser\_org\_id, the project_id and the organization\_id that owns the app
+- When sending a **beacon event** you must send the the project_id, the venue_org_id and the organization\_id that owns the app
+
 
 ### Required Event Fields
 
@@ -107,6 +111,8 @@ The following encoding should be used when sending json information into the dat
 | **customer_org_id** | Required if not sending organization ID and you have setup these IDS via the Organization API.|
 | **venue_org_id** | Required and represents the venue where the actual beacons are placed.|
 | **customer_venue_org_id** | Required if not sending venue_org_id ID and you have setup these IDS via the Organization API.|
+| **advertiser_org_id** | Required if sending campaign/communication events and represents the Advertiser that the app is sending the communication on behalf of.|
+| **customer_advertiser_org_id** | Required if not sending advertiser_org_id ID and you have setup these IDS via the Organization API.|
 | **project_id** | Required Project id within that organization (typically app) |
 | **event\_type** | The type of event you are sending - beacon\_sighting, geofence_depart etc.
 | **global\_distinct\_id** | the unique user id associated with this event. It should go under user. |
@@ -267,11 +273,9 @@ Example event:
 ### PROPERTY: VENUE ORGANIZATION
 ***
 
-Some eports require a more specific mapping of where the beacons are actually located.   A venue is this concept and is technically an organization but is marked as a venue.
+Some reports require a more specific mapping of where the beacons are actually located. A venue is this concept and is technically an organization but is marked as a venue.
 
-Thsi is important for Place Pathing based reports.
-
-If this is the case we allow the setting of this ID via our Organization API. You just create a normal organization wiht the isVenue flag set to true to indicate its a venue.
+If this is the case we allow the setting of this ID via our Organization API. You just create a normal organization with the **isVenue flag set to true** to indicate its a venue.
 
 Please See: http://docs.datasnapioentityapi.apiary.io/#reference/organization
 
@@ -325,9 +329,9 @@ This is useful for place and pathing based reports.
 
 Please See: http://docs.datasnapioentityapi.apiary.io/#reference/organization
 
-Once these customer IDs have been set you can then pass the ID to the event service WITHOUT a organization_ids filed being present.
+Once these customer IDs have been set you can then pass the ID to the event service WITHOUT a organization_ids field being present.
 
-We will lookup the proper organization ID for you and add to the event automatically under then venue_org_id property.
+We will lookup the proper organization ID for you and add to the event automatically under the venue_org_id property.
 
 This is a top level property:
 
@@ -363,17 +367,117 @@ Example event:
 
 ```
 
+<section id="advertiser_org_id">&nbsp;</section>
+### PROPERTY: ADVERTISER ORGANIZATION
+***
+
+In many cases you will be running campaigns on behalf of third parties via a network like model.  If this is the case then you need ot create these advertisers as children within
+your organization and send events indicating the advertiser that the campaign was sent of behalf of. 
+
+To indicate that an organization should be considered an advertiser you create a normal organization with the **isAdvertiser=true** to indicate it is an Advertiser organization. Please See: http://docs.datasnapioentityapi.apiary.io/#reference/organization
+
+NOTE: If you do not pass in an advertiser\_org\_id or pass in an invalid organization the campaign event will default to the organization\_id organization.
+
+```
+ "advertiser_org_id":"53d7ef540af5502d6f943817",
+```
+
+Example event:
+
+```
+
+    {
+        "event_type": "ds_communication_sent",
+        "campaign": {
+            "advertiser_org_id": "543eb3440af5500176d37f34",
+            "identifier": "Campaign1",
+            "name": "Campaign 1 Name"
+        },
+        "communication": {
+             "advertiser_org_id": "543eb3440af5500176d37f34",
+             "identifier": "Campaign1-Message1",
+             "name": "Campaign1-Message1 Name"
+         },
+         "user":{
+            "id":{
+               "global_distinct_id":"1"
+            }
+         },
+        "customer_org_id": "54be7fc90af5506441788a49",
+        "customer_venue_org_id": "54be7fc90af5506441788a49",
+        "project_ids": [
+            "5Nbojj94kQe6MW83yHyzCE"
+        ]
+
+    }
+
+
+```
+
+
+<section id="customer_advertiser_org_id">&nbsp;</section>
+### PROPERTY: CUSTOMER ADVERTISER ORGANIZATION
+***
+
+
+To ease integraton with our parners, sometimes it is easier for events to be sent using their own internal client/Org ID.
+
+If this is the case we allow the setting of this ID via our organization API.
+
+A Advertiser Org ID is an Org that has been created with isAdvertiser = true indicating that it is a Advertiser.
+
+
+Once these customer IDs have been set you can then pass the ID to the event service WITHOUT a advertiser_org_id field being present.
+
+We will lookup the proper organization ID for you and add to the event automatically under the advertiser_org_id property.
+
+NOTE: The default behaviour is that if you do not pass in an advertiser_org_id or pass in an invalid organization then it will default to the organization_ids organization.
+
+```
+ "customer_advertiser_org_id":"53d7ef540af5502d6f943817",
+```
+
+Example event:
+
+```
+    {
+        "event_type": "ds_communication_sent",
+        "campaign": {
+            "customer_advertiser_org_id": "543eb3440af5500176d37f34",
+            "identifier": "Campaign1",
+            "name": "Campaign 1 Name"
+        },
+        "communication": {
+             "customer_advertiser_org_id": "543eb3440af5500176d37f34",
+             "identifier": "Campaign1-Message1",
+             "name": "Campaign1-Message1 Name"
+         },
+         "user":{
+            "id":{
+               "global_distinct_id":"1"
+            }
+         },
+        "customer_org_id": "54be7fc90af5506441788a49",
+        "customer_venue_org_id": "54be7fc90af5506441788a49",
+        "project_ids": [
+            "5Nbojj94kQe6MW83yHyzCE"
+        ]
+
+    }
+
+```
+
 
 <section id="project">&nbsp;</section>
 ### PROPERTY: PROJECT
 ***
 
- A project is a abstract way to group your data at a high level. Examples of project coudl include a mobile App, a Special event, or some other type of cpecial project where
+A project is an abstract way to group your data at a high level. In most cases this is the app. Examples of project could include a mobile App or some other type of special project where
  you want to group and aggregate the data for reporting purposes.
 
 Please See: http://docs.datasnapioentityapi.apiary.io/#reference/project
 
-Only ONE project may be passed in currently in this array.
+Only ONE project may be passed in this array.
 
 
 ```
@@ -383,7 +487,7 @@ Only ONE project may be passed in currently in this array.
      ]
 ```
 
-Also note that we do allow the autogeneration of project name if you pass in tie project name at the root level. It will be assotiated with that projects_ids passed into the array.
+Also note that we do allow the autogeneration of project name if you pass in tie project name at the root level. It will be associated with that projects_ids passed into the array.
 
 We are working towards cleanign up this API some in the future.
 
@@ -649,7 +753,7 @@ These identifiers could come from any number of sources so we kept the propertie
 The platform accepts a number of default properties or segments along with a user. By sending in these properties
 you can see the data sliced and diced by segment. Just send in the user information with any event.
 
-**NOTE:** we do not accept PII of any kind.
+
 
 
 | Attribute        | Description           | Data Format  |
@@ -658,7 +762,7 @@ you can see the data sliced and diced by segment. Just send in the user informat
 | id   | Unique user id      |   String |
 | segments   | Audience characteristics of the user |    Array |
 | age_range| Age range of the user | String |
-| dob (Sha1 only) | Date of Birth of the user | String |
+| dob| Date of Birth of the user | String |
 | ethnicity| Ethnicity of the user | String |
 | childern_in_household| Number of children in the household of the user | String |
 | gender| Gender of the user | String |
@@ -666,7 +770,7 @@ you can see the data sliced and diced by segment. Just send in the user informat
 | education| Education of the user | String |
 | ISO3| Country code of the user | String |
 | ISO2| Country code of the user | String |
-| postcode (Sha1 only)| Postal codeof the user | String |
+| postcode| Postal codeof the user | String |
 | occupational_status| Occupational status of the user | String |
 | home_owner| Is the user a home owner | String |
 | latino_hispanic| Is the user of hispanic heritage | String |
@@ -840,13 +944,15 @@ Example:
         "": ""
     },
     "age_range": "18-24",
+    "dob": "1980-06-23 00:00:00",
     "ethnicity: "caucasian",
     "childern_in_household": "y",
     "gender": "male",
     "income": "15k-24k",
     "education": "No College",
-    "ISO3": GBR",
-    "ISO2": GB",
+    "ISO3": "GBR",
+    "ISO2": "GB",
+    "postcode": "94123",
     "occupational_status" : "employed",
     "home_owner": "y",
     "latino_hispanic: "y",
@@ -887,6 +993,7 @@ that the content actually appeared on the users device, just that a communicatio
 | --- |---| ---| ---|
 | identifier     | Unique communication id | |String |
 | name   | Name of the communication   | Buy hotdogs at Half Time  |   String |
+| advertiser_org_id   | The advertiser associated with the campaign. NOTE: Will defult to the top leve org if not passed in.     |   String |
 | tags   | Descriptors for the communication   |   |    Array |
 | description | High-level description of the communication (see content for lower-level) | | String |
 | content |  content of the communication. This can be in plain text, formatted html, an image or a link | Get 10% off if you're wearing Giants hat! |   String |
@@ -901,6 +1008,7 @@ that the content actually appeared on the users device, just that a communicatio
 ```
 "communication": {
     "description": "mydescription",
+    "advertiser_org_id":"adOrgID1",
     "tags": [
         "womens",
         "golf",
@@ -934,6 +1042,7 @@ targeting criteria, communication id's amongst other things.
 | --- |---| ---|
 | identifier     | Unique campaign id | String |
 | name   | Campaign name     |   String |
+| advertiser_org_id   | The advertiser assotiates with the campaign. Will defult to the top leve org if not passed in.     |   String |
 | tags   | Descriptors for the campaign      |    Array |
 | subcampaigns | Optional sub-campaigns under the parent campaign | Array |
 | targeting_rules | Campaign rules |   String |
@@ -947,6 +1056,7 @@ targeting criteria, communication id's amongst other things.
 "campaign": {
      "identifier": "campaignid",
      "name": "camapign10%offshoes",
+     "advertiser_org_id":"adorgid1",
      "tags": [
          "womens",
          "golf",
@@ -1241,6 +1351,53 @@ Also you can use the customer_ equivalent instead of the above properties if usi
         
 
 
++ Request Campaign Communication Event (application/json)
+
+    + Headers
+
+            Authorization: Basic E9NZuB6A91e2J03PKA2g7wx0629czel8
+
+    + Body
+
+            [
+                {
+                    "event_type":"ds_communication_sent",
+                    "campaign": {
+                        "customer_advertiser_org_id": "543eb3440af5500176d37f34",
+                        "identifier": "Campaign3",
+                        "name": "Campaign 3 Name"
+                    },
+                    "communication": {
+                         "customer_advertiser_org_id": "543eb3440af5500176d37f34",
+                         "identifier": "Campaign3-Message1",
+                         "name": "Campaign3-Message1 Name"
+                     },
+                     "user":{
+                        "id":{
+                           "global_distinct_id":"2"
+                        }
+                     },
+                    "datasnap": {
+                      "created": "2015-01-02T09:00:00"
+                    },
+                    "venue_org_id": "MegaStadium01",
+                    "organization_ids": [
+                      "123GFTsggTVF9899H"
+                    ],
+                 "project_ids":[
+                    "AppID1"
+                 ]
+            }
+
+            ]
+
++ Response 200 (application/json)
+
+        { "created": true}
+
+
+        
+
 + Request GPS Event (application/json)
 
     + Headers
@@ -1290,51 +1447,6 @@ Also you can use the customer_ equivalent instead of the above properties if usi
 
 
 
-
-+ Request Campaign Communication Event (application/json)
-
-    + Headers
-
-            Authorization: Basic E9NZuB6A91e2J03PKA2g7wx0629czel8
-
-    + Body
-
-            [
-                {
-                    "event_type":"ds_communication_sent",
-                    "campaign": {
-                        "identifier": "Campaign3",
-                        "name": "Campaign 3 Name"
-                    },
-                    "communication": {
-                         "identifier": "Campaign3-Message1",
-                         "name": "Campaign3-Message1 Name"
-                     },
-                     "user":{
-                        "id":{
-                           "global_distinct_id":"2"
-                        }
-                     },
-                    "datasnap": {
-                      "created": "2015-01-02T09:00:00"
-                    },
-                    "venue_org_id": "MegaStadium01",
-                    "organization_ids": [
-                      "123GFTsggTVF9899H"
-                    ],
-                 "project_ids":[
-                    "AppID1"
-                 ]
-            }
-
-            ]
-
-+ Response 200 (application/json)
-
-        { "created": true}
-
-
-        
 
 
 
