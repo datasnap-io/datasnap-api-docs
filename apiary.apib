@@ -5,10 +5,10 @@ HOST: https://api-events.datasnap.io/v1.0/
 
 # Datasnap.io Events API
 The datasnap.io Events API allows you to send any kind of event to the datasnap.io platform for reporting and measurement. 
-There are a set of out of the box events that will automatically show up on your dashboards. You may also send non-standard events which we can analyize separately.
+There are a set of out-of-the-box events that will automatically show up on your dashboards. You may also send non-standard events, which we can analyze separately.
 
 
-Please see http://datasnap-io.github.io/index.html for detailed use cases and design guide for the
+Please see http://datasnap-io.github.io/index.html for detailed use cases and the design guide, illustrating the
 best way to send us data.  
 
 
@@ -16,20 +16,25 @@ Terms and Conditions: http://www.datasnap.io/terms.html#apiterms
 
 ## Authentication and API Keys
 
-You will get a API Key and API Secret for access and add it to the headers as "Authorization:  Basic <PUT Base64 String Here>"
+You will get an API key and an API Secret for access.
 
-In order to authorize then base64 encode the key and secret together. For example
-you can use this Linux command to do create this base64 string:
-
+In order to authorize, base64 encode the key and secret together. You can use this Linux command to create the base64 string:
 
                 echo -n "APIKey:APISecret" | openssl base64
+After encoding, add it to the headers as "Authorization:  Basic < Put Base64 String here>"
+
 
 ####Examples
 
-**Java Example:** java.util.Base64.getUrlEncoder().encodeToString("my fancyurl".getBytes());
+**Java Example:**
+```
+java.util.Base64.getUrlEncoder().encodeToString("my fancyurl".getBytes());
+```
 
-**Java w/ Apache Commons:** org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getBytes())
-
+**Java w/ Apache Commons:**
+```
+org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getBytes())
+```
 
 
 ## Formatting and Datatypes
@@ -57,13 +62,13 @@ Three digit numeric country code, represented as a string. For example, "001".
 Three digit numeric code, represented as a string. For example, "345".
 
 ### User Identifiers
-All use identifiers should be passed to the API as SHA1 hashed properties. We will be monitoring this and will let you know if you are nto doing this.
+All user identifiers should be passed to the API as SHA1 hashed properties. We will be monitoring this and will let you know if you are not doing this.
 
 ### Timestamp Data Types
 - Two time-related properties are included in your event automatically.
 - The properties “datasnap.timestamp” and “datasnap.created_at” are set at the time your event is recorded. You have the ability to overwrite the datasnap.timestamp property. This could be useful, for example, if you are backfilling historical data.
 - Be sure to use ISO-8601 Format. http://en.wikipedia.org/wiki/ISO_8601
-- Be sure to include the timezone
+- Be sure to include the timezone.
 
 Examples:
 
@@ -79,128 +84,146 @@ Examples:
 
 ```
 
-### Special internal Datasnap fields
+### Special Internal Datasnap Fields
 
-- We denote these under the "datasnap" property in the root json payload. These will be automatically set for you
+- We denote these under the "datasnap" property in the root JSON payload. These will be automatically set for you
 via one of our SDKs or via our backend server such as _timestamp_.
-You can of course override these at any time but please be careful in doing so.
+You can of course override these at any time, but please be careful in doing so.
 
-### URL Parameter "data" encoding
-The following encoding should be used when sending json information into the data URL Parameter (There are ready libraries that do this in Ruby, PHP, and Javascript.)
+### URL Parameter "data" Encoding
+The following encoding should be used when sending JSON information into the data URL Parameter (There are ready libraries that do this in Ruby, PHP, and Javascript).
 
-- 'URL Safe' base64 encoding, or "RFC4648 base64url (Base 64 Encoding with URL and Filename Safe Alphabet)
+- 'URL Safe' base64 encoding
+
+OR
+- "RFC4648 base64url (Base 64 Encoding with URL and Filename Safe Alphabet)
 
 
 
 
-## Sending Events 
+## Sending Events
 
 ### Important Information
 
-- You can only send one organization ID (or Customer Org ID) per API request. You cannot send mupliple organization IDs or you will get a 401 error.
+- You can only send one `organization_id` (or `customer_org_id`) per API request. You cannot send mupliple organization IDs or you will get a 401 error.
 - Venue and organization names should **NEVER** contain underscores '_'
-- When sending a **campaign event** you must send the advertiser\_org\_id, the project_id and the organization\_id that owns the app
-- When sending a **beacon event** you must send the the project_id, the venue_org_id and the organization\_id that owns the app
+- When sending a **campaign event** you must send the `advertiser_org_id`, the `project_id` and the `organization_id` that own the app
+- When sending a **beacon event** you must send the the `project_id`, the `venue_org_id` and the `organization_id` that own the app
 
 
 ### Required Event Fields
 
-| Name | Description |
-|---|---|
-| **organization_ids** | organization id assigned to you (optional if you send the customer_org_id property.)|
-| **customer_org_id** | Required if not sending organization ID and you have setup these IDS via the Organization API.|
-| **venue_org_id** | Required and represents the venue where the actual beacons are placed.|
-| **customer_venue_org_id** | Required if not sending venue_org_id ID and you have setup these IDS via the Organization API.|
-| **advertiser_org_id** | Required if sending campaign/communication events and represents the Advertiser that the app is sending the communication on behalf of.|
-| **customer_advertiser_org_id** | Required if not sending advertiser_org_id ID and you have setup these IDS via the Organization API.|
-| **project_id** | Required Project id within that organization (typically app) |
-| **event\_type** | The type of event you are sending - beacon\_sighting, geofence_depart etc.
-| **global\_distinct\_id** | the unique user id associated with this event. It should go under user. |
+Events require certain IDs in order to successfully post.  At a minimum, identifying the organization, project, venue and user are required.
+**Additional properties included in events must also include their respective IDs and names.** For example, include `identifier` and `name` in the _beacon_ property and
+`id` and `name` in the _place_ property
+
+<p></p>
+
+All events **must** contain the following information:
+
+| Attribute | Description | Data Format |
+|---|---| ---|
+| **organization_ids** | Organization ID assigned to you (optional if you send the `customer_org_id` property.)| String |
+| **venue_org_id** | Required. Represents the venue where the actual beacons are placed (optional if you send the `customer_venue_org_id` property.).| String |
+| **project_id** | Required Project ID within that organization (typically represents the app). | String |
+| **event\_type** | The type of event you are sending - beacon\_sighting, geofence_depart etc.|  String |
+| **global\_distinct\_id** | The unique user ID associated with this event. It should go under user. | String |
+| **advertiser_org_id** | Required only if sending campaign/communication events. Represents the Advertiser to whom the app is sending communication.| String |
+
+**NOTE:** The maximum size of the JSON payload is 50 kilobytes (KB).
+
+<br>
+Using `customer_` properties is also valid if you set up interal IDs using the Entity API:
+
+| Attribute | Description | Data Format |
+|---|---| ---|
+| **customer_org_id** | Required if not sending `organization_id` and you have setup these IDs via the Organization API.| String |
+| **customer_venue_org_id** | Required if not sending `venue_org_id` and you have setup these IDs via the Organization API.| String |
+| **customer_advertiser_org_id** | Required if not sending `advertiser_org_id` and you have setup these IDs via the Organization API.| String |
 
 
-
-NOTE: The maximum size of the json payload is 50 kilobytes (KB).
-
+<section id="standardEvents">&nbsp;</section>
 ### Standard Events
-Standard events are treated specially by Datasnap and will be automatically applied to your Reports Dimensions and Metrics. You can also send non-standard events. You can work with datasnap.io to get these integrated into your reports.
-
+Standard events, treated specially by Datasnap, are automatically applied to your Reports Dimensions and Metrics. You can also send non-standard events by working with datasnap.io to get these integrated into your reports.
 
 
 | Event                            | Description               | Event Type |
 |----------------------------------|---------------------------|---|
 | **status_ping** | Event used to send a test message that can be used for health monitoring and testing.  Will not be rolled up into system. | Diagnostic |
-| **opt_in_location** | The user has opted in to track their location and accepted all appropriate terms of use | In App Opt In |
-| **opt_in_push_notifications** | The user has opted in to receieve push notifications | In App Opt In |
-| **opt_in_vendor** | A user has opted in to the vendors specific terms | In App Opt In |
-| **app_installed** | The user installed the app. Most mobile analytics platforms record this already but it is a useful enough event to provide it here | In App Interactions |
-| **interaction_tap** | Some tap has happened in the app. Can be associated with a camapign, communication, or just an app by itself | In App Interactions |
-| **interaction_view** | Some view has happened in the app. Can be associated with a camapign, communication, or just an app by itself | In App Interactions |
-| **interaction_swipe** | Some swipe has happened in the app. Can be associated with a camapign, communication, or just an app by itself | In App Interaction |
-| **interaction_shake** | Some shake has happened in the app. Can be associated with a camapign, communication, or just an app by itself | In App Interaction |
-| **interaction_tilt** | Some tilt has happened in the app. Can be associated with a camapign, communication, or just an app by itself | In App Interaction |
-| **ds_communication_sent** | A communication has been delivered to the user. For mobile these are typically push notifications or in App Modals. | Communication Event |
-| **ds_communication_open** | A communication have been opened by the user | For mobile these are typically push notifications or in App Modals. | Communication Event
-| **campaign_request** | The app has requested a campaign to be show to the user | Communication Event |
-| **campaign_redemption** | The user has redeemed a coupon or similar as part of the campaign | Communication Event |
-| **global_position_sighting** | Records the Device/Users current global position | GPS Event |
-| **beacon_arrive** | A users first time receiving a broadcast from a particular beacon | Beacon Event |
-| **beacon_sighting** | A user is within a particular beacon range and has received a broadcast from the beacon | Beacon Event |
-| **beacon_depart_vendor** | This event can be thrown when a vendors's SDK detect an event. For some vendors this setting can be erroneous so its recommended ot track separately for audit reporting. | Beacon Event |
-| **beacon_depart** | A true departed event meaning the user has departed and we feel confident that this event is correct. Some folks use their own calculation to throw this event. | Beacon Event |
-| **beacon_visit** | A true user visit into a proximity or geotrigger.  This is many times calulated by looking at sighting data or inferred through the use of the departed event. | Beacon Event |
-| **beacon_visit_vendor** | A user visit into a proximity or geotrigger as sent by the beacon vendor.  This is used to compare with the true calculation of the beacon_visit event. | Beacon Event |
-| **geofence_arrive** | A user has entered a Geofence | Geofence Event |
-| **geofence_sighting** | A user is still in the Geofence after a interval based check of their location | Geofence Event |
-| **geofence_depart** | A user has left the Geofence | Geofence Event |
+| **opt_in_location** | The user has opted-in to track his or her location and accepted all appropriate terms of use. | In-App Opt-In |
+| **opt_in_push_notifications** | The user has opted-in to receieve push notifications. | In-App Opt-In |
+| **opt_in_vendor** | A user has opted-in to the vendors specific terms. | In-App Opt-In |
+| **app_installed** | The user installed the app. Most mobile analytics platforms record this already, but it is a useful enough event to provide it here. | In-App Interactions |
+| **ds_communication_sent** | A communication has been delivered to the user. For mobile, these are typically push notifications or In-App Modals. | Communication Event |
+| **ds_communication_open** | A communication have been opened by the user. | For mobile these are typically push notifications or In-App Modals. | Communication Event
+| **global_position_sighting** | Records the Device/Users current global position. | GPS Event |
+| **beacon_arrive** | A user's first time receiving a broadcast from a particular beacon. | Beacon Event |
+| **beacon_sighting** | A user is within a particular beacon range and has received a broadcast from the beacon. | Beacon Event |
+| **beacon_depart** | A true departed event, meaning the user has departed, and we feel confident that this event is correct. Apps can also use their own calculation to throw this event. | Beacon Event |
+| **geofence_depart** | A user has left the Geofence. | Geofence Event |
 
-### Update Events
 
-**NOTE:** If you use the Entity API metholoogy to populate entity names and properties then you should use that to update information! http://docs.datasnapioentityapi.apiary.io/#
+<!--| Event                            | Description               | Event Type |-->
+<!--|----------------------------------|---------------------------|---|-->
+<!--| **status_ping** | Event used to send a test message that can be used for health monitoring and testing.  Will not be rolled up into system. | Diagnostic |-->
+<!--| **opt_in_location** | The user has opted-in to track his or her location and accepted all appropriate terms of use. | In-App Opt-In |-->
+<!--| **opt_in_push_notifications** | The user has opted-in to receieve push notifications. | In-App Opt-In |-->
+<!--| **opt_in_vendor** | A user has opted-in to the vendors specific terms. | In-App Opt-In |-->
+<!--| **app_installed** | The user installed the app. Most mobile analytics platforms record this already, but it is a useful enough event to provide it here. | In-App Interactions |-->
+<!--| **interaction_tap** | Some tap has happened in the app. Can be associated with a campaign, communication, or just an app by itself. | In-App Interactions |-->
+<!--| **interaction_view** | Some view has happened in the app. Can be associated with a campaign, communication, or just an app by itself. | In-App Interactions |-->
+<!--| **interaction_swipe** | Some swipe has happened in the app. Can be associated with a campaign, communication, or just an app by itself. | In-App Interaction |-->
+<!--| **interaction_shake** | Some shake has happened in the app. Can be associated with a campaign, communication, or just an app by itself. | In-App Interaction |-->
+<!--| **interaction_tilt** | Some tilt has happened in the app. Can be associated with a campaign, communication, or just an app by itself. | In-App Interaction |-->
+<!--| **ds_communication_sent** | A communication has been delivered to the user. For mobile, these are typically push notifications or In-App Modals. | Communication Event |-->
+<!--| **ds_communication_open** | A communication have been opened by the user. | For mobile these are typically push notifications or In-App Modals. | Communication Event-->
+<!--| **campaign_request** | The app has requested a campaign be shown to the user. | Communication Event |-->
+<!--| **campaign_redemption** | The user has redeemed a coupon or similar as part of the campaign. | Communication Event |-->
+<!--| **global_position_sighting** | Records the Device/Users current global position. | GPS Event |-->
+<!--| **beacon_arrive** | A user's first time receiving a broadcast from a particular beacon. | Beacon Event |-->
+<!--| **beacon_sighting** | A user is within a particular beacon range and has received a broadcast from the beacon. | Beacon Event |-->
+<!--| **beacon_depart_vendor** | This event can be thrown when a vendor's SDK detects an event. This setting can be erroneous for some vendors, so it's recommended to track it separately for audit reporting. | Beacon Event |-->
+<!--| **beacon_depart** | A true departed event, meaning the user has departed, and we feel confident that this event is correct. Apps can also use their own calculation to throw this event. | Beacon Event |-->
+<!--| **beacon_visit** | A true user visit into a proximity or geotrigger.  This is calulated many times by looking at sighting data or inferred through the use of the departed event. | Beacon Event |-->
+<!--| **beacon_visit_vendor** | A user visit into a proximity or geotrigger as sent by the beacon vendor.  This is used to compare with the true calculation of the `beacon_visit` event. | Beacon Event |-->
+<!--| **geofence_arrive** | A user has entered a Geofence. | Geofence Event |-->
+<!--| **geofence_sighting** | A user is still in the Geofence after a interval-based check of their location. | Geofence Event |-->
+<!--| **geofence_depart** | A user has left the Geofence. | Geofence Event |-->
 
-- Any top level properties such as place/campaign/beacon will be updated in our system if you pass along the dimension/meta fields such as beacon name. 
-- You do not need to send these fields every time you send an event.
-- You can also fire specific events such as place_update to clearly indicate that your updating the place/camapign/beacon data.
-
-| Event                            | Description               | 
-|----------------------------------|---------------------------|
-| place_update | indicates that a place update has occurred. Usually would only contain the place | 
-| campaign_update | indicates that a campaign update has occurred. usually would only contain the campaign. | 
-| beacon_update | indicates that a beacon update has occurred | usually would only contain the beacon |
 
 ### Non-Standard Events
-- You CAN also append any other json properties as you want at any level that you would like.
+You CAN also append any other desired JSON properties at any level that you would like.
 
+
+<br>
 ## Event Properties
 
+The following top-level properties represent the current domain dealing with proximity data and events.
 
-We have the following top level properties that represent the current domain when dealing with proximity data and events.
-
-These properties can automatically be updated or they can be updated as part of our Entity API. You must pick one approach to use you cannot do both at the same time.
-http://docs.datasnapioentityapi.apiary.io
-
+These properties can be updated as part of our Entity API.
+Please See: http://docs.datasnapioentityapi.apiary.io
 
 
 <p></p>
 
- Where did we come up with these names? Well we have a lot of experience modeling data, researched all of the leading Beacon providers, and
- of course spoke ot a lot of customers and looked at actual data that they have acquired and wanted insight for.
+ _Where did we come up with these names?_ We have a lot of experience modeling data. After researching the leading Beacon providers and speaking to a lot of customers about their acquired data for which they wanted insights, we created this naming convention.
 <section id="tags">&nbsp;</section>
-### PROPERTY: TAGS
-***
+<!--### PROPERTY: TAGS-->
+<!--***-->
 
- All top level entities allow you to tag them. This will allow for an unlimited amount of ways in which to group and report on these entities and the events they are attached to.
+<!-- All top-level entities allow you to tag them. This grants unlimited ways to group and report on these entities and the events attached to them.-->
 
-```
+<!--```-->
 
-{
-    "tags":
-    [
-      "womens",
-      "golf",
-      "shoes"
-    ]
-}
-```
+<!--{-->
+<!--    "tags":-->
+<!--    [-->
+<!--      "womens",-->
+<!--      "golf",-->
+<!--      "shoes"-->
+<!--    ]-->
+<!--}-->
+<!--```-->
 
 
 
@@ -208,12 +231,12 @@ http://docs.datasnapioentityapi.apiary.io
 ### PROPERTY: ORGANIZATION
 ***
 
- A organization is a abstract way to group your data at a high level and focus on the organizational and data access level of your data. You can assign permissions to each org and have
+ An _organization_ is an abstract way to group your data at a high level. Organizations are the topmost access level to your data. You can assign permissions to each organization and have
  a hierarchy or organizations  based on your company structure.
 
 Please See: http://docs.datasnapioentityapi.apiary.io/#reference/organization
 
-Only ONE organization may be passed in currently in this event/array.
+Only ONE organization may currently be passed in this event/array.
 
 
 ```
@@ -228,17 +251,17 @@ Only ONE organization may be passed in currently in this event/array.
 ***
 
 
-To ease integraton with our parners, sometimes it is easier for events to be sent using their own internal client/Org ID.
+To ease integraton with our partners, sometimes it is easier for events to be sent using their own internal client/Org ID.
 
-If this is the case we allow the setting of this ID via our Organization API
+In this case, `customer_org_id` can be set via our Organization API.
 
 Please See: http://docs.datasnapioentityapi.apiary.io/#reference/organization
 
-Once these customer IDs have been set you can then pass the ID to the event service WITHOUT a organization_ids filed being present.
+After these customer IDs are set, you can pass the ID to the event service **without** an `organization_ids` field present.
 
-We will lookup the proper organization ID for you and add to the event automatically.
+The proper organization ID will be looked up and added to the event automatically.
 
-This is a top level property:
+This is a top level-property:
 
 ```
  "customer_org_id":"53d7ef540af5502d6f943817",
@@ -273,13 +296,13 @@ Example event:
 ### PROPERTY: VENUE ORGANIZATION
 ***
 
-Some reports require a more specific mapping of where the beacons are actually located. A venue is this concept and is technically an organization but is marked as a venue.
+The _venue_ property is a specialized type of organization that is useful when more specific beacon mapping is required.
 
-If this is the case we allow the setting of this ID via our Organization API. You just create a normal organization with the **isVenue flag set to true** to indicate its a venue.
+Set the `venue_org_id` via the Organization API. Simply create a normal organization with the flag `"isVenue": true` indicating that it is a venue.
 
-Please See: http://docs.datasnapioentityapi.apiary.io/#reference/organization
+Please see: http://docs.datasnapioentityapi.apiary.io/#reference/organization
 
-This is a top level property:
+This is a top-level property:
 
 ```
  "venue_org_id":"53d7ef540af5502d6f943817",
@@ -317,23 +340,20 @@ Example event:
 <section id="customer_venue_org_id">&nbsp;</section>
 ### PROPERTY: CUSTOMER VENUE ORGANIZATION
 ***
+The _venue_ property is a specialized type of organization that is useful when more specific beacon mapping is required.
 
+To ease integraton with our partners, sometimes it is easier for events to be sent using their own internal client/Org ID.
 
-To ease integraton with our parners, sometimes it is easier for events to be sent using their own internal client/Org ID.
-
-If this is the case we allow the setting of this ID via our Organization API.
-
-A Venue Org ID is an Org that has been created with isVenue = true indicating that it is a venue.
-
-This is useful for place and pathing based reports.
+If you require a client-specific venue ID, you can set `customer_venue_org_id` via the Organization API.
 
 Please See: http://docs.datasnapioentityapi.apiary.io/#reference/organization
 
-Once these customer IDs have been set you can then pass the ID to the event service WITHOUT a organization_ids field being present.
+After these customer IDs are set, you can pass the ID to the event service **without** an `organization_ids` field present.
 
-We will lookup the proper organization ID for you and add to the event automatically under the venue_org_id property.
+The proper organization ID will be looked up and added to the event automatically under the `venue_org_id` property.
 
-This is a top level property:
+
+This is a top-level property:
 
 ```
  "customer_venue_org_id":"53d7ef540af5502d6f943817",
@@ -371,12 +391,12 @@ Example event:
 ### PROPERTY: ADVERTISER ORGANIZATION
 ***
 
-In many cases you will be running campaigns on behalf of third parties via a network like model.  If this is the case then you need ot create these advertisers as children within
-your organization and send events indicating the advertiser that the campaign was sent of behalf of. 
+In many cases, you will be running campaigns on behalf of third parties via a network-like model.  If this is the case, create these advertisers as children within
+your organization and send events indicating the campaign's advertiser. 
 
-To indicate that an organization should be considered an advertiser you create a normal organization with the **isAdvertiser=true** to indicate it is an Advertiser organization. Please See: http://docs.datasnapioentityapi.apiary.io/#reference/organization
+Set the `advertiser_org_id` via the Organization API. Simply create a normal organization with the flag `"isAdvertiser": true` indicating that it is an advertiser. Please See: http://docs.datasnapioentityapi.apiary.io/#reference/organization
 
-NOTE: If you do not pass in an advertiser\_org\_id or pass in an invalid organization the campaign event will default to the organization\_id organization.
+**NOTE:** If you do not pass in an `advertiser_org_id` or if you pass in an invalid `advertiser_org_id`, the campaign event will default to the `organization_id` organization.
 
 ```
  "advertiser_org_id":"53d7ef540af5502d6f943817",
@@ -418,20 +438,18 @@ Example event:
 <section id="customer_advertiser_org_id">&nbsp;</section>
 ### PROPERTY: CUSTOMER ADVERTISER ORGANIZATION
 ***
+An `advertiser_org_id` is an organization that has been created with `"isAdvertiser": true` indicating that it is an advertiser.
 
+To ease integraton with our partners, sometimes it is easier for events to be sent using their own internal client/Org ID.
 
-To ease integraton with our parners, sometimes it is easier for events to be sent using their own internal client/Org ID.
+If you require a customer-specific advertiser ID, you can set `customer_advertiser_org_id` via the Organization API.
 
-If this is the case we allow the setting of this ID via our organization API.
+After these customer IDs are set, you can pass the ID to the event service **without** the `advertiser_org_id` field present.
 
-A Advertiser Org ID is an Org that has been created with isAdvertiser = true indicating that it is a Advertiser.
+The proper organization ID will be looked up and added to the event automatically under the `advertiser_org_id` property.
 
+**NOTE:** If you do not pass in an `advertiser_org_id` or if you pass in an invalid `advertiser_org_id`, the campaign event will default to the `organization_id` organization.
 
-Once these customer IDs have been set you can then pass the ID to the event service WITHOUT a advertiser_org_id field being present.
-
-We will lookup the proper organization ID for you and add to the event automatically under the advertiser_org_id property.
-
-NOTE: The default behaviour is that if you do not pass in an advertiser_org_id or pass in an invalid organization then it will default to the organization_ids organization.
 
 ```
  "customer_advertiser_org_id":"53d7ef540af5502d6f943817",
@@ -472,10 +490,10 @@ Example event:
 ### PROPERTY: PROJECT
 ***
 
-A project is an abstract way to group your data at a high level. In most cases this is the app. Examples of project could include a mobile App or some other type of special project where
- you want to group and aggregate the data for reporting purposes.
-
-Please See: http://docs.datasnapioentityapi.apiary.io/#reference/project
+A _project_ is an abstract way to group your data at a high level. Oftentimes, the _project_ represents the mobile app or
+some other type of special project where you want to group and aggregate data for reporting purposes.
+ 
+Please See: http://docs.datasnapioentityapi.apiary.io/#reference/project for setting up projects.
 
 Only ONE project may be passed in this array.
 
@@ -487,96 +505,91 @@ Only ONE project may be passed in this array.
      ]
 ```
 
-Also note that we do allow the autogeneration of project name if you pass in tie project name at the root level. It will be associated with that projects_ids passed into the array.
 
-We are working towards cleanign up this API some in the future.
-
-```
-     "project_name":"3HRhnUtmtXnT1UHQHClAcP"
-```
-
-<section id="place">&nbsp;</section>
+<!--<section id="place">&nbsp;</section>-->
 
 
-### PROPERTY: PLACE
-***
+<!--### PROPERTY: PLACE-->
+<!--***-->
 
- A place is a geographic way to group sets of location properties. You can nest as many locations within a place as you want. A place is meant to represent a contiguous location.  A place contains metadata about a location and is comprised of one or more geofences, beacons or addresses. Datasnap.io uses places to determine pathing and traffic patterns.
+<!--A _place_ is a geographic way to group sets of contiguous locations. -->
+<!--A _place_ contains metadata about a location and is comprised of one or more geofences, beacons or addresses. -->
 
- For example you may have a place in a stadium called main stage and within that you may have a set of beacons covering the stage (stage left, center stage, stage right).
+<!--For example, you may have a place in a stadium called "Main Stage," and within that, you may have a set of beacons covering the stage ("Stage left," "Center Stage," "Stage Right").-->
 
+<!--Datasnap.io uses places to determine pathing and traffic patterns. You must set up places to see data in the pathing widget.-->
 
-| Attribute | Description | Example |Data Format |
-| ----------|-------------| --- | ----------- |
-| id     | Unique id of a place | | String |
-| name   | Name of the place  |  Mission District, San Francisco Airport, Main Stage |   String |
-| places | One or more places within the place | | Array |
-| dwell_time   | Total time in seconds they were at this place. |   600 | Number |
-| address | One or more addresses within the place | | String |
-| last_place | The last place sighted by the user |  | String |
-| geofences | Geofences grouped within the place |  | Array |
-| beacons | Beacons grouped within the place   |   | Array |
-| reporting_visibility | Whether ot Hide/Show this property in the Reporting Dashboard | | Boolean |
-<br>
+<!--| Attribute | Description | Example |Data Format |-->
+<!--| ----------|-------------| --- | ----------- |-->
+<!--| id     | Unique id of a place | Stage-01  | String |-->
+<!--| name   | Name of the place  |  Mission District, San Francisco Airport, Main Stage |   String |-->
+<!--| places | One or more places within the place | | Array |-->
+<!--| dwell_time   | Total time in seconds a user was at this place |   600 | Number |-->
+<!--| address | One or more addresses within the place | | String |-->
+<!--| last_place | The last place sighted by the user |  | String |-->
+<!--| geofences | Geofences grouped within the place |  | Array |-->
+<!--| beacons | Beacons grouped within the place   |   | Array |-->
+<!--| reporting_visibility | Whether to Hide/Show this property in the Reporting Dashboard | | Boolean |-->
+<!--<br>-->
 
-```
-     "place": {
-         "id": "placeid",
-         "name": "Mission District",
-         "tags": [
-             "womens",
-             "golf",
-             "shoes"
-         ],
-         "places":  [
-           {
-               "placeid": "placeid2"
-           },
-           {
-               "placeid": "placeid3"
-           }
-         ],
-         "address": {
-             "address1": "103 west street",
-             "address2": "",
-             "city": "San Francisco",
-             "region": "CA",
-             "zip": 94107,
-             "zip4": 3422
-         },
-         "last_place": "placeid-3",
-         "geofences": [
-             {
-                 "geofenceid": "geofenceid2"
-             },
-             {
-                 "geofenceid": "geofenceid2"
-             }
-         ],
+<!--```-->
+<!--     "place": {-->
+<!--         "id": "placeid",-->
+<!--         "name": "Mission District",-->
+<!--         "tags": [-->
+<!--             "womens",-->
+<!--             "golf",-->
+<!--             "shoes"-->
+<!--         ],-->
+<!--         "places":  [-->
+<!--           {-->
+<!--               "placeid": "placeid2"-->
+<!--           },-->
+<!--           {-->
+<!--               "placeid": "placeid3"-->
+<!--           }-->
+<!--         ],-->
+<!--         "address": {-->
+<!--             "address1": "103 west street",-->
+<!--             "address2": "",-->
+<!--             "city": "San Francisco",-->
+<!--             "region": "CA",-->
+<!--             "zip": 94107,-->
+<!--             "zip4": 3422-->
+<!--         },-->
+<!--         "last_place": "placeid-3",-->
+<!--         "geofences": [-->
+<!--             {-->
+<!--                 "geofenceid": "geofenceid2"-->
+<!--             },-->
+<!--             {-->
+<!--                 "geofenceid": "geofenceid2"-->
+<!--             }-->
+<!--         ],-->
 
-         "beacons": [
-             {
-                 "beaconid": "beaconid1"
-             },
-             {
-                 "beaconid": "beaconid2"
-             }
-         ]
-     }
-```
+<!--         "beacons": [-->
+<!--             {-->
+<!--                 "beaconid": "beaconid1"-->
+<!--             },-->
+<!--             {-->
+<!--                 "beaconid": "beaconid2"-->
+<!--             }-->
+<!--         ]-->
+<!--     }-->
+<!--```-->
 
 <section id="gps_position">&nbsp;</section>
 ### PROPERTY: GLOBAL POSITION
 ***
 
- A Global Position contains all of the data coming out of the Location sensors on the device. Note that some devices can use Wifi
- and Cellular to provide some of this information int he entity below, but in general GPS is used.
+ A _Global Position_ contains all of the data coming out of the device's location sensors. Some devices can use WiFi
+ and cellular to provide some of this information in the entity below, but in general, GPS is used.
 
- **This is the GPS of the user NOT the beacon. This will populate the map with heat-map in the UI.**
+ **This is the GPS of the user, NOT the beacon. This will populate the heat-map in the UI.**
 
 | Attribute  | Description           | Data Format  |
 | --- |---| ---|
-| location | Lat,long co-ordinates. **NOTE** Latitude should be first then Longitude | Array |
+| location | Lat, long coordinates. <br> **NOTE:** Latitude should be first then Longitude | Array |
 | altitude | Height measured in meter units      |   String |
 | accuracy | Level of accuracy of the GPS (in meters)     |    String |
 | course | Direction of movement | String |
@@ -598,43 +611,44 @@ We are working towards cleanign up this API some in the future.
 }
 ```
 
+
 <section id="beacon">&nbsp;</section>
 ### PROPERTY: BEACON
 ***
 
- A beacon represents the actual beacon metadata and/or specific sighting data involve in the event.
+ A _beacon_ represents the actual beacon metadata and/or specific sighting data involved in the event.
 
- Note that in some cases that the actual rssi and dwell time are in fact dependent on a Eser entity being in play
+In some cases, the actual RSSI and dwell time are dependent on a User entity being in play,
  but we felt that this data should still remain under the Beacon entity.
 
- is_mobile field denotes that the beacon is moving around.The default is false if not filled in.
+ `is_mobile` field denotes that the beacon is moving around. The default is `false` if not filled in.
 
 
 | Attribute       | Explanation           | Data Format  |
 | --- |---| ---|
-| identifier     | Unique beacon id| String |
+| identifier     | Unique beacon ID| String |
 | name     | Name of the beacon | String |
-|tags | Tags applied to beacon   |   String |
-| ble_uuid   | Bluetooth Low Energy uuid for the beacon      |   String |
-| ble_vendor_uuid | Bluetooth Low Energy Vendor uuid for the beacon      |    String |
-| ble_vendor_id | Bluetooth Low Energy Vendor id for the beacon | String |
-| protocol | Beacon protocol being advertised by the beacon. Possible Values are (ibeacon, eddystone, altbeacon, gimbal) | String |
-| protocol_frametype |Protocol frametype is primarily for eddystone. If no value is supplied then the protol itself is the frame type. (Examples for eddystone are: Eddystone-UID, Eddystone-URL, Eddystone-TLM) | String |
+|tags | Tags applied to the beacon   |   String |
+| ble_uuid   | Bluetooth Low Energy UUID for the beacon      |   String |
+| ble_vendor_uuid | Bluetooth Low Energy Vendor UUID for the beacon      |    String |
+| ble_vendor_id | Bluetooth Low Energy Vendor ID for the beacon | String |
+| protocol | Advertised beacon protocol. Possible values include ibeacon, eddystone, altbeacon, gimbal | String |
+| protocol_frametype |Protocol frametype is primarily for eddystone. If no value is supplied, then the protocol itself is the frame type. (Examples for eddystone are: `Eddystone-UID`, `Eddystone-URL`, `Eddystone-TLM`) | String |
 | uuid | iBeacon UUID | String |
 | ibeacon_major | iBeacon Major ID | String |
 | ibeacon_minor | iBeacon Minor ID | String |
 |rssi | Received Signal Strength Indicator for the beacon   |   String |
 | is_mobile | Denotes whether the beacon is a moving beacon or not. Should be set to True or False.    |    String |
 | previous_rssi | Prior Received Signal Strength Indicator for the beacon      |    String |
-| dwell_time   | Current event timestamp minus start_time timestamp  |   String |
+| dwell_time   | Current event timestamp minus `start_time` timestamp  |   String |
 | start_time   | Start time of the visit  |    String |
 | coordinates | Lat/long coordinates of the beacon     |   Array |
-| visibility | Who can see this beacon? (private or public)     |    String |
+| visibility | Who can see this beacon? (Private or Public)     |    String |
 | battery_level | Current battery level of the beacon | String |
 | temperature | Degrees in Fahrenheit |   String |
 | hardware   | Hardware of the beacon (Gimbal, Estimote etc)     |    String |
 | categories | Can represent any hierarchical category for the beacon | String |
-| reporting_visibility | Whether ot Hide/Show this property in the Reporting Dashboard | | Boolean |
+| reporting_visibility | Whether to Hide/Show this property in the Reporting Dashboard | | Boolean |
 <br>
 
 
@@ -686,23 +700,27 @@ We are working towards cleanign up this API some in the future.
 
 <section id="geofence">&nbsp;</section>
 ### PROPERTY: GEOFENCE
+
+A _geofence_ is a defined virtual perimeter around a geographical location. It can be a defined radius, as set with the `geofence_circle` field, or a zoned boundary, as set with the `geofence_polygon` field.
+
+
 ***
 | Attribute        | Description           | Data Format  |
 | --- |---| ---|
-| identifier    | Unique geofence id | String |
+| identifier    | Unique geofence ID | String |
 | name   | Name of the geofence | String |
-| visibility | Who can see this beacon? (private or public) |    String |
+| visibility | Who can see this beacon? (Private or Public) |    String |
 | tags | Descriptive tags for the geofence | Array |
-| geofence_circle| Use this if the geofence is a circle along with lat-long co-ordinates |   Array |
-| geofence_polygon|  Use this if the geofence is a polygon along with lat-long co-ordinates |    Array |
-| reporting_visibility | Whether ot Hide/Show this property in the Reporting Dashboard | | Boolean |
+| geofence_circle| Use this if the geofence is a circle. <br> The array includes the `radius` of the circle in meters and the center `location` in lat-long coordinates |   Array |
+| geofence_polygon|  Use this if the geofence is a polygon, defined by several `location` fields in lat-long coordinates |    Array |
+| reporting_visibility | Whether to Hide/Show this property in the Reporting Dashboard | | Boolean |
 <br>
 
 ```
  "geofence": {
      "identifier": "geofence2",
      "name": "SF Gelen Park",
-     "visibility": "ORGANIZATION",
+     "visibility": "Public",
 
      "tags": [
          "womens",
@@ -744,13 +762,13 @@ We are working towards cleanign up this API some in the future.
 
 ### PROPERTY: USER
 ***
-This is where the magic truly happens in our platform. The more user data you send to us the more insight you can get
-and the more we can begin to tie sessions together to build out insight into user behavior extending out to the marketing cloud.
+This is where the magic truly happens in our platform. The more user data you send us, the more insight we can deliver. 
+With more data, we can begin to tie sessions together, building insight into user behavior extending out to the marketing cloud.
 
-As you can see we accept a very large set of potential user identifiers that could be in play in the digital ecosystem.
-These identifiers could come from any number of sources so we kept the properties as descriptive as possible.
+We accept a vast set of potential user identifiers that tie into the digital ecosystem. 
+These identifiers could come from any number of sources, so the properties are as descriptive as possible.
 
-The platform accepts a number of default properties or segments along with a user. By sending in these properties
+The platform accepts a number of default properties or segments along with a user. By sending in these properties,
 you can see the data sliced and diced by segment. Just send in the user information with any event.
 
 
@@ -759,7 +777,7 @@ you can see the data sliced and diced by segment. Just send in the user informat
 | Attribute        | Description           | Data Format  |
 | --- |---| ---|
 | tags     | Descriptive tags for the user | Array |
-| id   | Unique user id      |   String |
+| id   | Unique user ID      |   String |
 | segments   | Audience characteristics of the user |    Array |
 | age_range| Age range of the user | String |
 | dob| Date of Birth of the user | String |
@@ -770,11 +788,11 @@ you can see the data sliced and diced by segment. Just send in the user informat
 | education| Education of the user | String |
 | ISO3| Country code of the user | String |
 | ISO2| Country code of the user | String |
-| postcode| Postal codeof the user | String |
+| postcode| Postal code of the user | String |
 | occupational_status| Occupational status of the user | String |
-| home_owner| Is the user a home owner | String |
-| latino_hispanic| Is the user of hispanic heritage | String |
-| student_status| Is the user a student | String |
+| home_owner| Is the user a home owner? | String |
+| latino_hispanic| Is the user of hispanic heritage? | String |
+| student_status| Is the user a student? | String |
 | region| Region of the user | String |
 | reporting_visibility | Whether to Hide/Show this property in the Reporting Dashboard | | Boolean |
 
@@ -826,9 +844,9 @@ you can see the data sliced and diced by segment. Just send in the user informat
 #### student_status
 | Name | Description
 | --- | ---
-| Full Time Student | In education full time
-| Part Time Student | In education part time
-| Not a Student | Not in education
+| Full Time Student | Enrolled full-time
+| Part Time Student | Enrolled part-time
+| Not a Student | Not enrolled in school
 | unknown | 
 | decline | user declined to answer
  
@@ -986,19 +1004,22 @@ Example:
 ### PROPERTY: COMMUNICATION
 ***
 
-You can send any type of communication to us (in-app or push notification). Communication doesn't always need to indicate
-that the content actually appeared on the users device, just that a communication was sent.
+You can send any type of _communication_ (in-app or push notification). Communication doesn't always need to indicate
+that the content actually appeared on the user's device, just that a communication was sent.
+
+For more targeted communication, use _campaign_.
+
 
 | Attribute | Description | Example | Data Format  |
 | --- |---| ---| ---|
-| identifier     | Unique communication id | |String |
+| identifier     | Unique communication ID | |String |
 | name   | Name of the communication   | Buy hotdogs at Half Time  |   String |
-| advertiser_org_id   | The advertiser associated with the campaign. NOTE: Will defult to the top leve org if not passed in.     |   String |
+| advertiser_org_id   | The advertiser associated with the campaign. <br>**NOTE:** Will default to the top-level organization if not passed in   | | String |
 | tags   | Descriptors for the communication   |   |    Array |
-| description | High-level description of the communication (see content for lower-level) | | String |
-| content |  content of the communication. This can be in plain text, formatted html, an image or a link | Get 10% off if you're wearing Giants hat! |   String |
-| communication\_vendor\_id| id of the vendor who sent the notification |  |    String |
-| status| Whether the communication was sent while the app was running in the possible values of "foreground" or "background". "background" can also mean the app was not running at all. | foreground|background  | String |
+| description | High-level description of the communication (see `content` for lower-level) |  | String |
+| content |  Content of the communication. This can be in plain text, formatted html, an image or a link | Get 10% off if you're wearing Giants hat! | String |
+| communication\_vendor\_id| ID of the vendor who sent the notification |  |    String |
+| status| Whether the communication was sent while the app was running with the possible values of "foreground" or "background". "background" can also mean the app was not running at all. | foreground, <br> background  | String |
 | type| Communication type (in-app or push) | in-app, push | String |
 | reporting_visibility | Whether ot Hide/Show this property in the Reporting Dashboard | | Boolean |
 
@@ -1035,20 +1056,20 @@ that the content actually appeared on the users device, just that a communicatio
 ### PROPERTY: CAMPAIGN
 ***
 
-A campaign represents all of the properties needed to deliver some form of messaging to the user and can include settings,
-targeting criteria, communication id's amongst other things.
+A _campaign_ represents all the properties needed to deliver some form of messaging to the user. It can include settings,
+targeting criteria, communication IDs amongst other things. Unlike _communication_ events, campaigns are targeted and can be sent at specific times.
 
 | Attribute        | Explanation           | Data Format  |
 | --- |---| ---|
-| identifier     | Unique campaign id | String |
+| identifier     | Unique campaign ID | String |
 | name   | Campaign name     |   String |
-| advertiser_org_id   | The advertiser assotiates with the campaign. Will defult to the top leve org if not passed in.     |   String |
+| advertiser_org_id   | The advertiser assotiates with the campaign. Will default to the top-level organization if not passed in.     |   String |
 | tags   | Descriptors for the campaign      |    Array |
 | subcampaigns | Optional sub-campaigns under the parent campaign | Array |
 | targeting_rules | Campaign rules |   String |
 | time_filter| Time period(s) the campaign should run for |    String |
 | time_trigger| Date/time the campaign should be triggered    |    String |
-| communication | Communication id associated with the campaign   |    String |
+| communication | Communication ID associated with the campaign   |    String |
 | reporting_visibility | Whether ot Hide/Show this property in the Reporting Dashboard | | Boolean |
 <br>
 
@@ -1192,21 +1213,17 @@ targeting criteria, communication id's amongst other things.
 <section id="datasnap">&nbsp;</section>
 ### PROPERTY: DATASNAP
 ***
-The datasnap.io property includes time related properties, location properties, device properties and a transaction id. Two time-related properties are included in your event automatically and are set at the time your event is recorded;
-However you can also override the created property if you want. For example it my be useful to override created property if you are back-filling historical data.
-
-
-- **datasnap.timestamp**
-- **datasnap.created**
+The _datasnap_ property includes time-related properties, location properties, device properties and a transaction ID. Two time-related properties are included in your event automatically and are set at the time your event is recorded;
+however, you can also override the created property if desired. For example, it my be useful to override properites if you are back-filling historical data.
 
 
 | Attribute       | Description           | Data Format  |
 | --- |---| ---|
 | timestamp     | Provided by datasnap.io server. Format: year, month, day & time: 24 hour clock & UTC offset| String |
 | created   | Provided by user. Format:  year, month, day & time: 24 hour clock & UTC offset| String |
-| txn_id   | Transaction id generated by the datasnap.io system | String |
-| customer\_txn\_id   | Optional transaction id generated by the customer | String |
-| device   | Information about the data-sending device | String |
+| txn_id   | Transaction ID generated by the datasnap.io system | String |
+| customer\_txn\_id   | Optional transaction ID generated by the customer | String |
+| device   | Information about the device that is sending data | String |
 <br>
 
 ```
@@ -1236,43 +1253,13 @@ However you can also override the created property if you want. For example it m
         }
     }
 ```
-<section id="standardEvents">&nbsp;</section>
-## Standard Events
-***
-All events **must** contain the following information:
 
-| Attribute       | Explanation           | Data Format  |
-| --- |---| ---|
-| event_type     |unique descriptor for event | String |
-| organization_ids   | ids assigned to the organization      |   String |
-| project_ids   |ids assigned to the project      |    String |
-| venue_org_id   |ids assigned to the project      |    String |
-
-<p></p>
-**NOTE:** for properties included in events, **id's and names** must be included. e.g. "identifier" and "name" in the beacon property and
-"id" and "name" in the place property
-
-Also you can use the customer_ equivalent instead of the above properties if using that integration type where you have your own internal IDs andare using the entity API.
+## Example Events [/events]
 
 
-## Events Collection [/events]
+### Example 1: Beacon Sighting [POST]
 
-### Example Events
-
-- Example 1: Beacon Sighting 
-- Example 2: Geofence Depart 
-- Example 3: Campaign and Communication Event 
-- Example 5: User GPS Event
-- Example 6: All Possible Fields
-
-
-### Create an Event [POST]
-
-
-
-
-
-+ Request Beacon Sighting (application/json)
++ Request (application/json)
 
     + Headers
 
@@ -1305,13 +1292,16 @@ Also you can use the customer_ equivalent instead of the above properties if usi
                 }
             ]
 
+
 + Response 200 (application/json)
+        
+        {"created": true}
 
-        { "created": true}
 
 
+### Example 2: Beacon Depart [POST]
 
-+ Request Geofence Depart (application/json)
++ Request (application/json)
 
     + Headers
 
@@ -1321,9 +1311,10 @@ Also you can use the customer_ equivalent instead of the above properties if usi
 
             [
                 {
-                 "event_type":"geofence_depart",
-                 "geofence":{
-                    "identifier":"ABCStoreGeofence"
+                 "event_type":"beacon_depart",
+                 "beacon":{
+                    "identifier":"XC45-223F",
+                    "dwell_time": 180
                  },
                  "user":{
                     "id":{
@@ -1339,19 +1330,62 @@ Also you can use the customer_ equivalent instead of the above properties if usi
                  ],
                  "project_ids":[
                     "IOSApp123"
-                 ],
-                "venue_org_id":"venueclientid1"
-                }
+                 ]
                 }
             ]
 
-+ Response 200 (application/json)
 
-        { "created": true}
++ Response 200 (application/json)
+        
+        {"created": true}
+
+
+
+### Example 3: Geofence Depart [POST]
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic E9NZuB6A91e2J03PKA2g7wx0629czel8
+
+    + Body
+
+            [
+                {
+                     "event_type":"geofence_depart",
+                     "geofence":{
+                        "identifier":"ABCStoreGeofence"
+                     },
+                     "user":{
+                        "id":{
+                           "global_distinct_id":"1234-5566-1234"
+                        }
+                     },
+                     "datasnap": {
+                          "created": "2015-06-23T00:40:15.415Z"
+                    },
+                    "venue_org_id":"stadium1234",
+                     "organization_ids":[
+                        "45877hh233415htdg55t"
+                     ],
+                     "project_ids":[
+                        "IOSApp123"
+                     ],
+                    "venue_org_id":"venueclientid1"
+                }
+
+            ]
+
++ Response 200 (application/json)
+        
+        {"created": true}
         
 
 
-+ Request Campaign Communication Event (application/json)
+### Example 4: Campaign and Communication Event  [POST]
+
+
++ Request (application/json)
 
     + Headers
 
@@ -1384,21 +1418,22 @@ Also you can use the customer_ equivalent instead of the above properties if usi
                     "organization_ids": [
                       "123GFTsggTVF9899H"
                     ],
-                 "project_ids":[
-                    "AppID1"
-                 ]
-            }
+                    "project_ids":[
+                        "AppID1"
+                    ]
+                }
 
             ]
 
 + Response 200 (application/json)
-
-        { "created": true}
+        
+        {"created": true}
 
 
         
+### Example 5: User GPS Event [POST]
 
-+ Request GPS Event (application/json)
++ Request (application/json)
 
     + Headers
 
@@ -1407,50 +1442,49 @@ Also you can use the customer_ equivalent instead of the above properties if usi
     + Body
 
             [
-                "event_type":"global_position_sighting",
-                 "global_position": {
-                      "location": {
-                        "coordinates": [
-                         37.7833,
-                         -122.4167
-                        ]
-                      },
-                      "altitude": 13,
-                      "accuracy": 10,
-                      "course": 77.34375,
-                      "speed": 4
-                 },
-                 "user":{
-                    "id":{
-                       "global_distinct_id":"1234-5566-1234"
-                    }
-                 },
-                 "datasnap": {
-                      "created": "2015-06-23T00:40:15.415Z"
-                },
-                "venue_org_id":"stadium1234",
-                 "organization_ids":[
-                    "45877hh233415htdg55t"
-                 ],
-                 "project_ids":[
-                    "IOSApp123"
-                 ],
-                "venue_org_id":"venueclientid1"
-                }
+                {
+                    "event_type":"global_position_sighting",
+                     "global_position": {
+                          "location": {
+                            "coordinates": [
+                             37.7833,
+                             -122.4167
+                            ]
+                          },
+                          "altitude": 13,
+                          "accuracy": 10,
+                          "course": 77.34375,
+                          "speed": 4
+                     },
+                     "user":{
+                        "id":{
+                           "global_distinct_id":"1234-5566-1234"
+                        }
+                     },
+                     "datasnap": {
+                          "created": "2015-06-23T00:40:15.415Z"
+                    },
+                    "venue_org_id":"stadium1234",
+                    "organization_ids":[
+                        "45877hh233415htdg55t"
+                     ],
+                     "project_ids":[
+                        "IOSApp123"
+                     ],
+                    "venue_org_id":"venueclientid1"
                 }
             ]
 
 + Response 200 (application/json)
-
-        { "created": true}
+        
+        {"created": true}
         
 
 
 
+### Example 6: All Possible Fields [POST]
 
-
-
-+ Request All Fields (application/json)
++ Request (application/json)
 
     + Headers
 
@@ -1459,437 +1493,428 @@ Also you can use the customer_ equivalent instead of the above properties if usi
     + Body
 
             [
-            {
-                "event_type": "beacon_depart",
-                "organization_ids": [
-                    "3HRhnUtmtXnT1UHQHClAcP"
-                ],
-                "project_ids": [
-                    "3HRhnUtmtXnT1UHQHClAcP"
-                ],
-                "venue_org_id":"venueclientid1"
-                },
-                "place": {
-                    "id": "placeid",
-                    "name": "Mission District",
-                    "dwell_time": 600000,
-                    "reporting_visibility": 1,
-                    "tags": [
-                        "womens",
-                        "golf",
-                        "shoes"
+                {
+                    "event_type": "beacon_depart",
+                    "organization_ids": [
+                        "3HRhnUtmtXnT1UHQHClAcP"
                     ],
-                    "places":  [ 
-                        {
-                            "placeid": "placeid2"
+                    "project_ids": [
+                        "3HRhnUtmtXnT1UHQHClAcP"
+                    ],
+                    "venue_org_id":"venueclientid1",
+                    "place": {
+                        "id": "placeid",
+                        "name": "Mission District",
+                        "dwell_time": 600000,
+                        "reporting_visibility": 1,
+                        "tags": [
+                            "womens",
+                            "golf",
+                            "shoes"
+                        ],
+                        "places":  [ 
+                            {
+                                "placeid": "placeid2"
+                            },
+                            {
+                                "placeid": "placeid3"
+                            }
+                        ],
+                        "address": {
+                            "address1": "103 west street",
+                            "address2": "",
+                            "city": "San Francisco",
+                            "region": "CA",
+                            "zip": 94107,
+                            "zip4": 3422
                         },
-                        {
-                            "placeid": "placeid3"
-                        }
-                    ],
-                    "address": {
-                        "address1": "103 west street",
-                        "address2": "",
-                        "city": "San Francisco",
-                        "region": "CA",
-                        "zip": 94107,
-                        "zip4": 3422
-                    },
-                    "last_place": "placeid-3",
-                    "geofences": [
-                        {
-                            "geofenceid": "geofenceid2"
-                        },
-                        {
-                            "geofenceid": "geofenceid2"
-                        }
-                    ],
-                    "beacons": [
-                        {
-                            "beaconid": "beaconid1"
-                        },
-                        {
-                            "beaconid": "beaconid2"
-                        }
-                    ]
-                },
-                "geofence": {
-                    "identifier": "geofence2",
-                    "name": "SF Gelen Park",
-                    "visibility": "ORGANIZATION",
-                    "dwell_time": 600000,
-                    "start_time": "2014-12-14T20:24:01.123+00:00",
-                    "last_update_time": "2014-12-14T20:24:01.123+00:00",
-                    "reporting_visibility": 1,
-                    "tags": [
-                        "womens",
-                        "golf",
-                        "shoes"
-                    ],
-                    "geofence_circle": {
-                        "radius": 100,
-                        "coordinates": [
-                            -88.21337,
-                            40.11041
-                        ]
-                    },
-                    "geofence_polygon": {
-                        "locations": [
+                        "last_place": "placeid-3",
+                        "geofences": [
                             {
-                                "coordinates": [
-                                    32.8953153522896,
-                                    -117.19559844351653
-                                ]
+                                "geofenceid": "geofenceid2"
                             },
                             {
-                                "coordinates": [
-                                    32.8954009341414,
-                                    -117.19516929007415
-                                ]
+                                "geofenceid": "geofenceid2"
+                            }
+                        ],
+                        "beacons": [
+                            {
+                                "beaconid": "beaconid1"
                             },
                             {
-                                "coordinates": [
-                                    32.89564867061472,
-                                    -117.1949815354431
-                                ]
-                            },
-                            {
-                                "coordinates": [
-                                    32.89545949009762,
-                                    -117.19463284827117
-                                ]
-                            },
-                            {
-                                "coordinates": [
-                                    32.894986537037255,
-                                    -117.19496544218902
-                                ]
-                            },
-                            {
-                                "coordinates": [
-                                    32.894864920127866,
-                                    -117.19554479933623
-                                ]
+                                "beaconid": "beaconid2"
                             }
                         ]
-                    }
-                },
-                "global_position":{
-                    "location": {
-                        "coordinates": [
-                            -88.21337,
-                            40.11041
-                        ]
                     },
-                    "altitude": 13.00,
-                    "accuracy": 10,
-                    "course": 77.34375,
-                    "speed": 4.0
-                },
-                "beacon": {
-                    "vendor_identifier": "SHDG-28AHD",
-                    "vendor": "gimbal",
-                    "identifier": "SHDG-28AHD",
-                    "ble_uuid": "ble_uuid",
-                    "ble_vendor_uuid": "ble_vendor_uuid",
-                    "ble_vendor_id": "ble_vendor_id",
-                    "rssi": 80,
-                    "previous_rssi": 70,
-                    "name": "Front Entrance",
-                    "dwell_time": 600000,
-                    "is_mobile": false,
-                    "start_time": "2014-12-14T20:24:01.123000+00:00",
-                    "coordinates": [
-                        32.89545949009762,
-                        -117.19463284827117
-                    ],
-                    "visibility": "Private",
-                    "reporting_visibility": 1,
-                    "battery_level": 50,
-                    "temperature": 68.32,
-                    "hardware": "HardwaretypeoftheBeacon",
-                    "categories": [
-                        {
-                            "Sports": {}
+                    "geofence": {
+                        "identifier": "geofence2",
+                        "name": "SF Gelen Park",
+                        "visibility": "Public",
+                        "dwell_time": 600000,
+                        "start_time": "2014-12-14T20:24:01.123+00:00",
+                        "last_update_time": "2014-12-14T20:24:01.123+00:00",
+                        "reporting_visibility": 1,
+                        "tags": [
+                            "womens",
+                            "golf",
+                            "shoes"
+                        ],
+                        "geofence_circle": {
+                            "radius": 100,
+                            "coordinates": [
+                                -88.21337,
+                                40.11041
+                            ]
                         },
-                        {
-                            "Womens": {
-                                "subcategories": [
-                                    "golfshirts",
-                                    "dresses"
-                                ]
-                            }
-                        },
-                        {
-                            "Mens": {}
-                        }
-                    ],
-                    "tags": [
-                        "womens",
-                        "golf",
-                        "shoes"
-                    ]
-                },
-                "communication": {
-                    "reporting_visibility": 1,
-                    "description": "mydescription",
-                    "tags": [
-                        "womens",
-                        "golf",
-                        "shoes"
-                    ],
-                    "identifier": "commid",
-                    "status": "active",
-                    "vendor": "airpush",
-                    "vendor_identifier": "1234",
-                    "name": "10% offPushnotification",
-                    "type": {
-                        "id": "typeid",
-                        "name": "PushNotificaion"
-                    },
-                    "content": {
-                        "text": "get10%off!",
-                        "description": "get10%offifyougotothe",
-                        "image": "http: //appl.com/image.gif",
-                        "html": "<p>Hithere!!get10%offnow!!</p>",
-                        "url": "http: //www.apple.com"
-                    }
-                },
-                "user": {
-                    "reporting_visibility": 1,
-                    "tags": [
-                        "womens",
-                        "golf",
-                        "shoes"
-                    ],
-                    "id": {
-                        "mobile_device_bluetooth_identifier": "8c4e1f232810d11be96edf47674f5641296a76f5",
-                        "mobile_device_ios_idfa": "1a847de9f24b18eee3fac634b833b7887b32dea3",
-                        "mobile_device_ios_openidfa": "09238dd4",
-                        "mobile_device_ios_idfv": "092344",
-                        "mobile_device_ios_udid": "123",
-                        "datasnap_uuid": "datasnap_uuid",
-                        "datasnap_app_user_id": "3474284734",
-                        "web_domain_userid": "",
-                        "web_cookie": "foo",
-                        "domain_sessionid": "fqr9fgwer8vb9",
-                        "web_network_userid": "billybob",
-                        "web_user_fingerprint": "web_user_fingerprint",
-                        "web_analytics_company_z_cookie": "",
-                        "global_distinct_id": "userid1234",
-                        "global_user_ipaddress": "user_ipaddress",
-                        "mobile_device_fingerprint": "2da076c7ad28740c0b2a9b7fa6077c4f",
-                        "facebook_uid": "2234433",
-                        "mobile_device_google_advertising_id": "googid",
-                        "mobile_device_google_google_advertising_id_opt_in": "true",
-                        "unknown": "unknownid",
-                        "": ""
-                    },
-                    "opt_in_location": true,
-                    "opt_in_push_notifications": true,
-                    "opt_in_vendor": true,
-                    "audience": {
-                        "Education": [
-                            "College"
-                        ],
-                        "Age": [
-                            "18-24"
-                        ],
-                        "Ethnicity": [
-                            "Caucasian"
-                        ],
-                        "Kids": [
-                            "NoKids"
-                        ],
-                        "Gender": [
-                            "Male"
-                        ],
-                        "Interests": [
-                            "Gettingfromheretothere",
-                            "Biking",
-                            "Automotive",
-                            "Automotive.Cars"
-                        ],
-                        "Income": [
-                            "$30-60k"
-                        ]
-                    },
-                    "user_properties": {
-                        "user_type": "VIP",
-                        "user_spend": "high",
-                        "engagement_time": "Greaterthan30minutes"
-                    }
-                },
-                "campaign": {
-                    "identifier": "campaignid",
-                    "name": "camapign10%offshoes",
-                    "vendor":"urbanairship",
-                    "vendor_identifier": "1234",
-                    "reporting_visibility": 1,
-                    "tags": [
-                        "womens",
-                        "golf",
-                        "shoes"
-                    ],
-                    "subcampaigns": [
-                        {
-                            "identifier": "campaignid",
-                            "name": "camapign11%offshoesmles"
-                        }
-                    ],
-                    "targeting_rules": {
-                        "identifier": "targetingid",
-                        "rules": [
-                            {
-                                "identifier": "ruleid1",
-                                "name": "retailandclothingruleforbackofstore",
-                                "place_ids": [
-                                    "placeid1"
-                                ],
-                                "audience": {
-                                    "Education": [
-                                        "NoCollege",
-                                        "College",
-                                        "GradSchool"
-                                    ],
-                                    "Age": [
-                                        "18-24",
-                                        "25-34",
-                                        "35-44",
-                                        "45-55",
-                                        "55+"
-                                    ],
-                                    "Ethnicity": [
-                                        "Caucasian",
-                                        "AfricanAmerican",
-                                        "Asian",
-                                        "Hispanic",
-                                        "Other"
-                                    ],
-                                    "Kids": [
-                                        "NoKids",
-                                        "HasKids"
-                                    ],
-                                    "Gender": [
-                                        "Male",
-                                        "Female"
-                                    ],
-                                    "Interests": [
-                                        "Gettingfromheretothere",
-                                        "Biking",
-                                        "Automotive",
-                                        "Automotive.Cars"
-                                    ],
-                                    "Income": [
-                                        "$0-30k",
-                                        "$30-60k",
-                                        "$60-100k",
-                                        "100k+"
+                        "geofence_polygon": {
+                            "locations": [
+                                {
+                                    "coordinates": [
+                                        32.8953153522896,
+                                        -117.19559844351653
                                     ]
                                 },
-                                "targeting_attributes": {
-                                    "store_type": "retail",
-                                    "product_type": "clothing"
+                                {
+                                    "coordinates": [
+                                        32.8954009341414,
+                                        -117.19516929007415
+                                    ]
+                                },
+                                {
+                                    "coordinates": [
+                                        32.89564867061472,
+                                        -117.1949815354431
+                                    ]
+                                },
+                                {
+                                    "coordinates": [
+                                        32.89545949009762,
+                                        -117.19463284827117
+                                    ]
+                                },
+                                {
+                                    "coordinates": [
+                                        32.894986537037255,
+                                        -117.19496544218902
+                                    ]
+                                },
+                                {
+                                    "coordinates": [
+                                        32.894864920127866,
+                                        -117.19554479933623
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    "global_position":{
+                        "location": {
+                            "coordinates": [
+                                -88.21337,
+                                40.11041
+                            ]
+                        },
+                        "altitude": 13.00,
+                        "accuracy": 10,
+                        "course": 77.34375,
+                        "speed": 4.0
+                    },
+                    "beacon": {
+                        "vendor_identifier": "SHDG-28AHD",
+                        "vendor": "gimbal",
+                        "identifier": "SHDG-28AHD",
+                        "ble_uuid": "ble_uuid",
+                        "ble_vendor_uuid": "ble_vendor_uuid",
+                        "ble_vendor_id": "ble_vendor_id",
+                        "rssi": 80,
+                        "previous_rssi": 70,
+                        "name": "Front Entrance",
+                        "dwell_time": 600000,
+                        "is_mobile": false,
+                        "start_time": "2014-12-14T20:24:01.123000+00:00",
+                        "coordinates": [
+                            32.89545949009762,
+                            -117.19463284827117
+                        ],
+                        "visibility": "Private",
+                        "reporting_visibility": 1,
+                        "battery_level": 50,
+                        "temperature": 68.32,
+                        "hardware": "HardwaretypeoftheBeacon",
+                        "categories": [
+                            {
+                                "Sports": {}
+                            },
+                            {
+                                "Womens": {
+                                    "subcategories": [
+                                        "golfshirts",
+                                        "dresses"
+                                    ]
                                 }
                             },
                             {
-                                "identifier": "ruleid2",
-                                "name": "mycoolrule2",
-                                "audience": {
-                                    "Education": [
-                                        "NoCollege",
-                                        "College",
-                                        "GradSchool"
-                                    ],
-                                    "Age": [
-                                        "18-24",
-                                        "25-34",
-                                        "35-44",
-                                        "45-55",
-                                        "55+"
-                                    ],
-                                    "Ethnicity": [
-                                        "Caucasian",
-                                        "AfricanAmerican",
-                                        "Asian",
-                                        "Hispanic",
-                                        "Other"
-                                    ],
-                                    "Kids": [
-                                        "NoKids",
-                                        "HasKids"
-                                    ],
-                                    "Gender": [
-                                        "Male",
-                                        "Female"
-                                    ],
-                                    "Interests": [
-                                        "Gettingfromheretothere",
-                                        "Biking",
-                                        "Automotive",
-                                        "Automotive.Cars"
-                                    ],
-                                    "Income": [
-                                        "$0-30k",
-                                        "$30-60k",
-                                        "$60-100k",
-                                        "100k+"
-                                    ]
-                                }
+                                "Mens": {}
                             }
+                        ],
+                        "tags": [
+                            "womens",
+                            "golf",
+                            "shoes"
                         ]
                     },
-                    "time_filter": {
-                        "monday": {
-                            "start": "08: 00",
-                            "end": "13: 00"
+                    "communication": {
+                        "reporting_visibility": 1,
+                        "description": "mydescription",
+                        "tags": [
+                            "womens",
+                            "golf",
+                            "shoes"
+                        ],
+                        "identifier": "commid",
+                        "status": "active",
+                        "vendor": "airpush",
+                        "vendor_identifier": "1234",
+                        "name": "10% offPushnotification",
+                        "type": {
+                            "id": "typeid",
+                            "name": "PushNotificaion"
                         },
-                        "tuesday": {
-                            "start": "08: 00",
-                            "end": "22: 00"
+                        "content": {
+                            "text": "get10%off!",
+                            "description": "get10%offifyougotothe",
+                            "image": "http: //appl.com/image.gif",
+                            "html": "<p>Hithere!!get10%offnow!!</p>",
+                            "url": "http: //www.apple.com"
                         }
                     },
-                    "time_trigger": {
-                        "monday": "08: 00",
-                        "tuesday": "13: 00"
+                    "user": {
+                        "reporting_visibility": 1,
+                        "tags": [
+                            "womens",
+                            "golf",
+                            "shoes"
+                        ],
+                        "id": {
+                            "mobile_device_bluetooth_identifier": "8c4e1f232810d11be96edf47674f5641296a76f5",
+                            "mobile_device_ios_idfa": "1a847de9f24b18eee3fac634b833b7887b32dea3",
+                            "mobile_device_ios_openidfa": "09238dd4",
+                            "mobile_device_ios_idfv": "092344",
+                            "mobile_device_ios_udid": "123",
+                            "datasnap_uuid": "datasnap_uuid",
+                            "datasnap_app_user_id": "3474284734",
+                            "web_domain_userid": "",
+                            "web_cookie": "foo",
+                            "domain_sessionid": "fqr9fgwer8vb9",
+                            "web_network_userid": "billybob",
+                            "web_user_fingerprint": "web_user_fingerprint",
+                            "web_analytics_company_z_cookie": "",
+                            "global_distinct_id": "userid1234",
+                            "global_user_ipaddress": "user_ipaddress",
+                            "mobile_device_fingerprint": "2da076c7ad28740c0b2a9b7fa6077c4f",
+                            "facebook_uid": "2234433",
+                            "mobile_device_google_advertising_id": "googid",
+                            "mobile_device_google_google_advertising_id_opt_in": "true",
+                            "unknown": "unknownid",
+                            "": ""
+                        },
+                        "opt_in_location": true,
+                        "opt_in_push_notifications": true,
+                        "opt_in_vendor": true,
+                        "audience": {
+                            "Education": [
+                                "College"
+                            ],
+                            "Age": [
+                                "18-24"
+                            ],
+                            "Ethnicity": [
+                                "Caucasian"
+                            ],
+                            "Kids": [
+                                "NoKids"
+                            ],
+                            "Gender": [
+                                "Male"
+                            ],
+                            "Interests": [
+                                "Gettingfromheretothere",
+                                "Biking",
+                                "Automotive",
+                                "Automotive.Cars"
+                            ],
+                            "Income": [
+                                "$30-60k"
+                            ]
+                        },
+                        "user_properties": {
+                            "user_type": "VIP",
+                            "user_spend": "high",
+                            "engagement_time": "Greaterthan30minutes"
+                        }
                     },
-                    "communication_ids": [
-                        "commid1", "commid2"
-                    ]
+                    "campaign": {
+                        "identifier": "campaignid",
+                        "name": "camapign10%offshoes",
+                        "vendor":"urbanairship",
+                        "vendor_identifier": "1234",
+                        "reporting_visibility": 1,
+                        "tags": [
+                            "womens",
+                            "golf",
+                            "shoes"
+                        ],
+                        "subcampaigns": [
+                            {
+                                "identifier": "campaignid",
+                                "name": "camapign11%offshoesmles"
+                            }
+                        ],
+                        "targeting_rules": {
+                            "identifier": "targetingid",
+                            "rules": [
+                                {
+                                    "identifier": "ruleid1",
+                                    "name": "retailandclothingruleforbackofstore",
+                                    "place_ids": [
+                                        "placeid1"
+                                    ],
+                                    "audience": {
+                                        "Education": [
+                                            "NoCollege",
+                                            "College",
+                                            "GradSchool"
+                                        ],
+                                        "Age": [
+                                            "18-24",
+                                            "25-34",
+                                            "35-44",
+                                            "45-55",
+                                            "55+"
+                                        ],
+                                        "Ethnicity": [
+                                            "Caucasian",
+                                            "AfricanAmerican",
+                                            "Asian",
+                                            "Hispanic",
+                                            "Other"
+                                        ],
+                                        "Kids": [
+                                            "NoKids",
+                                            "HasKids"
+                                        ],
+                                        "Gender": [
+                                            "Male",
+                                            "Female"
+                                        ],
+                                        "Interests": [
+                                            "Gettingfromheretothere",
+                                            "Biking",
+                                            "Automotive",
+                                            "Automotive.Cars"
+                                        ],
+                                        "Income": [
+                                            "$0-30k",
+                                            "$30-60k",
+                                            "$60-100k",
+                                            "100k+"
+                                        ]
+                                    },
+                                    "targeting_attributes": {
+                                        "store_type": "retail",
+                                        "product_type": "clothing"
+                                    }
+                                },
+                                {
+                                    "identifier": "ruleid2",
+                                    "name": "mycoolrule2",
+                                    "audience": {
+                                        "Education": [
+                                            "NoCollege",
+                                            "College",
+                                            "GradSchool"
+                                        ],
+                                        "Age": [
+                                            "18-24",
+                                            "25-34",
+                                            "35-44",
+                                            "45-55",
+                                            "55+"
+                                        ],
+                                        "Ethnicity": [
+                                            "Caucasian",
+                                            "AfricanAmerican",
+                                            "Asian",
+                                            "Hispanic",
+                                            "Other"
+                                        ],
+                                        "Kids": [
+                                            "NoKids",
+                                            "HasKids"
+                                        ],
+                                        "Gender": [
+                                            "Male",
+                                            "Female"
+                                        ],
+                                        "Interests": [
+                                            "Gettingfromheretothere",
+                                            "Biking",
+                                            "Automotive",
+                                            "Automotive.Cars"
+                                        ],
+                                        "Income": [
+                                            "$0-30k",
+                                            "$30-60k",
+                                            "$60-100k",
+                                            "100k+"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "time_filter": {
+                            "monday": {
+                                "start": "08: 00",
+                                "end": "13: 00"
+                            },
+                            "tuesday": {
+                                "start": "08: 00",
+                                "end": "22: 00"
+                            }
+                        },
+                        "time_trigger": {
+                            "monday": "08: 00",
+                            "tuesday": "13: 00"
+                        },
+                        "communication_ids": [
+                            "commid1", "commid2"
+                        ]
+                    },
+                    "datasnap": {
+                    "timestamp": "2015-06-23T00:40:15.415Z",
+                    "created": "2015-06-23T00:40:15.415Z",
+                    "txn_id": "fgfgbrrwvb",
+                    "customer_txn_id": "fgfgbrrwvb",
+                    "device": {
+                        "user_agent": "Mozilla/5.0 (Linux; U; Android 4.0.3; ko-kr; LG-L160L Build/IML74K) AppleWebkit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+                        "ip_address": "127.1.1.1",
+                        "platform": "ios",
+                        "os_version": "7.0",
+                        "model": "iPhone5",
+                        "manufacturer": "Apple",
+                        "name": "hashed device name",
+                        "vendor_id": "63A7355F-5AF2-4E20-BE55-C3E80D0305B1",
+                        "carrier_name": "Verizon",
+                        "country_code": "001",
+                        "network_code": "327"
+                    }
+                    }
                 },
-                "datasnap": {
-                "timestamp": "2015-06-23T00:40:15.415Z",
-                "created": "2015-06-23T00:40:15.415Z",
-                "txn_id": "fgfgbrrwvb",
-                "customer_txn_id": "fgfgbrrwvb",
-                "device": {
-                    "user_agent": "Mozilla/5.0 (Linux; U; Android 4.0.3; ko-kr; LG-L160L Build/IML74K) AppleWebkit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
-                    "ip_address": "127.1.1.1",
-                    "platform": "ios",
-                    "os_version": "7.0",
-                    "model": "iPhone5",
-                    "manufacturer": "Apple",
-                    "name": "hashed device name",
-                    "vendor_id": "63A7355F-5AF2-4E20-BE55-C3E80D0305B1",
-                    "carrier_name": "Verizon",
-                    "country_code": "001",
-                    "network_code": "327"
+                {
+                    "event_type": "beacon_sighting"
                 }
-                }
-            },
-            {
-                "event_type": "beacon_sighting"
-            }
             ]
 
 + Response 200 (application/json)
-
-        { "created": true}
-
-
-
-
-
-
-
-
+        
+        {"created": true}
