@@ -4,15 +4,17 @@ HOST: https://api-events.datasnap.io/v1.0/
 
 
 # Datasnap.io Events API
-The datasnap.io Events API allows you to send any kind of event to the datasnap.io platform for reporting and measurement. 
+The datasnap.io Events API allows you to send any event to the datasnap.io platform for reporting and measurement. 
 There are a set of out-of-the-box events that will automatically show up on your dashboards. You may also send non-standard events, which we can analyze separately.
 
 
-Please see http://datasnap-io.github.io/index.html for detailed use cases and the design guide, illustrating the
+Please see the datasnap.io [Design Guide](http://datasnap-io.github.io/index.html) for detailed use cases, illustrating the
 best way to send us data.  
 
 
-Terms and Conditions: http://www.datasnap.io/terms.html#apiterms 
+*[Terms and Conditions](http://www.datasnap.io/terms.html#apiterms )*
+
+<br>
 
 ## Authentication and API Keys
 
@@ -21,7 +23,7 @@ You will get an API key and an API Secret for access.
 In order to authorize, base64 encode the key and secret together. You can use this Linux command to create the base64 string:
 
                 echo -n "APIKey:APISecret" | openssl base64
-After encoding, add it to the headers as "Authorization:  Basic < Put Base64 String here>"
+After encoding, add it to the headers as `Authorization:  Basic <Put Base64 String here>`
 
 
 ####Examples
@@ -35,10 +37,79 @@ java.util.Base64.getUrlEncoder().encodeToString("my fancyurl".getBytes());
 ```
 org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getBytes())
 ```
+<br>
 
+## Sending Events
+
+### Important Information
+
+- You can only send one `organization_id` (or `customer_org_id`) per API request. You cannot send multiple organization IDs or you will get a 401 error.
+- Venue and organization names should **NEVER** contain underscores '_'
+- When sending a **campaign event** you must send the `advertiser_org_id`, the `project_id` and the `organization_id` that own the app
+- When sending a **beacon event** you must send the `project_id`, the `venue_org_id` and the `organization_id` that own the app
+
+
+### Required Event Fields
+
+Events require certain IDs in order to successfully post.  At a minimum, identifying the organization, project, venue and user are required.
+**Additional properties included in events must also include their respective IDs and names.** For example, include `identifier` and `name` in the _beacon_ property and
+`id` and `name` in the _place_ property
+
+<p></p>
+
+All events **must** contain the following information:
+
+| Attribute | Description | Data Format |
+|---|---| ---|
+| **organization_ids** | Organization ID assigned to you (optional if you send the `customer_org_id` property.)| String |
+| **venue_org_id** | Required. Represents the venue where the actual beacons are placed (optional if you send the `customer_venue_org_id` property.).| String |
+| **project_id** | Required Project ID within that organization (typically represents the app). | String |
+| **event\_type** | The type of event you are sending - beacon\_sighting, geofence_depart etc.|  String |
+| **global\_distinct\_id** | The unique user ID associated with this event. It should go under user. | String |
+| **advertiser_org_id** | Required only if sending campaign/communication events. Represents the Advertiser to whom the app is sending communication.| String |
+
+**NOTE:** The maximum size of the JSON payload is 50 kilobytes (KB).
+
+<br>
+Using `customer_` properties is also valid if you set up internal IDs using the Entity API:
+
+| Attribute | Description | Data Format |
+|---|---| ---|
+| **customer_org_id** | Required if not sending `organization_id` and you have setup these IDs via the Organization API.| String |
+| **customer_venue_org_id** | Required if not sending `venue_org_id` and you have setup these IDs via the Organization API.| String |
+| **customer_advertiser_org_id** | Required if not sending `advertiser_org_id` and you have setup these IDs via the Organization API.| String |
+
+
+<section id="standardEvents">&nbsp;</section>
+### Standard Events
+Standard events, treated specially by Datasnap, are automatically applied to your Reports Dimensions and Metrics. You can also send non-standard events by working with datasnap.io to get these integrated into your reports.
+
+
+| Event                            | Description               | Event Type |
+|----------------------------------|---------------------------|---|
+| **status_ping** | Event used to send a test message that can be used for health monitoring and testing.  Will not be rolled up into system. | Diagnostic |
+| **opt_in_location** | The user has opted-in to track his or her location and accepted all appropriate terms of use. | In-App Opt-In |
+| **opt_in_push_notifications** | The user has opted-in to receive push notifications. | In-App Opt-In |
+| **opt_in_vendor** | A user has opted-in to the vendors specific terms. | In-App Opt-In |
+| **app_installed** | The user installed the app. Most mobile analytics platforms record this already, but it is a useful enough event to provide it here. | In-App Interactions |
+| **ds_communication_sent** | A communication has been delivered to the user. For mobile, these are typically push notifications or In-App Modals. | Communication Event |
+| **ds_communication_open** | A communication have been opened by the user. | For mobile these are typically push notifications or In-App Modals. | Communication Event
+| **global_position_sighting** | Records the Device/Users current global position. | GPS Event |
+| **beacon_arrive** | A user's first time receiving a broadcast from a particular beacon. | Beacon Event |
+| **beacon_sighting** | A user is within a particular beacon range and has received a broadcast from the beacon. | Beacon Event |
+| **beacon_depart** | A true departed event, meaning the user has departed, and we feel confident that this event is correct. Apps can also use their own calculation to throw this event. | Beacon Event |
+| **geofence_depart** | A user has left the Geofence. | Geofence Event |
+
+
+
+### Non-Standard Events
+You CAN also append any other desired JSON properties at any level that you would like.
+
+
+<br>
 
 ## Formatting and Datatypes
-The typical JSON datatypes are in play when sending data: http://en.wikipedia.org/wiki/JSON#Data_types.2C_syntax_and_example
+The typical [JSON datatypes](http://en.wikipedia.org/wiki/JSON#Data_types.2C_syntax_and_example) are in play when sending data: 
 
 ### Property Name Rules
 
@@ -52,7 +123,7 @@ The typical JSON datatypes are in play when sending data: http://en.wikipedia.or
 - Numeric values must be between -2^63 (-9223372036854775808) and 2^63 - 1 (9223372036854775807) (inclusive).
 - Values in lists must themselves follow the above rules.
 - Values in dictionaries must themselves follow the above rules.
-- All dates should be represented as ISO 8601 formatted dates: http://en.wikipedia.org/wiki/ISO_8601
+- All dates should be represented as [ISO 8601 formatted dates](http://en.wikipedia.org/wiki/ISO_8601)
 
 
 #### Country Code
@@ -67,8 +138,8 @@ All user identifiers should be passed to the API as SHA1 hashed properties. We w
 ### Timestamp Data Types
 - Two time-related properties are included in your event automatically.
 - The properties “datasnap.timestamp” and “datasnap.created_at” are set at the time your event is recorded. You have the ability to overwrite the datasnap.timestamp property. This could be useful, for example, if you are backfilling historical data.
-- Be sure to use ISO-8601 Format. http://en.wikipedia.org/wiki/ISO_8601
-- Be sure to include the timezone.
+- Be sure to use [ISO-8601 Format](http://en.wikipedia.org/wiki/ISO_8601)
+- Be sure to include the time zone.
 
 Examples:
 
@@ -98,115 +169,17 @@ The following encoding should be used when sending JSON information into the dat
 OR
 - "RFC4648 base64url (Base 64 Encoding with URL and Filename Safe Alphabet)
 
-
-
-
-## Sending Events
-
-### Important Information
-
-- You can only send one `organization_id` (or `customer_org_id`) per API request. You cannot send mupliple organization IDs or you will get a 401 error.
-- Venue and organization names should **NEVER** contain underscores '_'
-- When sending a **campaign event** you must send the `advertiser_org_id`, the `project_id` and the `organization_id` that own the app
-- When sending a **beacon event** you must send the the `project_id`, the `venue_org_id` and the `organization_id` that own the app
-
-
-### Required Event Fields
-
-Events require certain IDs in order to successfully post.  At a minimum, identifying the organization, project, venue and user are required.
-**Additional properties included in events must also include their respective IDs and names.** For example, include `identifier` and `name` in the _beacon_ property and
-`id` and `name` in the _place_ property
-
-<p></p>
-
-All events **must** contain the following information:
-
-| Attribute | Description | Data Format |
-|---|---| ---|
-| **organization_ids** | Organization ID assigned to you (optional if you send the `customer_org_id` property.)| String |
-| **venue_org_id** | Required. Represents the venue where the actual beacons are placed (optional if you send the `customer_venue_org_id` property.).| String |
-| **project_id** | Required Project ID within that organization (typically represents the app). | String |
-| **event\_type** | The type of event you are sending - beacon\_sighting, geofence_depart etc.|  String |
-| **global\_distinct\_id** | The unique user ID associated with this event. It should go under user. | String |
-| **advertiser_org_id** | Required only if sending campaign/communication events. Represents the Advertiser to whom the app is sending communication.| String |
-
-**NOTE:** The maximum size of the JSON payload is 50 kilobytes (KB).
-
 <br>
-Using `customer_` properties is also valid if you set up interal IDs using the Entity API:
 
-| Attribute | Description | Data Format |
-|---|---| ---|
-| **customer_org_id** | Required if not sending `organization_id` and you have setup these IDs via the Organization API.| String |
-| **customer_venue_org_id** | Required if not sending `venue_org_id` and you have setup these IDs via the Organization API.| String |
-| **customer_advertiser_org_id** | Required if not sending `advertiser_org_id` and you have setup these IDs via the Organization API.| String |
-
-
-<section id="standardEvents">&nbsp;</section>
-### Standard Events
-Standard events, treated specially by Datasnap, are automatically applied to your Reports Dimensions and Metrics. You can also send non-standard events by working with datasnap.io to get these integrated into your reports.
-
-
-| Event                            | Description               | Event Type |
-|----------------------------------|---------------------------|---|
-| **status_ping** | Event used to send a test message that can be used for health monitoring and testing.  Will not be rolled up into system. | Diagnostic |
-| **opt_in_location** | The user has opted-in to track his or her location and accepted all appropriate terms of use. | In-App Opt-In |
-| **opt_in_push_notifications** | The user has opted-in to receieve push notifications. | In-App Opt-In |
-| **opt_in_vendor** | A user has opted-in to the vendors specific terms. | In-App Opt-In |
-| **app_installed** | The user installed the app. Most mobile analytics platforms record this already, but it is a useful enough event to provide it here. | In-App Interactions |
-| **ds_communication_sent** | A communication has been delivered to the user. For mobile, these are typically push notifications or In-App Modals. | Communication Event |
-| **ds_communication_open** | A communication have been opened by the user. | For mobile these are typically push notifications or In-App Modals. | Communication Event
-| **global_position_sighting** | Records the Device/Users current global position. | GPS Event |
-| **beacon_arrive** | A user's first time receiving a broadcast from a particular beacon. | Beacon Event |
-| **beacon_sighting** | A user is within a particular beacon range and has received a broadcast from the beacon. | Beacon Event |
-| **beacon_depart** | A true departed event, meaning the user has departed, and we feel confident that this event is correct. Apps can also use their own calculation to throw this event. | Beacon Event |
-| **geofence_depart** | A user has left the Geofence. | Geofence Event |
-
-
-<!--| Event                            | Description               | Event Type |-->
-<!--|----------------------------------|---------------------------|---|-->
-<!--| **status_ping** | Event used to send a test message that can be used for health monitoring and testing.  Will not be rolled up into system. | Diagnostic |-->
-<!--| **opt_in_location** | The user has opted-in to track his or her location and accepted all appropriate terms of use. | In-App Opt-In |-->
-<!--| **opt_in_push_notifications** | The user has opted-in to receieve push notifications. | In-App Opt-In |-->
-<!--| **opt_in_vendor** | A user has opted-in to the vendors specific terms. | In-App Opt-In |-->
-<!--| **app_installed** | The user installed the app. Most mobile analytics platforms record this already, but it is a useful enough event to provide it here. | In-App Interactions |-->
-<!--| **interaction_tap** | Some tap has happened in the app. Can be associated with a campaign, communication, or just an app by itself. | In-App Interactions |-->
-<!--| **interaction_view** | Some view has happened in the app. Can be associated with a campaign, communication, or just an app by itself. | In-App Interactions |-->
-<!--| **interaction_swipe** | Some swipe has happened in the app. Can be associated with a campaign, communication, or just an app by itself. | In-App Interaction |-->
-<!--| **interaction_shake** | Some shake has happened in the app. Can be associated with a campaign, communication, or just an app by itself. | In-App Interaction |-->
-<!--| **interaction_tilt** | Some tilt has happened in the app. Can be associated with a campaign, communication, or just an app by itself. | In-App Interaction |-->
-<!--| **ds_communication_sent** | A communication has been delivered to the user. For mobile, these are typically push notifications or In-App Modals. | Communication Event |-->
-<!--| **ds_communication_open** | A communication have been opened by the user. | For mobile these are typically push notifications or In-App Modals. | Communication Event-->
-<!--| **campaign_request** | The app has requested a campaign be shown to the user. | Communication Event |-->
-<!--| **campaign_redemption** | The user has redeemed a coupon or similar as part of the campaign. | Communication Event |-->
-<!--| **global_position_sighting** | Records the Device/Users current global position. | GPS Event |-->
-<!--| **beacon_arrive** | A user's first time receiving a broadcast from a particular beacon. | Beacon Event |-->
-<!--| **beacon_sighting** | A user is within a particular beacon range and has received a broadcast from the beacon. | Beacon Event |-->
-<!--| **beacon_depart_vendor** | This event can be thrown when a vendor's SDK detects an event. This setting can be erroneous for some vendors, so it's recommended to track it separately for audit reporting. | Beacon Event |-->
-<!--| **beacon_depart** | A true departed event, meaning the user has departed, and we feel confident that this event is correct. Apps can also use their own calculation to throw this event. | Beacon Event |-->
-<!--| **beacon_visit** | A true user visit into a proximity or geotrigger.  This is calulated many times by looking at sighting data or inferred through the use of the departed event. | Beacon Event |-->
-<!--| **beacon_visit_vendor** | A user visit into a proximity or geotrigger as sent by the beacon vendor.  This is used to compare with the true calculation of the `beacon_visit` event. | Beacon Event |-->
-<!--| **geofence_arrive** | A user has entered a Geofence. | Geofence Event |-->
-<!--| **geofence_sighting** | A user is still in the Geofence after a interval-based check of their location. | Geofence Event |-->
-<!--| **geofence_depart** | A user has left the Geofence. | Geofence Event |-->
-
-
-### Non-Standard Events
-You CAN also append any other desired JSON properties at any level that you would like.
-
-
-<br>
 ## Event Properties
 
 The following top-level properties represent the current domain dealing with proximity data and events.
 
-These properties can be updated as part of our Entity API.
-Please See: http://docs.datasnapioentityapi.apiary.io
+These properties can be updated as part of our [Entity API](http://docs.datasnapioentityapi.apiary.io).
 
 
 <p></p>
 
- _Where did we come up with these names?_ We have a lot of experience modeling data. After researching the leading Beacon providers and speaking to a lot of customers about their acquired data for which they wanted insights, we created this naming convention.
 <section id="tags">&nbsp;</section>
 <!--### PROPERTY: TAGS-->
 <!--***-->
@@ -231,10 +204,8 @@ Please See: http://docs.datasnapioentityapi.apiary.io
 ### PROPERTY: ORGANIZATION
 ***
 
- An _organization_ is an abstract way to group your data at a high level. Organizations are the topmost access level to your data. You can assign permissions to each organization and have
+ An _[organization](http://docs.datasnapioentityapi.apiary.io/#reference/organization)_ is an abstract way to group your data at a high level. Organizations are the topmost access level to your data. You can assign permissions to each organization and have
  a hierarchy or organizations  based on your company structure.
-
-Please See: http://docs.datasnapioentityapi.apiary.io/#reference/organization
 
 Only ONE organization may currently be passed in this event/array.
 
@@ -251,11 +222,9 @@ Only ONE organization may currently be passed in this event/array.
 ***
 
 
-To ease integraton with our partners, sometimes it is easier for events to be sent using their own internal client/Org ID.
+To ease integration with our partners, sometimes it is easier for events to be sent using their own internal client/Org ID.
 
-In this case, `customer_org_id` can be set via our Organization API.
-
-Please See: http://docs.datasnapioentityapi.apiary.io/#reference/organization
+In this case, `customer_org_id` can be set via our [Organization API](http://docs.datasnapioentityapi.apiary.io/#reference/organization).
 
 After these customer IDs are set, you can pass the ID to the event service **without** an `organization_ids` field present.
 
@@ -277,7 +246,11 @@ Example event:
  },
  "user":{
     "id":{
-       "global_distinct_id":"1"
+       "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
+       "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
+       "mobile_device_ios_openidfa": "09238dd4",
+       "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
+       "mobile_device_google_google_advertising_id_opt_in": "true"
     }
  },
  "datasnap": {
@@ -296,11 +269,9 @@ Example event:
 ### PROPERTY: VENUE ORGANIZATION
 ***
 
-The _venue_ property is a specialized type of organization that is useful when more specific beacon mapping is required.
+The _[venue](http://docs.datasnapioentityapi.apiary.io/#reference/organization-venues)_ property is a specialized type of organization that is useful when more specific beacon mapping is required.
 
 Set the `venue_org_id` via the Organization API. Simply create a normal organization with the flag `"isVenue": true` indicating that it is a venue.
-
-Please see: http://docs.datasnapioentityapi.apiary.io/#reference/organization
 
 This is a top-level property:
 
@@ -318,7 +289,11 @@ Example event:
  },
  "user":{
     "id":{
-       "global_distinct_id":"1"
+       "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
+       "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
+       "mobile_device_ios_openidfa": "09238dd4",
+       "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
+       "mobile_device_google_google_advertising_id_opt_in": "true"
     }
  },
  "datasnap": {
@@ -340,13 +315,11 @@ Example event:
 <section id="customer_venue_org_id">&nbsp;</section>
 ### PROPERTY: CUSTOMER VENUE ORGANIZATION
 ***
-The _venue_ property is a specialized type of organization that is useful when more specific beacon mapping is required.
+The _[venue](http://docs.datasnapioentityapi.apiary.io/#reference/organization-venues)_ property is a specialized type of organization that is useful when more specific beacon mapping is required.
 
-To ease integraton with our partners, sometimes it is easier for events to be sent using their own internal client/Org ID.
+To ease integration with our partners, sometimes it is easier for events to be sent using their own internal client/Org ID.
 
 If you require a client-specific venue ID, you can set `customer_venue_org_id` via the Organization API.
-
-Please See: http://docs.datasnapioentityapi.apiary.io/#reference/organization
 
 After these customer IDs are set, you can pass the ID to the event service **without** an `organization_ids` field present.
 
@@ -369,7 +342,11 @@ Example event:
  },
  "user":{
     "id":{
-       "global_distinct_id":"1"
+       "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
+       "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
+       "mobile_device_ios_openidfa": "09238dd4",
+       "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
+       "mobile_device_google_google_advertising_id_opt_in": "true"
     }
  },
  "datasnap": {
@@ -394,7 +371,7 @@ Example event:
 In many cases, you will be running campaigns on behalf of third parties via a network-like model.  If this is the case, create these advertisers as children within
 your organization and send events indicating the campaign's advertiser. 
 
-Set the `advertiser_org_id` via the Organization API. Simply create a normal organization with the flag `"isAdvertiser": true` indicating that it is an advertiser. Please See: http://docs.datasnapioentityapi.apiary.io/#reference/organization
+Set the `advertiser_org_id` via the [Organization API](http://docs.datasnapioentityapi.apiary.io/#reference/organization). Simply create a normal organization with the flag `"isAdvertiser": true` indicating that it is an advertiser.
 
 **NOTE:** If you do not pass in an `advertiser_org_id` or if you pass in an invalid `advertiser_org_id`, the campaign event will default to the `organization_id` organization.
 
@@ -420,7 +397,11 @@ Example event:
          },
          "user":{
             "id":{
-               "global_distinct_id":"1"
+               "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
+               "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
+               "mobile_device_ios_openidfa": "09238dd4",
+               "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
+               "mobile_device_google_google_advertising_id_opt_in": "true"
             }
          },
         "customer_org_id": "54be7fc90af5506441788a49",
@@ -472,7 +453,11 @@ Example event:
          },
          "user":{
             "id":{
-               "global_distinct_id":"1"
+               "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
+               "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
+               "mobile_device_ios_openidfa": "09238dd4",
+               "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
+               "mobile_device_google_google_advertising_id_opt_in": "true"
             }
          },
         "customer_org_id": "54be7fc90af5506441788a49",
@@ -490,10 +475,8 @@ Example event:
 ### PROPERTY: PROJECT
 ***
 
-A _project_ is an abstract way to group your data at a high level. Oftentimes, the _project_ represents the mobile app or
+A _[project](http://docs.datasnapioentityapi.apiary.io/#reference/project)_ is an abstract way to group your data at a high level. Oftentimes, the _project_ represents the mobile app or
 some other type of special project where you want to group and aggregate data for reporting purposes.
- 
-Please See: http://docs.datasnapioentityapi.apiary.io/#reference/project for setting up projects.
 
 Only ONE project may be passed in this array.
 
@@ -782,7 +765,7 @@ you can see the data sliced and diced by segment. Just send in the user informat
 | age_range| Age range of the user | String |
 | dob| Date of Birth of the user | String |
 | ethnicity| Ethnicity of the user | String |
-| childern_in_household| Number of children in the household of the user | String |
+| children_in_household| Number of children in the household of the user | String |
 | gender| Gender of the user | String |
 | income| Income range of the user | String |
 | education| Education of the user | String |
@@ -940,9 +923,12 @@ Example:
 ```
 "user": {
     "id": {
-        "mobile_device_bluetooth_identifier": "128 bit string",
-        "mobile_device_ios_idfa": "092384",
+        "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
+        "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
         "mobile_device_ios_openidfa": "09238dd4",
+        "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
+        "mobile_device_google_google_advertising_id_opt_in": "true"
+        "mobile_device_bluetooth_identifier": "128 bit string",
         "mobile_device_ios_idfv": "092344",
         "mobile_device_ios_udid": "123",
         "datasnap_uuid": "datasnap_uuid",
@@ -952,19 +938,17 @@ Example:
         "web_network_userid": "billybob",
         "web_user_fingerprint": "web_user_fingerprint",
         "web_analytics_company_z_cookie": "",
-        "global_distinct_id": "userid1234",
+
         "global_user_ipaddress": "user_ipaddress",
         "mobile_device_fingerprint": "2da076c7ad28740c0b2a9b7fa6077c4f",
         "facebook_uid": "2234433",
-        "mobile_device_google_advertising_id": "googid",
-        "mobile_device_google_google_advertising_id_opt_in": "true",
         "unknown": "unknownid",
         "": ""
     },
     "age_range": "18-24",
     "dob": "1980-06-23 00:00:00",
     "ethnicity: "caucasian",
-    "childern_in_household": "y",
+    "children_in_household": "y",
     "gender": "male",
     "income": "15k-24k",
     "education": "No College",
@@ -1004,10 +988,10 @@ Example:
 ### PROPERTY: COMMUNICATION
 ***
 
-You can send any type of _communication_ (in-app or push notification). Communication doesn't always need to indicate
+You can send any type of _[communication](http://docs.datasnapioentityapi.apiary.io/#reference/communication)_ (in-app or push notification). Communication doesn't always need to indicate
 that the content actually appeared on the user's device, just that a communication was sent.
 
-For more targeted communication, use _campaign_.
+For more targeted communication, use _[campaign](http://docs.datasnapioentityapi.apiary.io/#reference/campaign)_.
 
 
 | Attribute | Description | Example | Data Format  |
@@ -1021,7 +1005,7 @@ For more targeted communication, use _campaign_.
 | communication\_vendor\_id| ID of the vendor who sent the notification |  |    String |
 | status| Whether the communication was sent while the app was running with the possible values of "foreground" or "background". "background" can also mean the app was not running at all. | foreground, <br> background  | String |
 | type| Communication type (in-app or push) | in-app, push | String |
-| reporting_visibility | Whether ot Hide/Show this property in the Reporting Dashboard | | Boolean |
+| reporting_visibility | Whether to Hide/Show this property in the Reporting Dashboard | | Boolean |
 
 <br>
 
@@ -1056,21 +1040,21 @@ For more targeted communication, use _campaign_.
 ### PROPERTY: CAMPAIGN
 ***
 
-A _campaign_ represents all the properties needed to deliver some form of messaging to the user. It can include settings,
-targeting criteria, communication IDs amongst other things. Unlike _communication_ events, campaigns are targeted and can be sent at specific times.
+A _[campaign](http://docs.datasnapioentityapi.apiary.io/#reference/campaign)_ represents all the properties needed to deliver some form of messaging to the user. It can include settings,
+targeting criteria, communication IDs amongst other things. Unlike _[communication](http://docs.datasnapioentityapi.apiary.io/#reference/communication)_ events, campaigns are targeted and can be sent at specific times.
 
 | Attribute        | Explanation           | Data Format  |
 | --- |---| ---|
 | identifier     | Unique campaign ID | String |
 | name   | Campaign name     |   String |
-| advertiser_org_id   | The advertiser assotiates with the campaign. Will default to the top-level organization if not passed in.     |   String |
+| advertiser_org_id   | The advertiser associates with the campaign. Will default to the top-level organization if not passed in.     |   String |
 | tags   | Descriptors for the campaign      |    Array |
 | subcampaigns | Optional sub-campaigns under the parent campaign | Array |
 | targeting_rules | Campaign rules |   String |
 | time_filter| Time period(s) the campaign should run for |    String |
 | time_trigger| Date/time the campaign should be triggered    |    String |
 | communication | Communication ID associated with the campaign   |    String |
-| reporting_visibility | Whether ot Hide/Show this property in the Reporting Dashboard | | Boolean |
+| reporting_visibility | Whether to Hide/Show this property in the Reporting Dashboard | | Boolean |
 <br>
 
 ```
@@ -1214,7 +1198,7 @@ targeting criteria, communication IDs amongst other things. Unlike _communicatio
 ### PROPERTY: DATASNAP
 ***
 The _datasnap_ property includes time-related properties, location properties, device properties and a transaction ID. Two time-related properties are included in your event automatically and are set at the time your event is recorded;
-however, you can also override the created property if desired. For example, it my be useful to override properites if you are back-filling historical data.
+however, you can also override the created property if desired. For example, it may be useful to override properties if you are back-filling historical data.
 
 
 | Attribute       | Description           | Data Format  |
@@ -1273,9 +1257,13 @@ however, you can also override the created property if desired. For example, it 
                  "beacon":{
                     "identifier":"XC45-223F"
                  },
-                 "user":{
-                    "id":{
-                       "global_distinct_id":"1234-5566-1234"
+                 "user": {
+                    "id": {
+                        "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
+                        "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
+                        "mobile_device_ios_openidfa": "09238dd4",
+                        "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
+                        "mobile_device_google_google_advertising_id_opt_in": "true"
                     }
                  },
                  "datasnap": {
@@ -1318,7 +1306,11 @@ however, you can also override the created property if desired. For example, it 
                  },
                  "user":{
                     "id":{
-                       "global_distinct_id":"1234-5566-1234"
+                       "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
+                       "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
+                       "mobile_device_ios_openidfa": "09238dd4",
+                       "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
+                       "mobile_device_google_google_advertising_id_opt_in": "true"
                     }
                  },
                  "datasnap": {
@@ -1358,7 +1350,11 @@ however, you can also override the created property if desired. For example, it 
                      },
                      "user":{
                         "id":{
-                           "global_distinct_id":"1234-5566-1234"
+                            "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
+                            "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
+                            "mobile_device_ios_openidfa": "09238dd4",
+                            "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
+                            "mobile_device_google_google_advertising_id_opt_in": "true"
                         }
                      },
                      "datasnap": {
@@ -1408,7 +1404,11 @@ however, you can also override the created property if desired. For example, it 
                      },
                      "user":{
                         "id":{
-                           "global_distinct_id":"2"
+                            "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
+                            "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
+                            "mobile_device_ios_openidfa": "09238dd4",
+                            "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
+                            "mobile_device_google_google_advertising_id_opt_in": "true"
                         }
                      },
                     "datasnap": {
@@ -1458,7 +1458,11 @@ however, you can also override the created property if desired. For example, it 
                      },
                      "user":{
                         "id":{
-                           "global_distinct_id":"1234-5566-1234"
+                            "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
+                            "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
+                            "mobile_device_ios_openidfa": "09238dd4",
+                            "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
+                            "mobile_device_google_google_advertising_id_opt_in": "true"
                         }
                      },
                      "datasnap": {
@@ -1696,9 +1700,12 @@ however, you can also override the created property if desired. For example, it 
                             "shoes"
                         ],
                         "id": {
-                            "mobile_device_bluetooth_identifier": "8c4e1f232810d11be96edf47674f5641296a76f5",
-                            "mobile_device_ios_idfa": "1a847de9f24b18eee3fac634b833b7887b32dea3",
+                            "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
+                            "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
                             "mobile_device_ios_openidfa": "09238dd4",
+                            "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
+                            "mobile_device_google_google_advertising_id_opt_in": "true",
+                            "mobile_device_bluetooth_identifier": "8c4e1f232810d11be96edf47674f5641296a76f5",
                             "mobile_device_ios_idfv": "092344",
                             "mobile_device_ios_udid": "123",
                             "datasnap_uuid": "datasnap_uuid",
@@ -1709,12 +1716,9 @@ however, you can also override the created property if desired. For example, it 
                             "web_network_userid": "billybob",
                             "web_user_fingerprint": "web_user_fingerprint",
                             "web_analytics_company_z_cookie": "",
-                            "global_distinct_id": "userid1234",
                             "global_user_ipaddress": "user_ipaddress",
                             "mobile_device_fingerprint": "2da076c7ad28740c0b2a9b7fa6077c4f",
                             "facebook_uid": "2234433",
-                            "mobile_device_google_advertising_id": "googid",
-                            "mobile_device_google_google_advertising_id_opt_in": "true",
                             "unknown": "unknownid",
                             "": ""
                         },
