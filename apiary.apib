@@ -242,7 +242,8 @@ Example event:
 {
  "event_type":"beacon_sighting",
  "beacon":{
-    "identifier":"DatasnapTestBeacon123"
+    "identifier":"DatasnapTestBeacon123",
+    "rssi": -20
  },
  "user":{
     "id":{
@@ -285,7 +286,8 @@ Example event:
 {
  "event_type":"beacon_sighting",
  "beacon":{
-    "identifier":"DatasnapTestBeacon1"
+    "identifier":"DatasnapTestBeacon1",
+    "rssi": -20
  },
  "user":{
     "id":{
@@ -338,7 +340,8 @@ Example event:
 {
  "event_type":"beacon_sighting",
  "beacon":{
-    "identifier":"DatasnapTestBeacon1"
+    "identifier":"DatasnapTestBeacon1",
+    "rssi": -20
  },
  "user":{
     "id":{
@@ -421,7 +424,7 @@ Example event:
 ***
 An `advertiser_org_id` is an organization that has been created with `"isAdvertiser": true` indicating that it is an advertiser.
 
-To ease integraton with our partners, sometimes it is easier for events to be sent using their own internal client/Org ID.
+To ease integration with our partners, sometimes it is easier for events to be sent using their own internal client/Org ID.
 
 If you require a customer-specific advertiser ID, you can set `customer_advertiser_org_id` via the Organization API.
 
@@ -600,11 +603,9 @@ Only ONE project may be passed in this array.
 ***
 
  A _beacon_ represents the actual beacon metadata and/or specific sighting data involved in the event.
+ Beacons require an `identifier` and `name`. Including the `rssi` value is strongly encouraged to ensure proper reporting.
 
-In some cases, the actual RSSI and dwell time are dependent on a User entity being in play,
- but we felt that this data should still remain under the Beacon entity.
-
- `is_mobile` field denotes that the beacon is moving around. The default is `false` if not filled in.
+ The `is_mobile` field denotes that the beacon is moving around. The default is `false` if not filled in.
 
 
 | Attribute       | Explanation           | Data Format  |
@@ -641,9 +642,9 @@ In some cases, the actual RSSI and dwell time are dependent on a User entity bei
      "ble_uuid": "ble_uuid",
      "ble_vendor_uuid": "ble_vendor_uuid",
      "ble_vendor_id": "ble_vendor_id",
-     "rssi": 80,
+     "rssi": -80,
      "is_mobile": false,
-     "previous_rssi": 70,
+     "previous_rssi": -70,
      "name": "Front Entrance",
      "uuid": "qwer1234wqer",
      "ibeacon_major": "12",
@@ -1255,7 +1256,8 @@ however, you can also override the created property if desired. For example, it 
                 {
                  "event_type":"beacon_sighting",
                  "beacon":{
-                    "identifier":"XC45-223F"
+                    "identifier":"XC45-223F",
+                    "rssi": -20
                  },
                  "user": {
                     "id": {
@@ -1281,7 +1283,7 @@ however, you can also override the created property if desired. For example, it 
             ]
 
 
-+ Response 200 (application/json)
++ Response 201 (application/json)
         
         {"created": true}
 
@@ -1302,7 +1304,8 @@ however, you can also override the created property if desired. For example, it 
                  "event_type":"beacon_depart",
                  "beacon":{
                     "identifier":"XC45-223F",
-                    "dwell_time": 180
+                    "dwell_time": 180,
+                    "rssi": -80
                  },
                  "user":{
                     "id":{
@@ -1327,7 +1330,7 @@ however, you can also override the created property if desired. For example, it 
             ]
 
 
-+ Response 200 (application/json)
++ Response 201 (application/json)
         
         {"created": true}
 
@@ -1372,7 +1375,7 @@ however, you can also override the created property if desired. For example, it 
 
             ]
 
-+ Response 200 (application/json)
++ Response 201 (application/json)
         
         {"created": true}
         
@@ -1425,7 +1428,7 @@ however, you can also override the created property if desired. For example, it 
 
             ]
 
-+ Response 200 (application/json)
++ Response 201 (application/json)
         
         {"created": true}
 
@@ -1543,10 +1546,14 @@ however, you can also override the created property if desired. For example, it 
                         ],
                         "beacons": [
                             {
-                                "beaconid": "beaconid1"
+                                "identifier":"XC45-223F",
+                                "beaconid": "beaconid1",
+                                "rssi": -20
                             },
                             {
-                                "beaconid": "beaconid2"
+                                "identifier":"SIFU-253X",
+                                "beaconid": "beaconid2",
+                                "rssi": -80
                             }
                         ]
                     },
@@ -1630,8 +1637,8 @@ however, you can also override the created property if desired. For example, it 
                         "ble_uuid": "ble_uuid",
                         "ble_vendor_uuid": "ble_vendor_uuid",
                         "ble_vendor_id": "ble_vendor_id",
-                        "rssi": 80,
-                        "previous_rssi": 70,
+                        "rssi": -80,
+                        "previous_rssi": -70,
                         "name": "Front Entrance",
                         "dwell_time": 600000,
                         "is_mobile": false,
