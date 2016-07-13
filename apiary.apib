@@ -22,7 +22,7 @@ You will get an API key and an API Secret for access.
 
 In order to authorize, base64 encode the key and secret together. You can use this Linux command to create the base64 string:
 
-                echo -n "APIKey:APISecret" | openssl base64
+`echo -n "APIKey:APISecret" | openssl base64`
 After encoding, add it to the headers as `Authorization:  Basic <Put Base64 String here>`
 
 
@@ -44,14 +44,14 @@ org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString("mystring".getB
 ### Important Information
 
 - You can only send one `organization_id` (or `customer_org_id`) per API request. You cannot send multiple organization IDs or you will get a 401 error.
-- Venue and organization names should **NEVER** contain underscores '_'
-- When sending a **campaign event** you must send the `advertiser_org_id`, the `project_id` and the `organization_id` that own the app
-- When sending a **beacon event** you must send the `project_id`, the `venue_org_id` and the `organization_id` that own the app
+- Organization names should **NEVER** contain underscores '_'
+- When sending a **campaign event** you must send the `advertiser_org_id`, the `project_ids` and the `organization_ids` that own the app
+- When sending a **beacon event** you must send the `project_ids` and the `organization_ids` that own the app
 
 
 ### Required Event Fields
 
-Events require certain IDs in order to successfully post.  At a minimum, identifying the organization, project, venue and user are required.
+Events require certain IDs in order to successfully post.  At a minimum, identifying the organization, project and user are required.
 **Additional properties included in events must also include their respective IDs and names.** For example, include `identifier` and `name` in the _beacon_ property and
 `id` and `name` in the _place_ property
 
@@ -62,7 +62,6 @@ All events **must** contain the following information:
 | Attribute | Description | Data Format |
 |---|---| ---|
 | **organization_ids** | Organization ID assigned to you (optional if you send the `customer_org_id` property.)| String |
-| **venue_org_id** | Required. Represents the venue where the actual beacons are placed (optional if you send the `customer_venue_org_id` property.).| String |
 | **project_id** | Required Project ID within that organization (typically represents the app). | String |
 | **event\_type** | The type of event you are sending - beacon\_sighting, geofence_depart etc.|  String |
 | **global\_distinct\_id** | The unique user ID associated with this event. It should go under user. | String |
@@ -76,7 +75,6 @@ Using `customer_` properties is also valid if you set up internal IDs using the 
 | Attribute | Description | Data Format |
 |---|---| ---|
 | **customer_org_id** | Required if not sending `organization_id` and you have setup these IDs via the Organization API.| String |
-| **customer_venue_org_id** | Required if not sending `venue_org_id` and you have setup these IDs via the Organization API.| String |
 | **customer_advertiser_org_id** | Required if not sending `advertiser_org_id` and you have setup these IDs via the Organization API.| String |
 
 
@@ -249,7 +247,6 @@ Example event:
     "id":{
        "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
        "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
-       "mobile_device_ios_openidfa": "09238dd4",
        "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
        "mobile_device_google_google_advertising_id_opt_in": "true"
     }
@@ -257,7 +254,6 @@ Example event:
  "datasnap": {
       "created": "2015-03-02T09:00:00"
 },
-    "customer_venue_org_id": "4PFtsr11HytMudhEt4m",
     "customer_org_id": "BsgtRg56GTGggfss",
  "project_ids":[
     "TestDatasnapApp1"
@@ -266,106 +262,7 @@ Example event:
 
 ```
 
-<section id="venue_org_id">&nbsp;</section>
-### PROPERTY: VENUE ORGANIZATION
-***
 
-The _[venue](http://docs.datasnapioentityapi.apiary.io/#reference/organization-venues)_ property is a specialized type of organization that is useful when more specific beacon mapping is required.
-
-Set the `venue_org_id` via the Organization API. Simply create a normal organization with the flag `"isVenue": true` indicating that it is a venue.
-
-This is a top-level property:
-
-```
- "venue_org_id":"53d7ef540af5502d6f943817",
-```
-
-Example event:
-
-```
-{
- "event_type":"beacon_sighting",
- "beacon":{
-    "identifier":"DatasnapTestBeacon1",
-    "rssi": -20
- },
- "user":{
-    "id":{
-       "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
-       "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
-       "mobile_device_ios_openidfa": "09238dd4",
-       "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
-       "mobile_device_google_google_advertising_id_opt_in": "true"
-    }
- },
- "datasnap": {
-      "created":"2015-06-23T00:40:15.415Z"
-},
- "project_ids":[
-    "peoj1234"
- ],
- "venue_org_id":"venueclientid1",
- "organization_ids": [
-      "BsgtRg56GTGggfss"
-    ],
- "project_name": "My cool App project"
-}
-
-```
-
-
-<section id="customer_venue_org_id">&nbsp;</section>
-### PROPERTY: CUSTOMER VENUE ORGANIZATION
-***
-The _[venue](http://docs.datasnapioentityapi.apiary.io/#reference/organization-venues)_ property is a specialized type of organization that is useful when more specific beacon mapping is required.
-
-To ease integration with our partners, sometimes it is easier for events to be sent using their own internal client/Org ID.
-
-If you require a client-specific venue ID, you can set `customer_venue_org_id` via the Organization API.
-
-After these customer IDs are set, you can pass the ID to the event service **without** an `organization_ids` field present.
-
-The proper organization ID will be looked up and added to the event automatically under the `venue_org_id` property.
-
-
-This is a top-level property:
-
-```
- "customer_venue_org_id":"53d7ef540af5502d6f943817",
-```
-
-Example event:
-
-```
-{
- "event_type":"beacon_sighting",
- "beacon":{
-    "identifier":"DatasnapTestBeacon1",
-    "rssi": -20
- },
- "user":{
-    "id":{
-       "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
-       "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
-       "mobile_device_ios_openidfa": "09238dd4",
-       "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
-       "mobile_device_google_google_advertising_id_opt_in": "true"
-    }
- },
- "datasnap": {
-      "created":"2015-06-23T00:40:15.415Z"
-},
- "project_ids":[
-    "peoj1234"
- ],
- "customer_venue_org_id":"clientid1",
- "organization_ids": [
-      "BsgtRg56GTGggfss"
-    ],
- "project_name": "My cool App project"
-}
-
-```
 
 <section id="advertiser_org_id">&nbsp;</section>
 ### PROPERTY: ADVERTISER ORGANIZATION
@@ -402,13 +299,11 @@ Example event:
             "id":{
                "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
                "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
-               "mobile_device_ios_openidfa": "09238dd4",
                "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
                "mobile_device_google_google_advertising_id_opt_in": "true"
             }
          },
         "customer_org_id": "54be7fc90af5506441788a49",
-        "customer_venue_org_id": "54be7fc90af5506441788a49",
         "project_ids": [
             "5Nbojj94kQe6MW83yHyzCE"
         ]
@@ -417,7 +312,6 @@ Example event:
 
 
 ```
-
 
 <section id="customer_advertiser_org_id">&nbsp;</section>
 ### PROPERTY: CUSTOMER ADVERTISER ORGANIZATION
@@ -458,13 +352,11 @@ Example event:
             "id":{
                "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
                "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
-               "mobile_device_ios_openidfa": "09238dd4",
                "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
                "mobile_device_google_google_advertising_id_opt_in": "true"
             }
          },
         "customer_org_id": "54be7fc90af5506441788a49",
-        "customer_venue_org_id": "54be7fc90af5506441788a49",
         "project_ids": [
             "5Nbojj94kQe6MW83yHyzCE"
         ]
@@ -779,7 +671,7 @@ you can see the data sliced and diced by segment. Just send in the user informat
 | student_status| Is the user a student? | String |
 | region| Region of the user | String |
 | reporting_visibility | Whether to Hide/Show this property in the Reporting Dashboard | | Boolean |
-
+| sha1_lowercase_email | SHA-1 Hashed email of the user | String |
 
 #### age_range
 
@@ -926,7 +818,6 @@ Example:
     "id": {
         "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
         "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
-        "mobile_device_ios_openidfa": "09238dd4",
         "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
         "mobile_device_google_google_advertising_id_opt_in": "true"
         "mobile_device_bluetooth_identifier": "128 bit string",
@@ -939,7 +830,7 @@ Example:
         "web_network_userid": "billybob",
         "web_user_fingerprint": "web_user_fingerprint",
         "web_analytics_company_z_cookie": "",
-
+        "sha1_lowercase_email": "43307bb5a669b247270a4d81cce6f3ff",
         "global_user_ipaddress": "user_ipaddress",
         "mobile_device_fingerprint": "2da076c7ad28740c0b2a9b7fa6077c4f",
         "facebook_uid": "2234433",
@@ -1263,7 +1154,6 @@ however, you can also override the created property if desired. For example, it 
                     "id": {
                         "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
                         "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
-                        "mobile_device_ios_openidfa": "09238dd4",
                         "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
                         "mobile_device_google_google_advertising_id_opt_in": "true"
                     }
@@ -1271,14 +1161,12 @@ however, you can also override the created property if desired. For example, it 
                  "datasnap": {
                       "created": "2015-06-23T00:40:15.415Z"
                 },
-                "venue_org_id":"stadium1234",
                  "organization_ids":[
                     "45877hh233415htdg55t"
                  ],
                  "project_ids":[
                     "IOSApp123"
-                 ],
-                "venue_org_id":"venueclientid1"
+                 ]
                 }
             ]
 
@@ -1311,7 +1199,6 @@ however, you can also override the created property if desired. For example, it 
                     "id":{
                        "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
                        "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
-                       "mobile_device_ios_openidfa": "09238dd4",
                        "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
                        "mobile_device_google_google_advertising_id_opt_in": "true"
                     }
@@ -1319,7 +1206,6 @@ however, you can also override the created property if desired. For example, it 
                  "datasnap": {
                       "created": "2015-06-23T00:40:15.415Z"
                 },
-                "venue_org_id":"stadium1234",
                  "organization_ids":[
                     "45877hh233415htdg55t"
                  ],
@@ -1355,7 +1241,6 @@ however, you can also override the created property if desired. For example, it 
                         "id":{
                             "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
                             "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
-                            "mobile_device_ios_openidfa": "09238dd4",
                             "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
                             "mobile_device_google_google_advertising_id_opt_in": "true"
                         }
@@ -1363,14 +1248,12 @@ however, you can also override the created property if desired. For example, it 
                      "datasnap": {
                           "created": "2015-06-23T00:40:15.415Z"
                     },
-                    "venue_org_id":"stadium1234",
                      "organization_ids":[
                         "45877hh233415htdg55t"
                      ],
                      "project_ids":[
                         "IOSApp123"
-                     ],
-                    "venue_org_id":"venueclientid1"
+                     ]
                 }
 
             ]
@@ -1409,7 +1292,6 @@ however, you can also override the created property if desired. For example, it 
                         "id":{
                             "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
                             "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
-                            "mobile_device_ios_openidfa": "09238dd4",
                             "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
                             "mobile_device_google_google_advertising_id_opt_in": "true"
                         }
@@ -1417,7 +1299,6 @@ however, you can also override the created property if desired. For example, it 
                     "datasnap": {
                       "created": "2015-01-02T09:00:00"
                     },
-                    "venue_org_id": "MegaStadium01",
                     "organization_ids": [
                       "123GFTsggTVF9899H"
                     ],
@@ -1463,7 +1344,6 @@ however, you can also override the created property if desired. For example, it 
                         "id":{
                             "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
                             "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
-                            "mobile_device_ios_openidfa": "09238dd4",
                             "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
                             "mobile_device_google_google_advertising_id_opt_in": "true"
                         }
@@ -1471,14 +1351,12 @@ however, you can also override the created property if desired. For example, it 
                      "datasnap": {
                           "created": "2015-06-23T00:40:15.415Z"
                     },
-                    "venue_org_id":"stadium1234",
                     "organization_ids":[
                         "45877hh233415htdg55t"
                      ],
                      "project_ids":[
                         "IOSApp123"
-                     ],
-                    "venue_org_id":"venueclientid1"
+                     ]
                 }
             ]
 
@@ -1508,7 +1386,6 @@ however, you can also override the created property if desired. For example, it 
                     "project_ids": [
                         "3HRhnUtmtXnT1UHQHClAcP"
                     ],
-                    "venue_org_id":"venueclientid1",
                     "place": {
                         "id": "placeid",
                         "name": "Mission District",
@@ -1709,7 +1586,6 @@ however, you can also override the created property if desired. For example, it 
                         "id": {
                             "global_distinct_id":"gcIgeIpSvYHsWxJHw+U/dlFHsusL",
                             "mobile_device_ios_idfa": "AEBE52E7-03EE-455A-B3C4-E57283966239",
-                            "mobile_device_ios_openidfa": "09238dd4",
                             "mobile_device_google_advertising_id": "38400000-8cf0-11bd-b23e-10b96e40000d",
                             "mobile_device_google_google_advertising_id_opt_in": "true",
                             "mobile_device_bluetooth_identifier": "8c4e1f232810d11be96edf47674f5641296a76f5",
@@ -1723,6 +1599,7 @@ however, you can also override the created property if desired. For example, it 
                             "web_network_userid": "billybob",
                             "web_user_fingerprint": "web_user_fingerprint",
                             "web_analytics_company_z_cookie": "",
+                            "sha1_lowercase_email": "43307bb5a669b247270a4d81cce6f3ff",
                             "global_user_ipaddress": "user_ipaddress",
                             "mobile_device_fingerprint": "2da076c7ad28740c0b2a9b7fa6077c4f",
                             "facebook_uid": "2234433",
@@ -1928,4 +1805,4 @@ however, you can also override the created property if desired. For example, it 
 
 + Response 200 (application/json)
         
-        {"created": true}
+        {"created": true}es
